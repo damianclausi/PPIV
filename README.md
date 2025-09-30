@@ -10,8 +10,6 @@ El proyecto está basado en prototipos de Figma que incluyen:
 - **Operario**: Gestión de órdenes asignadas, seguimiento de reclamos y carga de insumos
 - **Administrativo**: Planificación de itinerarios, ABM de clientes y métricas del sistema
 
-Figma: https://www.figma.com/design/ekWFmTvi4UXl2gk3gKlkGH/PPIV---El-Quinto-Elemento
-
 ## Tecnologías Utilizadas
 
 ### Core Framework
