@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  # Base de datos PostgreSQL
+  postgres:
+    image: damian2k/cooperativa-ugarte-db:latest
+    container_name: cooperativa-db
+    environment:
+      POSTGRES_DB: cooperativa_ugarte
+      POSTGRES_USER: cooperativa_user
+      POSTGRES_PASSWORD: cooperativa_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - cooperativa_network
+
+  # Aplicación React (opcional para desarrollo)
+  app:
+    build: .
+    container_name: cooperativa-app
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    depends_on:
+      - postgres
+    networks:
+      - cooperativa_network
+    command: npm run dev
+
+volumes:
+  postgres_data:
+
+networks:
+  cooperativa_network:
+    driver: bridge
