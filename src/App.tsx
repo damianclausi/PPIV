@@ -5,6 +5,7 @@ import DashboardCliente from './components/DashboardCliente';
 import DashboardOperario from './components/DashboardOperario';
 import DashboardAdministrador from './components/DashboardAdministrador';
 import FacturasListado from './components/cliente/FacturasListado';
+import FacturaDetalle from './components/cliente/FacturaDetalle';
 import ReclamosListado from './components/cliente/ReclamosListado';
 import ReclamoNuevo from './components/cliente/ReclamoNuevo';
 import PagoOnline from './components/cliente/PagoOnline';
@@ -111,6 +112,14 @@ function AppRoutes() {
         element={
           <RutaProtegida>
             <FacturasListado />
+          </RutaProtegida>
+        }
+      />
+      <Route
+        path="/dashboard/cliente/factura/:id"
+        element={
+          <RutaProtegida>
+            <FacturaDetalle />
           </RutaProtegida>
         }
       />
