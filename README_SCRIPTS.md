@@ -1,10 +1,10 @@
-# 🚀 Sistema de Gestión - Cooperativa Eléctrica
+# Sistema de Gestión - Cooperativa Eléctrica
 
 Sistema completo de gestión para cooperativa eléctrica con módulos de administración, clientes y operarios.
 
 ---
 
-## 🎯 Inicio Rápido
+## Inicio Rápido
 
 ### Iniciar el Sistema
 ```bash
@@ -23,7 +23,7 @@ Sistema completo de gestión para cooperativa eléctrica con módulos de adminis
 
 ---
 
-## 📋 Scripts Disponibles
+## Scripts Disponibles
 
 | Script | Descripción | Uso |
 |--------|-------------|-----|
@@ -32,60 +32,61 @@ Sistema completo de gestión para cooperativa eléctrica con módulos de adminis
 | `restart.sh` | Reinicia el sistema completo | `./restart.sh` |
 | `status.sh` | Muestra estado del sistema | `./status.sh` |
 | `logs.sh` | Visualiza logs en tiempo real | `./logs.sh [backend\|frontend\|all\|errors]` |
+| `update-docker.sh` | Actualiza imagen Docker desde Docker Hub | `./update-docker.sh` |
 
 ---
 
-## 🔧 Scripts Detallados
+## Scripts Detallados
 
-### 1️⃣ start.sh - Iniciar Sistema
+### 1. start.sh - Iniciar Sistema
 
-**¿Qué hace?**
-- ✅ Verifica y libera puertos (3001, 3002)
-- ✅ Verifica dependencias
-- ✅ Inicia Backend
-- ✅ Inicia Frontend
-- ✅ Verifica salud de servicios
-- ✅ Guarda PIDs y logs
+**Qué hace:**
+- Verifica y libera puertos (3001, 3002)
+- Verifica dependencias
+- Inicia Backend
+- Inicia Frontend
+- Verifica salud de servicios
+- Guarda PIDs y logs
 
 **Ejemplo:**
 ```bash
 ./start.sh
 
 # Output:
-# ✅ Backend corriendo en puerto 3001
-# ✅ Frontend corriendo en puerto 3002
-# 🌐 Accede al sistema en: http://localhost:3002
+# Backend corriendo en puerto 3001
+# Frontend corriendo en puerto 3002
+# Accede al sistema en: http://localhost:3002
 ```
 
 ---
 
-### 2️⃣ stop.sh - Detener Sistema
+### 2. stop.sh - Detener Sistema
 
-**¿Qué hace?**
-- ✅ Detiene Frontend gracefully
-- ✅ Detiene Backend gracefully
-- ✅ Libera puertos
-- ✅ Opción de limpiar procesos huérfanos
-- ✅ Mantiene logs
+**Qué hace:**
+- Detiene Frontend gracefully
+- Detiene Backend gracefully
+- Libera puertos
+- Opción de limpiar procesos huérfanos
+- Mantiene logs
 
 **Ejemplo:**
 ```bash
 ./stop.sh
 
 # Output:
-# ✅ Frontend detenido
-# ✅ Backend detenido
-# ✅ Todos los puertos están libres
+# Frontend detenido
+# Backend detenido
+# Todos los puertos están libres
 ```
 
 ---
 
-### 3️⃣ restart.sh - Reiniciar Sistema
+### 3. restart.sh - Reiniciar Sistema
 
-**¿Qué hace?**
-- ✅ Ejecuta stop.sh
-- ✅ Espera 3 segundos
-- ✅ Ejecuta start.sh
+**Qué hace:**
+- Ejecuta stop.sh
+- Espera 3 segundos
+- Ejecuta start.sh
 
 **Ejemplo:**
 ```bash
@@ -96,55 +97,125 @@ Sistema completo de gestión para cooperativa eléctrica con módulos de adminis
 
 ---
 
-### 4️⃣ status.sh - Estado del Sistema
+### 4. status.sh - Estado del Sistema
 
-**¿Qué hace?**
-- ✅ Muestra estado de Backend
-- ✅ Muestra estado de Frontend
-- ✅ Muestra estado de PostgreSQL
-- ✅ Muestra PIDs y memoria
-- ✅ Muestra tamaño de logs
-- ✅ Muestra URLs de acceso
+**Qué hace:**
+- Verifica estado de Backend
+- Verifica estado de Frontend
+- Verifica estado de PostgreSQL
+- Muestra uso de memoria
+- Muestra PIDs de procesos
 
 **Ejemplo:**
 ```bash
 ./status.sh
 
 # Output:
-# 🔹 Backend: ✅ CORRIENDO (PID: 12345, 68.7 MB)
-# 🔹 Frontend: ✅ CORRIENDO (PID: 12346, 169.1 MB)
-# 🔹 Base de Datos: ✅ ACTIVO
-# ✅ Sistema completamente operativo
+# Backend: CORRIENDO puerto 3001, PID 12345, 75.2 MB
+# Frontend: CORRIENDO puerto 3002, PID 12346, 180.3 MB
+# PostgreSQL: CORRIENDO contenedor cooperativa-db
+# Sistema: completamente operativo
 ```
+
+**Estados posibles:**
+- `CORRIENDO`: Servicio activo y saludable
+- `DETENIDO`: Servicio no está ejecutándose
+- `ERROR`: Puerto ocupado pero servicio no responde
 
 ---
 
-### 5️⃣ logs.sh - Visualizar Logs
+### 5. logs.sh - Visualizar Logs
 
-**¿Qué hace?**
-- ✅ Muestra logs del backend
-- ✅ Muestra logs del frontend
-- ✅ Muestra logs de ambos
-- ✅ Filtra solo errores
+**Qué hace:**
+- Muestra logs en tiempo real
+- Filtra por backend, frontend o ambos
+- Opción para ver solo errores
+- Usa `tail -f` para seguimiento continuo
 
-**Ejemplos:**
+**Uso:**
 ```bash
-# Ver logs del backend
-./logs.sh backend
-
-# Ver logs del frontend
-./logs.sh frontend
-
-# Ver logs de ambos
+# Ver todos los logs
 ./logs.sh all
 
-# Ver solo errores
+# Solo logs del backend
+./logs.sh backend
+
+# Solo logs del frontend
+./logs.sh frontend
+
+# Solo errores
 ./logs.sh errors
 ```
 
+**Ejemplo:**
+```bash
+./logs.sh backend
+
+# Output (en tiempo real):
+# [2025-10-02 15:30:25] INFO: Servidor iniciado en puerto 3001
+# [2025-10-02 15:30:26] INFO: Conectado a PostgreSQL
+# [2025-10-02 15:30:30] GET /api/salud 200 15ms
+```
+
+**Archivos de log:**
+- `logs/backend.log` - Log completo del backend
+- `logs/frontend.log` - Log completo del frontend
+- `logs/backend.pid` - PID del proceso backend
+- `logs/frontend.pid` - PID del proceso frontend
+
 ---
 
-## 📊 Estructura del Proyecto
+### 6. update-docker.sh - Actualizar Imagen Docker
+
+**Qué hace:**
+- Detiene contenedor PostgreSQL actual
+- Elimina contenedor e imagen antiguos
+- Descarga última versión desde Docker Hub
+- Crea y ejecuta nuevo contenedor
+- Verifica conectividad y datos
+
+**Ejemplo:**
+```bash
+./update-docker.sh
+
+# Output:
+# [1/5] Verificando contenedor existente...
+# Deteniendo contenedor cooperativa-db...
+# Contenedor detenido
+# [2/5] Eliminando imagen antigua...
+# Imagen antigua eliminada
+# [3/5] Descargando última versión desde Docker Hub...
+# Imagen: damian2k/cooperativa-ugarte-db:latest
+# Imagen descargada exitosamente
+# [4/5] Iniciando nuevo contenedor...
+# Contenedor iniciado
+# [5/5] Verificando estado del contenedor...
+# Contenedor corriendo correctamente
+# PostgreSQL está listo para aceptar conexiones
+# Total de reclamos en la base: 30
+# ACTUALIZACIÓN COMPLETADA EXITOSAMENTE
+```
+
+**Cuándo usar:**
+- Después de actualizar datos en Docker Hub
+- Para obtener esquema actualizado de la base de datos
+- Para sincronizar con nueva versión de la imagen
+
+**Importante:**
+- Este script elimina el contenedor actual
+- Los datos se reemplazan con los de la imagen
+- Reinicia el backend después: `./restart.sh`
+
+**Variables configurables:**
+```bash
+IMAGE_NAME="damian2k/cooperativa-ugarte-db:latest"
+CONTAINER_NAME="cooperativa-db"
+DB_PORT=5432
+```
+
+---
+
+## Estructura del Proyecto
 
 ```
 PPIV/
@@ -153,6 +224,7 @@ PPIV/
 ├── restart.sh            # Script para reiniciar sistema
 ├── status.sh             # Script para ver estado
 ├── logs.sh               # Script para ver logs
+├── update-docker.sh      # Script para actualizar imagen Docker
 │
 ├── logs/                 # Logs del sistema
 │   ├── backend.log       # Log del backend
@@ -175,13 +247,13 @@ PPIV/
 │
 └── docs/                 # Documentación
     ├── SCRIPTS.md
-    ├── PASARELA_PAGO_SIMULADA.md
-    └── GUIA_PRUEBAS_PAGO.md
+    ├── API.md
+    └── DATABASE.md
 ```
 
 ---
 
-## 🎯 Flujo de Trabajo Típico
+## Flujo de Trabajo Típico
 
 ### Desarrollo Diario
 ```bash
@@ -200,201 +272,170 @@ PPIV/
 ./stop.sh
 ```
 
-### Después de Cambios de Configuración
+### Después de Cambios en Código
 ```bash
-# Reiniciar el sistema
+# Reiniciar para aplicar cambios
 ./restart.sh
+
+# Verificar que todo funcione
+./status.sh
 ```
 
-### Debugging
+### Debugging de Problemas
 ```bash
-# Ver estado completo
+# 1. Ver estado general
 ./status.sh
 
-# Ver logs en tiempo real
-./logs.sh all
-
-# Ver solo errores
+# 2. Ver logs de errores
 ./logs.sh errors
 
-# Ver logs específicos
-tail -f logs/backend.log
-tail -f logs/frontend.log
-```
-
----
-
-## 🌐 Acceso al Sistema
-
-### URLs Principales
-
-| Servicio | URL | Puerto |
-|----------|-----|--------|
-| Frontend | http://localhost:3002 | 3002 |
-| Backend | http://localhost:3001 | 3001 |
-| API Salud | http://localhost:3001/api/salud | 3001 |
-
-### Credenciales de Prueba
-
-**Administrador:**
-- Email: admin@cooperativa.com
-- Password: admin123
-
-**Cliente:**
-- Email: cliente@example.com
-- Password: cliente123
-
-**Operario:**
-- Email: operario@cooperativa.com
-- Password: operario123
-
----
-
-## ⚠️ Solución de Problemas
-
-### Problema: "Puerto en uso"
-```bash
-# Ver qué está usando el puerto
-lsof -i :3001
-lsof -i :3002
-
-# Forzar liberación
-./stop.sh
-
-# O manualmente
-lsof -ti:3001 | xargs kill -9
-lsof -ti:3002 | xargs kill -9
-```
-
-### Problema: "Backend no responde"
-```bash
-# Ver logs
+# 3. Ver logs específicos
 ./logs.sh backend
-
-# Verificar configuración
-cat backend/.env
-
-# Reiniciar
-./restart.sh
-```
-
-### Problema: "Frontend no carga"
-```bash
-# Ver logs
 ./logs.sh frontend
 
-# Limpiar caché y reinstalar
-rm -rf node_modules
-npm install
-
-# Reiniciar
+# 4. Si es necesario, reiniciar
 ./restart.sh
 ```
 
-### Problema: "Base de datos no conecta"
-```bash
-# Verificar PostgreSQL
-sudo systemctl status postgresql
-sudo systemctl start postgresql
+---
 
-# Verificar configuración
-cat backend/.env
+## Puertos Utilizados
+
+| Servicio | Puerto | URL |
+|----------|--------|-----|
+| Backend | 3001 | http://localhost:3001 |
+| Frontend | 3002 | http://localhost:3002 |
+| PostgreSQL | 5432 | localhost:5432 |
+
+---
+
+## Variables de Entorno
+
+### Backend (.env)
+```bash
+PORT=3001
+DATABASE_URL=postgresql://coop_user:cooperativa2024@localhost:5432/cooperativa_ugarte_db
+JWT_SECRET=tu-secreto-jwt-aqui
+NODE_ENV=development
+```
+
+### Frontend (.env)
+```bash
+VITE_API_URL=http://localhost:3001
+VITE_APP_NAME=Sistema de Gestión - Cooperativa Eléctrica
 ```
 
 ---
 
-## 🔧 Comandos Útiles
+## Comandos Útiles
 
-### Ver Procesos
+### Verificar Puertos
 ```bash
-# Ver todos los procesos del proyecto
-ps aux | grep -E "node|vite" | grep PPIV
+# Ver qué está usando puerto 3001
+lsof -i :3001
 
-# Ver procesos en puertos específicos
-lsof -i :3001 -i :3002 | grep LISTEN
+# Ver qué está usando puerto 3002
+lsof -i :3002
+
+# Liberar puerto manualmente
+lsof -ti:3001 | xargs kill -9
 ```
 
-### Gestión de Logs
+### Manejo de Logs
 ```bash
-# Ver últimas 50 líneas
-tail -n 50 logs/backend.log
+# Ver últimas 50 líneas del backend
+tail -50 logs/backend.log
 
-# Buscar errores
-grep -i error logs/backend.log
+# Ver últimas 50 líneas del frontend
+tail -50 logs/frontend.log
+
+# Buscar errores en logs
+grep -i "error" logs/backend.log
 
 # Limpiar logs antiguos
-rm -f logs/*.log
+> logs/backend.log
+> logs/frontend.log
 ```
 
-### Gestión de Memoria
+### Docker
 ```bash
-# Ver uso de memoria
-ps aux --sort=-%mem | grep node | head -5
+# Ver contenedores corriendo
+docker ps
 
-# Ver estadísticas del sistema
-./status.sh
+# Ver logs de PostgreSQL
+docker logs cooperativa-db
+
+# Conectar a PostgreSQL
+docker exec -it cooperativa-db psql -U coop_user -d cooperativa_ugarte_db
+
+# Detener contenedor
+docker stop cooperativa-db
+
+# Iniciar contenedor
+docker start cooperativa-db
 ```
 
 ---
 
-## 📦 Primera Instalación
+## Solución de Problemas
 
-Si es la primera vez que usas el proyecto:
-
+### Error: Puerto ya en uso
 ```bash
-# 1. Clonar repositorio
-git clone https://github.com/damianclausi/PPIV.git
-cd PPIV
+# Verificar qué proceso usa el puerto
+lsof -i :3001
 
-# 2. Instalar dependencias
-npm install
-cd backend && npm install && cd ..
+# Liberar puerto
+lsof -ti:3001 | xargs kill -9
 
-# 3. Configurar variables de entorno
-cp backend/.env.example backend/.env
-nano backend/.env  # Editar con tus credenciales
-
-# 4. Dar permisos a scripts
-chmod +x *.sh
-
-# 5. Iniciar el sistema
+# Reiniciar
 ./start.sh
 ```
 
+### Error: No se puede conectar a la base de datos
+```bash
+# Verificar que PostgreSQL está corriendo
+docker ps | grep cooperativa-db
+
+# Si no está, iniciarlo
+docker start cooperativa-db
+
+# Verificar logs
+docker logs cooperativa-db
+
+# Reiniciar backend
+./restart.sh
+```
+
+### Error: Frontend no carga
+```bash
+# Ver logs del frontend
+./logs.sh frontend
+
+# Verificar dependencias
+npm install
+
+# Reiniciar
+./restart.sh
+```
+
+### Error: Backend no responde
+```bash
+# Ver logs del backend
+./logs.sh backend
+
+# Verificar dependencias
+cd backend && npm install && cd ..
+
+# Verificar .env
+cat backend/.env
+
+# Reiniciar
+./restart.sh
+```
+
 ---
 
-## 📚 Documentación Adicional
-
-- **Pasarela de Pago:** [docs/PASARELA_PAGO_SIMULADA.md](docs/PASARELA_PAGO_SIMULADA.md)
-- **Guía de Pruebas:** [docs/GUIA_PRUEBAS_PAGO.md](docs/GUIA_PRUEBAS_PAGO.md)
-- **Scripts:** [docs/SCRIPTS.md](docs/SCRIPTS.md)
-
----
-
-## 🎨 Características del Sistema
-
-### Módulo Administrador
-- ✅ Dashboard con estadísticas
-- ✅ CRUD completo de socios
-- ✅ Gestión de reclamos
-- ✅ Gestión de empleados
-- ✅ Asignación de operarios
-
-### Módulo Cliente
-- ✅ Ver facturas
-- ✅ Crear y ver reclamos
-- ✅ Pago online con pasarela simulada
-- ✅ Dashboard personalizado
-
-### Módulo Operario
-- ✅ Ver reclamos asignados
-- ✅ Actualizar estado de reclamos
-- ✅ Cargar insumos utilizados
-- ✅ Gestión de tareas
-
----
-
-## 🚀 Tecnologías
+## Tecnologías
 
 - **Frontend:** React 18.3.1 + Vite 6.3.5 + TypeScript
 - **Backend:** Node.js + Express
@@ -404,7 +445,7 @@ chmod +x *.sh
 
 ---
 
-## 📞 Soporte
+## Soporte
 
 Para dudas o problemas:
 
@@ -415,16 +456,15 @@ Para dudas o problemas:
 
 ---
 
-## 🔄 Actualización
+## Actualización del Sistema
 
-Para actualizar el sistema:
-
+### Actualizar Código Fuente
 ```bash
 # 1. Detener el sistema
 ./stop.sh
 
-# 2. Actualizar código
-git pull origin main
+# 2. Actualizar código desde GitHub
+git pull origin integracion-base-datos
 
 # 3. Actualizar dependencias
 npm install
@@ -434,10 +474,39 @@ cd backend && npm install && cd ..
 ./start.sh
 ```
 
+### Actualizar Base de Datos
+```bash
+# 1. Detener el sistema
+./stop.sh
+
+# 2. Actualizar imagen Docker
+./update-docker.sh
+
+# 3. Iniciar el sistema
+./start.sh
+```
+
+### Actualización Completa
+```bash
+# 1. Detener todo
+./stop.sh
+
+# 2. Actualizar código
+git pull origin integracion-base-datos
+npm install
+cd backend && npm install && cd ..
+
+# 3. Actualizar Docker
+./update-docker.sh
+
+# 4. Iniciar todo
+./start.sh
+```
+
 ---
 
 **Última actualización:** Octubre 2, 2025
 
 **Versión:** 1.0.0
 
-**Estado:** ✅ Producción
+**Estado:** Producción
