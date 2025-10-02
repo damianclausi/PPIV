@@ -58,7 +58,7 @@ El proyecto está basado en prototipos de Figma que incluyen:
 
 ## Instalación y Ejecución
 
-### 🚀 Inicio Rápido
+### Inicio Rápido
 
 #### Usando Scripts Automatizados (Recomendado)
 
@@ -71,9 +71,9 @@ El proyecto está basado en prototipos de Figma que incluyen:
 ```
 
 El script de inicio levanta automáticamente:
-- 🐘 PostgreSQL en Docker (puerto 5432)
-- 🔧 Backend API (puerto 3001)
-- 🌐 Frontend React (puerto 3000)
+- PostgreSQL en Docker (puerto 5432)
+- Backend API (puerto 3001)
+- Frontend React (puerto 3000)
 
 #### Instalación Manual
 
@@ -94,22 +94,22 @@ npm run dev
 npm run dev
 ```
 
-### 🌐 Acceso al Sistema
+### Acceso al Sistema
 
 Una vez iniciado el sistema:
 
 - **Frontend**: http://localhost:3000
 - **Backend API**: http://localhost:3001
 - **PostgreSQL**: localhost:5432
-  - Usuario: `cooperativa_user`
-  - Contraseña: `cooperativa_pass`
-  - Base de datos: `cooperativa_db`
+  - Usuario: `coop_user`
+  - Contraseña: `cooperativa2024`
+  - Base de datos: `cooperativa_ugarte_db`
 
-## 👥 Usuarios de Prueba
+## Usuarios de Prueba
 
 El sistema incluye **11 usuarios pre-configurados** con diferentes roles:
 
-### 🟢 Clientes (6 usuarios)
+### Clientes (6 usuarios)
 
 | Email | Nombre | Password |
 |-------|--------|----------|
@@ -121,12 +121,12 @@ El sistema incluye **11 usuarios pre-configurados** con diferentes roles:
 | `carlosalberto.sanchez@hotmail.com` | Carlos Alberto Sánchez | `password123` |
 
 **Funcionalidades del Cliente:**
-- ✅ Ver mis reclamos
-- ✅ Crear nuevos reclamos
-- ✅ Dashboard con estadísticas personales
-- ✅ Cerrar sesión
+- Ver mis reclamos
+- Crear nuevos reclamos
+- Dashboard con estadísticas personales
+- Cerrar sesión
 
-### 🔧 Operarios (3 usuarios)
+### Operarios (3 usuarios)
 
 | Email | Nombre | Cargo | Password |
 |-------|--------|-------|----------|
@@ -135,13 +135,13 @@ El sistema incluye **11 usuarios pre-configurados** con diferentes roles:
 | `luis.tecnico@cooperativa-ugarte.com.ar` | Luis Alberto Gómez | Técnico Especializado | `password123` |
 
 **Funcionalidades del Operario:**
-- ✅ Ver reclamos asignados
-- ✅ Estadísticas de trabajo (pendientes, en proceso, resueltos)
-- ✅ Filtrar reclamos por estado
-- ✅ Dashboard con métricas operativas
-- ✅ Cerrar sesión
+- Ver reclamos asignados
+- Estadísticas de trabajo (pendientes, en proceso, resueltos)
+- Filtrar reclamos por estado
+- Dashboard con métricas operativas
+- Cerrar sesión
 
-### 👔 Administradores (2 usuarios)
+### Administradores (2 usuarios)
 
 | Email | Nombre | Cargo | Password |
 |-------|--------|-------|----------|
@@ -149,15 +149,15 @@ El sistema incluye **11 usuarios pre-configurados** con diferentes roles:
 | `carlos.admin@cooperativa-ugarte.com.ar` | Carlos Alberto Admin | Director General | `password123` |
 
 **Funcionalidades del Administrador:**
-- ✅ Vista completa del sistema con pestañas:
-  - 📊 **Dashboard**: Estadísticas generales
-  - 👥 **Socios**: Lista completa de clientes
-  - 📋 **Reclamos**: Todos los reclamos del sistema
-  - 👷 **Empleados**: Lista de operarios
-- ✅ Métricas y reportes del sistema
-- ✅ Cerrar sesión
+- Vista completa del sistema con pestañas:
+  - **Dashboard**: Estadísticas generales
+  - **Socios**: Lista completa de clientes
+  - **Reclamos**: Todos los reclamos del sistema
+  - **Empleados**: Lista de operarios
+- Métricas y reportes del sistema
+- Cerrar sesión
 
-## 🧪 Testing
+## Testing
 
 ### Backend Tests
 
@@ -167,11 +167,11 @@ npm test
 ```
 
 **32 tests pasando** que verifican:
-- ✅ Endpoints de autenticación
-- ✅ Endpoints de clientes
-- ✅ Endpoints de operarios
-- ✅ Endpoints de administradores
-- ✅ Validaciones y permisos por rol
+- Endpoints de autenticación
+- Endpoints de clientes
+- Endpoints de operarios
+- Endpoints de administradores
+- Validaciones y permisos por rol
 
 ### Ejemplo de Uso Manual
 
@@ -186,7 +186,7 @@ curl http://localhost:3001/api/clientes/perfil \
   -H "Authorization: Bearer TU_TOKEN_AQUI"
 ```
 
-## 📊 Base de Datos
+## Base de Datos
 
 El sistema utiliza **PostgreSQL** con las siguientes tablas principales:
 
@@ -198,16 +198,16 @@ El sistema utiliza **PostgreSQL** con las siguientes tablas principales:
 
 ### Datos Pre-cargados
 
-- ✅ 6 socios (clientes)
-- ✅ 5 empleados (3 operarios + 2 admins)
-- ✅ 13 reclamos de ejemplo
-- ✅ 8 tipos de reclamo
-- ✅ 4 estados de reclamo
+- 6 socios (clientes)
+- 5 empleados (3 operarios + 2 admins)
+- 13 reclamos de ejemplo
+- 8 tipos de reclamo
+- 4 estados de reclamo
 
 ## Ramas del Proyecto
 
 - **`main`**: Rama principal con la interfaz de usuario base
-- **`integracion-base-datos`**: ⭐ **Rama activa** con integración completa:
+- **`integracion-base-datos`**: **Rama activa** con integración completa:
   - Base de datos PostgreSQL en Docker
   - Backend API REST con Express
   - Autenticación JWT
@@ -215,30 +215,30 @@ El sistema utiliza **PostgreSQL** con las siguientes tablas principales:
   - Testing completo
   - Imagen Docker: `damian2k/cooperativa-ugarte-db:latest`
 
-## ✨ Características del Sistema
+## Características del Sistema
 
-### 🎯 Funcionalidades por Rol
+### Funcionalidades por Rol
 
 #### Cliente
-- 📋 Dashboard personalizado con mis reclamos
-- ➕ Crear nuevos reclamos
-- 📊 Estadísticas de mis servicios
-- 🔍 Filtrar y buscar reclamos propios
+- Dashboard personalizado con mis reclamos
+- Crear nuevos reclamos
+- Estadísticas de mis servicios
+- Filtrar y buscar reclamos propios
 
 #### Operario
-- 👷 Dashboard con reclamos asignados
-- 📈 Estadísticas de trabajo (pendientes, en proceso, resueltos)
-- 🔄 Filtros por estado de reclamo
-- ⚡ Métricas operativas en tiempo real
+- Dashboard con reclamos asignados
+- Estadísticas de trabajo (pendientes, en proceso, resueltos)
+- Filtros por estado de reclamo
+- Métricas operativas en tiempo real
 
 #### Administrador
-- 🌐 Vista global del sistema con pestañas
-- 👥 Gestión completa de socios
-- 📋 Supervisión de todos los reclamos
-- 👔 Administración de empleados
-- 📊 Dashboard con métricas generales
+- Vista global del sistema con pestañas
+- Gestión completa de socios
+- Supervisión de todos los reclamos
+- Administración de empleados
+- Dashboard con métricas generales
 
-### 🛠️ Características Técnicas
+### Características Técnicas
 
 - **Multi-perfil**: Interfaz adaptada para Cliente, Operario y Administrativo
 - **Autenticación JWT**: Sistema seguro de tokens con bcrypt
@@ -251,7 +251,7 @@ El sistema utiliza **PostgreSQL** con las siguientes tablas principales:
 - **Gestión de Estado**: React hooks para manejo de estado local
 - **Dockerizado**: PostgreSQL en contenedor para desarrollo
 
-## 📝 Logs y Monitoreo
+## Logs y Monitoreo
 
 ```bash
 # Ver logs del backend
@@ -264,7 +264,7 @@ tail -f frontend.log
 docker logs cooperativa-db -f
 ```
 
-## 🔧 Troubleshooting
+## Troubleshooting
 
 ### El sistema no inicia
 
@@ -300,7 +300,7 @@ docker-compose up -d
 docker ps | grep cooperativa-db
 ```
 
-## 🚀 Deployment
+## Deployment
 
 ### Backend API
 
@@ -320,17 +320,10 @@ npm run build
 npm run preview
 ```
 
-## 📚 Documentación Adicional
+## Documentación Adicional
 
+- [API Documentation](docs/API.md) - Documentación completa de endpoints
 - [Database Schema](docs/DATABASE.md) - Esquema completo de la base de datos
-- [API Documentation](docs/API.md) - Documentación de endpoints
+- [Testing Guide](docs/TESTING.md) - Guía completa de testing
 - [Guidelines](src/guidelines/Guidelines.md) - Guías de desarrollo
 
-## 🤝 Contribución
-
-Este proyecto es parte de la tecnicatura y está en desarrollo activo. Para contribuir:
-
-1. Crear una rama desde `integracion-base-datos`
-2. Hacer cambios y testear localmente
-3. Ejecutar tests: `cd backend && npm test`
-4. Crear pull request con descripción detallada  

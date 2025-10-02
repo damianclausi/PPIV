@@ -4,7 +4,11 @@
 
 [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
 
-  VITE v6.3.5  ready in 162 ms
+  VITE v6.3.5  ready in 205 ms
 
   ➜  Local:   http://localhost:3000/
   ➜  Network: use --host to expose
+7:08:10 PM [vite] changed tsconfig file detected: /home/damian/projects/PPIV/tsconfig.json - Clearing cache and forcing full-reload to ensure TypeScript is compiled with updated config values.
+7:08:10 PM [vite] changed tsconfig file detected: /home/damian/projects/PPIV/tsconfig.json - Clearing cache and forcing full-reload to ensure TypeScript is compiled with updated config values.
+7:08:38 PM [vite] changed tsconfig file detected: /home/damian/projects/PPIV/tsconfig.json - Clearing cache and forcing full-reload to ensure TypeScript is compiled with updated config values.
+7:09:05 PM [vite] changed tsconfig file detected: /home/damian/projects/PPIV/tsconfig.json - Clearing cache and forcing full-reload to ensure TypeScript is compiled with updated config values.

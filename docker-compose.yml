@@ -6,9 +6,9 @@ services:
     image: damian2k/cooperativa-ugarte-db:latest
     container_name: cooperativa-db
     environment:
-      POSTGRES_DB: cooperativa_ugarte
-      POSTGRES_USER: cooperativa_user
-      POSTGRES_PASSWORD: cooperativa_pass
+      POSTGRES_DB: cooperativa_ugarte_db
+      POSTGRES_USER: coop_user
+      POSTGRES_PASSWORD: cooperativa2024
     ports:
       - "5432:5432"
     volumes:
