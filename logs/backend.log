@@ -1,0 +1,242 @@
+
+> cooperativa-ugarte-backend@1.0.0 start
+> node server.js
+
+🚀 Servidor corriendo en http://localhost:3001
+📊 Verificación de salud: http://localhost:3001/api/salud
+GET /api/salud
+✅ Conectado a PostgreSQL
+POST /api/auth/verificar
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+✅ Conectado a PostgreSQL
+✅ Conectado a PostgreSQL
+POST /api/auth/verificar
+GET /api/clientes/dashboard
+GET /api/clientes/perfil
+✅ Conectado a PostgreSQL
+POST /api/auth/login
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+GET /api/clientes/reclamos
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+GET /api/clientes/facturas
+GET /api/clientes/dashboard
+GET /api/clientes/perfil
+✅ Conectado a PostgreSQL
+✅ Conectado a PostgreSQL
+✅ Conectado a PostgreSQL
+✅ Conectado a PostgreSQL
+GET /api/clientes/reclamos
+GET /api/clientes/dashboard
+GET /api/clientes/perfil
+GET /api/clientes/facturas
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+POST /api/auth/login
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+GET /api/clientes/reclamos
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+GET /api/clientes/reclamos
+GET /api/salud
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+✅ Conectado a PostgreSQL
+✅ Conectado a PostgreSQL
+GET /api/clientes/facturas
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+✅ Conectado a PostgreSQL
+✅ Conectado a PostgreSQL
+✅ Conectado a PostgreSQL
+POST /api/auth/login
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+✅ Conectado a PostgreSQL
+GET /api/clientes/facturas
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+GET /api/clientes/facturas
+GET /api/clientes/facturas
+GET /api/clientes/facturas
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+✅ Conectado a PostgreSQL
+✅ Conectado a PostgreSQL
+POST /api/auth/login
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+✅ Conectado a PostgreSQL
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+GET /api/clientes/reclamos
+POST /api/auth/verificar
+GET /api/clientes/reclamos
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+GET /api/clientes/facturas
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+✅ Conectado a PostgreSQL
+✅ Conectado a PostgreSQL
+✅ Conectado a PostgreSQL
+✅ Conectado a PostgreSQL
+GET /api/clientes/facturas
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+GET /api/salud
+✅ Conectado a PostgreSQL
+POST /api/auth/login
+✅ Conectado a PostgreSQL
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+✅ Conectado a PostgreSQL
+✅ Conectado a PostgreSQL
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+GET /api/clientes/reclamos
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+GET /api/clientes/facturas
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+✅ Conectado a PostgreSQL
+GET /api/clientes/reclamos
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+GET /api/clientes/facturas
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+✅ Conectado a PostgreSQL
+✅ Conectado a PostgreSQL
+✅ Conectado a PostgreSQL
+POST /api/auth/login
+GET /api/operarios/dashboard
+GET /api/operarios/perfil
+GET /api/operarios/reclamos
+GET /api/operarios/perfil
+GET /api/operarios/dashboard
+GET /api/operarios/reclamos
+GET /api/operarios/perfil
+GET /api/operarios/dashboard
+GET /api/operarios/reclamos
+GET /api/operarios/perfil
+GET /api/operarios/dashboard
+GET /api/operarios/reclamos
+POST /api/auth/login
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+✅ Conectado a PostgreSQL
+GET /api/clientes/facturas
+GET /api/clientes/facturas
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+POST /api/auth/login
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+✅ Conectado a PostgreSQL
+✅ Conectado a PostgreSQL
+✅ Conectado a PostgreSQL
+✅ Conectado a PostgreSQL
+GET /api/clientes/facturas
+GET /api/clientes/dashboard
+GET /api/clientes/perfil
+GET /api/clientes/reclamos
+POST /api/auth/verificar
+✅ Conectado a PostgreSQL
+GET /api/clientes/facturas
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+✅ Conectado a PostgreSQL
+✅ Conectado a PostgreSQL
+GET /api/clientes/reclamos
+GET /api/clientes/reclamos
+✅ Conectado a PostgreSQL
+GET /api/clientes/reclamos
+✅ Conectado a PostgreSQL
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+✅ Conectado a PostgreSQL
+✅ Conectado a PostgreSQL
+POST /api/auth/login
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+✅ Conectado a PostgreSQL
+✅ Conectado a PostgreSQL
+✅ Conectado a PostgreSQL
+✅ Conectado a PostgreSQL
+POST /api/auth/login
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+GET /api/clientes/reclamos
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+GET /api/clientes/facturas
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+POST /api/auth/login
+GET /api/operarios/dashboard
+GET /api/operarios/perfil
+GET /api/operarios/reclamos
+POST /api/auth/login
+✅ Conectado a PostgreSQL
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+✅ Conectado a PostgreSQL
+✅ Conectado a PostgreSQL
+GET /api/clientes/dashboard
+GET /api/clientes/perfil
+GET /api/clientes/reclamos
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+GET /api/clientes/facturas
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+GET /api/clientes/reclamos
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+✅ Conectado a PostgreSQL
+GET /api/clientes/reclamos
+GET /api/clientes/reclamos
+✅ Conectado a PostgreSQL
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+✅ Conectado a PostgreSQL
+✅ Conectado a PostgreSQL
+POST /api/auth/login
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+✅ Conectado a PostgreSQL
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+GET /api/clientes/reclamos
+GET /api/clientes/dashboard
+GET /api/clientes/perfil
+GET /api/clientes/facturas
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+POST /api/auth/login
+GET /api/operarios/dashboard
+GET /api/operarios/perfil
+GET /api/operarios/reclamos

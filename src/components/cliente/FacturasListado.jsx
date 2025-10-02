@@ -76,10 +76,9 @@ export default function FacturasListado() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-bold text-gray-900">Mis Facturas</h1>
-                    <Button variant="outline" onClick={() => navigate('/dashboard')}>
-            Volver al Dashboard
+          <Button variant="outline" onClick={() => navigate('/dashboard')}>
             <Home className="h-4 w-4 mr-2" />
-            Dashboard
+            Volver al Dashboard
           </Button>
         </div>
 

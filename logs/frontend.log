@@ -1,0 +1,50 @@
+
+> PPIV - El Quinto Elemento@0.1.0 dev
+> vite
+
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+Port 3000 is in use, trying another one...
+Port 3001 is in use, trying another one...
+
+  VITE v6.3.5  ready in 169 ms
+
+  ➜  Local:   http://localhost:3002/
+  ➜  Network: use --host to expose
+10:03:42 PM [vite] (client) hmr update /src/components/cliente/PagoOnline.jsx, /src/app.css
+10:03:53 PM [vite] (client) hmr update /src/components/cliente/PagoOnline.jsx, /src/app.css
+10:05:54 PM [vite] (client) hmr update /src/components/cliente/PagoOnline.jsx, /src/app.css
+10:06:20 PM [vite] (client) hmr update /src/components/cliente/PagoOnline.jsx, /src/app.css
+10:06:33 PM [vite] (client) hmr update /src/components/cliente/PagoOnline.jsx, /src/app.css
+10:06:46 PM [vite] (client) hmr update /src/components/cliente/PagoOnline.jsx, /src/app.css
+10:06:58 PM [vite] (client) hmr update /src/components/cliente/PagoOnline.jsx, /src/app.css
+10:08:35 PM [vite] (client) hmr update /src/components/cliente/PagoOnline.jsx, /src/app.css
+10:08:49 PM [vite] (client) hmr update /src/components/cliente/PagoOnline.jsx, /src/app.css
+10:11:30 PM [vite] (client) hmr update /src/components/cliente/PagoOnline.jsx, /src/app.css
+10:11:31 PM [vite] Internal server error:   x Expected '</', got ')'
+     ,-[/home/damian/projects/PPIV/src/components/cliente/PagoOnline.jsx:442:1]
+ 439 |                     </div>
+ 440 |                   </div>
+ 441 |                 </div>
+ 442 |               ))
+     :                ^
+ 443 |             )}
+ 444 |           </CardContent>
+ 445 |         </Card>
+     `----
+
+
+Caused by:
+    Syntax Error
+  Plugin: vite:react-swc
+  File: /home/damian/projects/PPIV/src/components/cliente/PagoOnline.jsx
+  
+10:11:46 PM [vite] (client) hmr update /src/components/cliente/PagoOnline.jsx, /src/app.css
+10:12:41 PM [vite] (client) hmr update /src/components/cliente/PagoOnline.jsx, /src/app.css
+10:13:23 PM [vite] (client) hmr update /src/components/cliente/FacturasListado.jsx, /src/app.css
+10:14:44 PM [vite] (client) hmr update /src/components/cliente/ReclamoNuevo.jsx, /src/app.css
+10:14:56 PM [vite] (client) hmr update /src/components/cliente/ReclamoNuevo.jsx, /src/app.css
+10:15:25 PM [vite] (client) hmr update /src/components/cliente/ReclamoNuevo.jsx, /src/app.css
+10:18:44 PM [vite] (client) hmr update /src/components/cliente/ReclamoNuevo.jsx, /src/app.css
+10:20:04 PM [vite] (client) hmr update /src/components/cliente/ReclamoNuevo.jsx, /src/app.css
+10:20:31 PM [vite] (client) hmr update /src/components/cliente/ReclamoNuevo.jsx, /src/app.css
+10:20:31 PM [vite] (client) hmr update /src/components/cliente/FacturasListado.jsx, /src/app.css
