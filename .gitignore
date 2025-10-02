@@ -18,6 +18,10 @@ build
 backend/.env
 backend/.env.test
 
+# Credentials documentation (local only)
+CREDENTIALS.md
+SETUP.md
+
 # IDE
 .vscode
 .idea
