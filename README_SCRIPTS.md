@@ -24,10 +24,15 @@ cd ..
 **Backend** - Crear archivo `backend/.env`:
 ```bash
 PORT=3001
-DATABASE_URL=postgresql://coop_user:cooperativa2024@localhost:5432/cooperativa_ugarte_db
-JWT_SECRET=tu-secreto-jwt-super-seguro-cambiame
+DATABASE_URL=postgresql://DB_USER:DB_PASSWORD@localhost:5432/DB_NAME
+JWT_SECRET=genera-un-secreto-seguro-aqui
 NODE_ENV=development
 ```
+
+**Nota:** Para desarrollo local con Docker:
+- DB_USER: `coop_user`
+- DB_PASSWORD: ver imagen Docker
+- DB_NAME: `cooperativa_ugarte_db`
 
 **Frontend** - Crear archivo `.env`:
 ```bash
@@ -425,10 +430,12 @@ PPIV/
 ### Backend (.env)
 ```bash
 PORT=3001
-DATABASE_URL=postgresql://coop_user:cooperativa2024@localhost:5432/cooperativa_ugarte_db
-JWT_SECRET=tu-secreto-jwt-aqui
+DATABASE_URL=postgresql://DB_USER:DB_PASSWORD@localhost:5432/DB_NAME
+JWT_SECRET=tu-secreto-jwt-seguro
 NODE_ENV=development
 ```
+
+**Nota:** Ver documentación de Docker para credenciales de desarrollo.
 
 ### Frontend (.env)
 ```bash

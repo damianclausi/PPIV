@@ -89,10 +89,16 @@ cd ..
 **Backend** - Crear `backend/.env`:
 ```bash
 PORT=3001
-DATABASE_URL=postgresql://coop_user:cooperativa2024@localhost:5432/cooperativa_ugarte_db
-JWT_SECRET=tu-secreto-jwt-super-seguro-cambiame
+DATABASE_URL=postgresql://DB_USER:DB_PASSWORD@localhost:5432/DB_NAME
+JWT_SECRET=tu-secreto-jwt-super-seguro-aqui
 NODE_ENV=development
 ```
+
+**Nota:** Reemplaza `DB_USER`, `DB_PASSWORD` y `DB_NAME` con las credenciales de tu base de datos.
+Para desarrollo local usando Docker Hub, usa:
+- DB_USER: `coop_user`
+- DB_PASSWORD: `cooperativa2024`
+- DB_NAME: `cooperativa_ugarte_db`
 
 **Frontend** - Crear `.env`:
 ```bash
@@ -120,7 +126,7 @@ docker run -d \
   -p 5432:5432 \
   -e POSTGRES_DB=cooperativa_ugarte_db \
   -e POSTGRES_USER=coop_user \
-  -e POSTGRES_PASSWORD=cooperativa2024 \
+  -e POSTGRES_PASSWORD=<tu-password-aqui> \
   damian2k/cooperativa-ugarte-db:latest
 ```
 
@@ -186,8 +192,8 @@ Una vez iniciado:
 - **Backend API**: http://localhost:3001
 - **PostgreSQL**: localhost:5432
   - Usuario: `coop_user`
-  - Contraseña: `cooperativa2024`
   - Base de datos: `cooperativa_ugarte_db`
+  - Contraseña: Ver archivo `.env` o imagen Docker
 
 ## Usuarios de Prueba
 
@@ -263,7 +269,7 @@ npm test
 # Login como cliente
 curl -X POST http://localhost:3001/api/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email":"mariaelena.gonzalez@hotmail.com","password":"password123"}'
+  -d '{"email":"mariaelena.gonzalez@hotmail.com","password":"<ver-tabla-usuarios>"}'
 
 # Obtener perfil (con token)
 curl http://localhost:3001/api/clientes/perfil \
