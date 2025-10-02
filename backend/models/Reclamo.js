@@ -185,13 +185,15 @@ class Reclamo {
         s.nombre as socio_nombre,
         s.apellido as socio_apellido,
         s.telefono as socio_telefono,
+        ot.estado as estado_orden,
         COUNT(*) OVER() as total
       FROM reclamo r
+      INNER JOIN orden_trabajo ot ON r.reclamo_id = ot.reclamo_id
       INNER JOIN tipo_reclamo tr ON r.tipo_id = tr.tipo_id
       INNER JOIN prioridad p ON r.prioridad_id = p.prioridad_id
       INNER JOIN cuenta c ON r.cuenta_id = c.cuenta_id
       INNER JOIN socio s ON c.socio_id = s.socio_id
-      WHERE r.operario_asignado_id = $1
+      WHERE ot.empleado_id = $1
     `;
 
     const params = [operarioId];
@@ -223,12 +225,13 @@ class Reclamo {
   static async obtenerResumenPorOperario(operarioId) {
     const resultado = await pool.query(`
       SELECT 
-        COUNT(*) FILTER (WHERE estado = 'PENDIENTE') as pendientes,
-        COUNT(*) FILTER (WHERE estado = 'EN_PROCESO') as en_proceso,
-        COUNT(*) FILTER (WHERE estado = 'RESUELTO' AND DATE(fecha_cierre) = CURRENT_DATE) as resueltos_hoy,
+        COUNT(*) FILTER (WHERE r.estado = 'PENDIENTE') as pendientes,
+        COUNT(*) FILTER (WHERE r.estado = 'EN_PROCESO') as en_proceso,
+        COUNT(*) FILTER (WHERE r.estado = 'RESUELTO' AND DATE(r.fecha_cierre) = CURRENT_DATE) as resueltos_hoy,
         COUNT(*) as total
-      FROM reclamo
-      WHERE operario_asignado_id = $1
+      FROM reclamo r
+      INNER JOIN orden_trabajo ot ON r.reclamo_id = ot.reclamo_id
+      WHERE ot.empleado_id = $1
     `, [operarioId]);
     return resultado.rows[0];
   }

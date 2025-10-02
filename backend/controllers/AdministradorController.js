@@ -100,6 +100,33 @@ export default class AdministradorController {
   }
 
   /**
+   * Crear un nuevo socio
+   */
+  static async crearSocio(req, res) {
+    try {
+      const datosSocio = req.body;
+      
+      // Validaciones básicas
+      if (!datosSocio.nombre || !datosSocio.apellido || !datosSocio.dni || !datosSocio.email) {
+        return respuestaError(res, 'Faltan datos obligatorios: nombre, apellido, DNI, email', 400);
+      }
+      
+      const nuevoSocio = await Socio.crear(datosSocio);
+      
+      return respuestaExitosa(res, nuevoSocio, 'Socio creado exitosamente', 201);
+    } catch (error) {
+      console.error('Error al crear socio:', error);
+      
+      // Manejo de errores específicos
+      if (error.code === '23505') { // Código de PostgreSQL para violación de unique constraint
+        return respuestaError(res, 'Ya existe un socio con ese DNI o email', 409);
+      }
+      
+      return respuestaError(res, 'Error al crear socio');
+    }
+  }
+
+  /**
    * Actualizar datos de un socio
    */
   static async actualizarSocio(req, res) {
@@ -117,6 +144,32 @@ export default class AdministradorController {
     } catch (error) {
       console.error('Error al actualizar socio:', error);
       return respuestaError(res, 'Error al actualizar socio');
+    }
+  }
+
+  /**
+   * Eliminar un socio
+   */
+  static async eliminarSocio(req, res) {
+    try {
+      const { id } = req.params;
+      
+      const eliminado = await Socio.eliminar(id);
+      
+      if (!eliminado) {
+        return respuestaNoEncontrado(res, 'Socio no encontrado');
+      }
+      
+      return respuestaExitosa(res, { id }, 'Socio eliminado exitosamente');
+    } catch (error) {
+      console.error('Error al eliminar socio:', error);
+      
+      // Manejo de errores específicos
+      if (error.code === '23503') { // Código de PostgreSQL para violación de foreign key
+        return respuestaError(res, 'No se puede eliminar el socio porque tiene cuentas o reclamos asociados', 409);
+      }
+      
+      return respuestaError(res, 'Error al eliminar socio');
     }
   }
 

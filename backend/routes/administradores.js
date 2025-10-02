@@ -21,8 +21,10 @@ router.get('/dashboard', AdministradorController.obtenerDashboard);
 
 // Gestión de socios
 router.get('/socios', AdministradorController.listarSocios);
+router.post('/socios', AdministradorController.crearSocio);
 router.get('/socios/:id', AdministradorController.obtenerSocio);
 router.put('/socios/:id', AdministradorController.actualizarSocio);
+router.delete('/socios/:id', AdministradorController.eliminarSocio);
 
 // Gestión de reclamos
 router.get('/reclamos', AdministradorController.listarReclamos);

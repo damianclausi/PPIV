@@ -42,10 +42,24 @@ class AdministradorService {
   }
 
   /**
+   * Crear un nuevo socio
+   */
+  async crearSocio(datos) {
+    return apiClient.post('/api/administradores/socios', datos);
+  }
+
+  /**
    * Actualizar datos de un socio
    */
   async actualizarSocio(id, datos) {
     return apiClient.put(`/api/administradores/socios/${id}`, datos);
+  }
+
+  /**
+   * Eliminar un socio
+   */
+  async eliminarSocio(id) {
+    return apiClient.delete(`/api/administradores/socios/${id}`);
   }
 
   /**
@@ -54,7 +68,16 @@ class AdministradorService {
   async listarReclamos(filtros = {}) {
     const params = new URLSearchParams();
     
-    if (filtros.estado) params.append('estado', filtros.estado);
+    // Solo enviar estado si no es "todos"
+    if (filtros.estado && filtros.estado !== 'todos') {
+      params.append('estado', filtros.estado);
+    }
+    
+    // Solo enviar prioridad si no es "todas"
+    if (filtros.prioridad && filtros.prioridad !== 'todas') {
+      params.append('prioridad', filtros.prioridad);
+    }
+    
     if (filtros.pagina) params.append('pagina', filtros.pagina);
     if (filtros.limite) params.append('limite', filtros.limite);
     

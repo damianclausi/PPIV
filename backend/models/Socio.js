@@ -46,12 +46,33 @@ class Socio {
   /**
    * Crear nuevo socio
    */
-  static async crear({ nombre, apellido, dni, email, telefono }) {
+  static async crear(datos) {
+    const { 
+      nombre, 
+      apellido, 
+      dni, 
+      email, 
+      telefono, 
+      direccion, 
+      fecha_nacimiento, 
+      activo = true 
+    } = datos;
+    
     const resultado = await pool.query(`
-      INSERT INTO socio (nombre, apellido, dni, email, telefono)
-      VALUES ($1, $2, $3, $4, $5)
+      INSERT INTO socio (
+        nombre, 
+        apellido, 
+        dni, 
+        email, 
+        telefono, 
+        direccion, 
+        fecha_nacimiento, 
+        activo
+      )
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
       RETURNING *
-    `, [nombre, apellido, dni, email, telefono]);
+    `, [nombre, apellido, dni, email, telefono, direccion, fecha_nacimiento, activo]);
+    
     return resultado.rows[0];
   }
 
@@ -137,6 +158,17 @@ class Socio {
 
     const resultado = await pool.query(query, params);
     return resultado.rows;
+  }
+
+  /**
+   * Eliminar un socio
+   */
+  static async eliminar(socioId) {
+    const resultado = await pool.query(
+      'DELETE FROM socio WHERE socio_id = $1 RETURNING socio_id',
+      [socioId]
+    );
+    return resultado.rows[0];
   }
 
   /**

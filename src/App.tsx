@@ -4,6 +4,20 @@ import Login from './components/Login';
 import DashboardCliente from './components/DashboardCliente';
 import DashboardOperario from './components/DashboardOperario';
 import DashboardAdministrador from './components/DashboardAdministrador';
+import FacturasListado from './components/cliente/FacturasListado';
+import ReclamosListado from './components/cliente/ReclamosListado';
+import ReclamoNuevo from './components/cliente/ReclamoNuevo';
+import PagoOnline from './components/cliente/PagoOnline';
+import ReclamoDetalleOperario from './components/operario/ReclamoDetalle';
+import CargarInsumos from './components/operario/CargarInsumos';
+import GestionSocios from './components/admin/GestionSocios';
+import GestionReclamos from './components/admin/GestionReclamos';
+import GestionEmpleados from './components/admin/GestionEmpleados';
+import AsignarReclamo from './components/admin/AsignarReclamo';
+import SocioDetalle from './components/admin/SocioDetalle';
+import SocioEditar from './components/admin/SocioEditar';
+import SocioNuevo from './components/admin/SocioNuevo';
+import ReclamoDetalleAdmin from './components/admin/ReclamoDetalleAdmin';
 
 // Componente para rutas protegidas
 function RutaProtegida({ children }: { children: React.ReactNode }) {
@@ -90,6 +104,125 @@ function AppRoutes() {
           </RutaProtegida>
         }
       />
+      
+      {/* Rutas Cliente */}
+      <Route
+        path="/dashboard/facturas"
+        element={
+          <RutaProtegida>
+            <FacturasListado />
+          </RutaProtegida>
+        }
+      />
+      <Route
+        path="/dashboard/reclamos"
+        element={
+          <RutaProtegida>
+            <ReclamosListado />
+          </RutaProtegida>
+        }
+      />
+      <Route
+        path="/dashboard/reclamos/nuevo"
+        element={
+          <RutaProtegida>
+            <ReclamoNuevo />
+          </RutaProtegida>
+        }
+      />
+      <Route
+        path="/dashboard/pagar-online"
+        element={
+          <RutaProtegida>
+            <PagoOnline />
+          </RutaProtegida>
+        }
+      />
+      
+      {/* Rutas Operario */}
+      <Route
+        path="/dashboard/operario/reclamos/:id"
+        element={
+          <RutaProtegida>
+            <ReclamoDetalleOperario />
+          </RutaProtegida>
+        }
+      />
+      <Route
+        path="/dashboard/operario/reclamos/:id/insumos"
+        element={
+          <RutaProtegida>
+            <CargarInsumos />
+          </RutaProtegida>
+        }
+      />
+      
+      {/* Rutas Admin */}
+      <Route
+        path="/dashboard/admin/socios"
+        element={
+          <RutaProtegida>
+            <GestionSocios />
+          </RutaProtegida>
+        }
+      />
+      <Route
+        path="/dashboard/admin/socios/nuevo"
+        element={
+          <RutaProtegida>
+            <SocioNuevo />
+          </RutaProtegida>
+        }
+      />
+      <Route
+        path="/dashboard/admin/socios/:id"
+        element={
+          <RutaProtegida>
+            <SocioDetalle />
+          </RutaProtegida>
+        }
+      />
+      <Route
+        path="/dashboard/admin/socios/:id/editar"
+        element={
+          <RutaProtegida>
+            <SocioEditar />
+          </RutaProtegida>
+        }
+      />
+      <Route
+        path="/dashboard/admin/reclamos"
+        element={
+          <RutaProtegida>
+            <GestionReclamos />
+          </RutaProtegida>
+        }
+      />
+      <Route
+        path="/dashboard/admin/reclamos/:id"
+        element={
+          <RutaProtegida>
+            <ReclamoDetalleAdmin />
+          </RutaProtegida>
+        }
+      />
+      <Route
+        path="/dashboard/admin/reclamos/:id/asignar"
+        element={
+          <RutaProtegida>
+            <AsignarReclamo />
+          </RutaProtegida>
+        }
+      />
+      <Route
+        path="/dashboard/admin/empleados"
+        element={
+          <RutaProtegida>
+            <GestionEmpleados />
+          </RutaProtegida>
+        }
+      />
+      
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>

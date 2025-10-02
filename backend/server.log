@@ -102,3 +102,1028 @@ GET /api/administradores/reclamos
 ✅ Conectado a PostgreSQL
 ✅ Conectado a PostgreSQL
 ✅ Conectado a PostgreSQL
+POST /api/auth/login
+✅ Conectado a PostgreSQL
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+✅ Conectado a PostgreSQL
+✅ Conectado a PostgreSQL
+POST /api/auth/login
+✅ Conectado a PostgreSQL
+GET /api/operarios/reclamos
+GET /api/operarios/dashboard
+GET /api/operarios/perfil
+Error al obtener reclamos de operario: error: column r.operario_asignado_id does not exist
+    at /home/damian/projects/PPIV/backend/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Reclamo.obtenerPorOperario (file:///home/damian/projects/PPIV/backend/models/Reclamo.js:210:23)
+    at async obtenerReclamos (file:///home/damian/projects/PPIV/backend/controllers/OperarioController.js:72:25) {
+  length: 121,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '643',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3665',
+  routine: 'errorMissingColumn'
+}
+✅ Conectado a PostgreSQL
+✅ Conectado a PostgreSQL
+Error al obtener dashboard de operario: error: column "operario_asignado_id" does not exist
+    at /home/damian/projects/PPIV/backend/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Reclamo.obtenerResumenPorOperario (file:///home/damian/projects/PPIV/backend/models/Reclamo.js:224:23)
+    at async obtenerDashboard (file:///home/damian/projects/PPIV/backend/controllers/OperarioController.js:39:31) {
+  length: 121,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '318',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3665',
+  routine: 'errorMissingColumn'
+}
+POST /api/auth/login
+✅ Conectado a PostgreSQL
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+✅ Conectado a PostgreSQL
+✅ Conectado a PostgreSQL
+POST /api/auth/login
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+✅ Conectado a PostgreSQL
+POST /api/auth/verificar
+✅ Conectado a PostgreSQL
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+✅ Conectado a PostgreSQL
+✅ Conectado a PostgreSQL
+POST /api/auth/verificar
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+✅ Conectado a PostgreSQL
+✅ Conectado a PostgreSQL
+✅ Conectado a PostgreSQL
+✅ Conectado a PostgreSQL
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+POST /api/auth/verificar
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+POST /api/auth/login
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+POST /api/auth/login
+✅ Conectado a PostgreSQL
+GET /api/operarios/perfil
+GET /api/operarios/reclamos
+GET /api/operarios/dashboard
+✅ Conectado a PostgreSQL
+✅ Conectado a PostgreSQL
+Error al obtener reclamos de operario: error: column r.operario_asignado_id does not exist
+    at /home/damian/projects/PPIV/backend/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Reclamo.obtenerPorOperario (file:///home/damian/projects/PPIV/backend/models/Reclamo.js:210:23)
+    at async obtenerReclamos (file:///home/damian/projects/PPIV/backend/controllers/OperarioController.js:72:25) {
+  length: 121,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '643',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3665',
+  routine: 'errorMissingColumn'
+}
+Error al obtener dashboard de operario: error: column "operario_asignado_id" does not exist
+    at /home/damian/projects/PPIV/backend/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Reclamo.obtenerResumenPorOperario (file:///home/damian/projects/PPIV/backend/models/Reclamo.js:224:23)
+    at async obtenerDashboard (file:///home/damian/projects/PPIV/backend/controllers/OperarioController.js:39:31) {
+  length: 121,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '318',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3665',
+  routine: 'errorMissingColumn'
+}
+GET /api/operarios/reclamos
+Error al obtener reclamos de operario: error: column r.operario_asignado_id does not exist
+    at /home/damian/projects/PPIV/backend/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Reclamo.obtenerPorOperario (file:///home/damian/projects/PPIV/backend/models/Reclamo.js:210:23)
+    at async obtenerReclamos (file:///home/damian/projects/PPIV/backend/controllers/OperarioController.js:72:25) {
+  length: 121,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '643',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3665',
+  routine: 'errorMissingColumn'
+}
+POST /api/auth/login
+✅ Conectado a PostgreSQL
+GET /api/operarios/perfil
+GET /api/operarios/reclamos
+GET /api/operarios/dashboard
+✅ Conectado a PostgreSQL
+✅ Conectado a PostgreSQL
+Error al obtener reclamos de operario: error: column r.operario_asignado_id does not exist
+    at /home/damian/projects/PPIV/backend/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Reclamo.obtenerPorOperario (file:///home/damian/projects/PPIV/backend/models/Reclamo.js:210:23)
+    at async obtenerReclamos (file:///home/damian/projects/PPIV/backend/controllers/OperarioController.js:72:25) {
+  length: 121,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '643',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3665',
+  routine: 'errorMissingColumn'
+}
+Error al obtener dashboard de operario: error: column "operario_asignado_id" does not exist
+    at /home/damian/projects/PPIV/backend/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Reclamo.obtenerResumenPorOperario (file:///home/damian/projects/PPIV/backend/models/Reclamo.js:224:23)
+    at async obtenerDashboard (file:///home/damian/projects/PPIV/backend/controllers/OperarioController.js:39:31) {
+  length: 121,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '318',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3665',
+  routine: 'errorMissingColumn'
+}
+GET /api/operarios/reclamos
+Error al obtener reclamos de operario: error: column r.operario_asignado_id does not exist
+    at /home/damian/projects/PPIV/backend/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Reclamo.obtenerPorOperario (file:///home/damian/projects/PPIV/backend/models/Reclamo.js:210:23)
+    at async obtenerReclamos (file:///home/damian/projects/PPIV/backend/controllers/OperarioController.js:72:25) {
+  length: 121,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '643',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3665',
+  routine: 'errorMissingColumn'
+}
+GET /api/operarios/reclamos
+✅ Conectado a PostgreSQL
+Error al obtener reclamos de operario: error: column r.operario_asignado_id does not exist
+    at /home/damian/projects/PPIV/backend/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Reclamo.obtenerPorOperario (file:///home/damian/projects/PPIV/backend/models/Reclamo.js:210:23)
+    at async obtenerReclamos (file:///home/damian/projects/PPIV/backend/controllers/OperarioController.js:72:25) {
+  length: 121,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '643',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3665',
+  routine: 'errorMissingColumn'
+}
+GET /api/operarios/reclamos
+✅ Conectado a PostgreSQL
+Error al obtener reclamos de operario: error: column r.operario_asignado_id does not exist
+    at /home/damian/projects/PPIV/backend/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Reclamo.obtenerPorOperario (file:///home/damian/projects/PPIV/backend/models/Reclamo.js:210:23)
+    at async obtenerReclamos (file:///home/damian/projects/PPIV/backend/controllers/OperarioController.js:72:25) {
+  length: 121,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '643',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3665',
+  routine: 'errorMissingColumn'
+}
+POST /api/auth/login
+✅ Conectado a PostgreSQL
+GET /api/operarios/perfil
+GET /api/operarios/reclamos
+GET /api/operarios/dashboard
+✅ Conectado a PostgreSQL
+✅ Conectado a PostgreSQL
+Error al obtener reclamos de operario: error: column r.operario_asignado_id does not exist
+    at /home/damian/projects/PPIV/backend/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Reclamo.obtenerPorOperario (file:///home/damian/projects/PPIV/backend/models/Reclamo.js:210:23)
+    at async obtenerReclamos (file:///home/damian/projects/PPIV/backend/controllers/OperarioController.js:72:25) {
+  length: 121,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '643',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3665',
+  routine: 'errorMissingColumn'
+}
+Error al obtener dashboard de operario: error: column "operario_asignado_id" does not exist
+    at /home/damian/projects/PPIV/backend/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Reclamo.obtenerResumenPorOperario (file:///home/damian/projects/PPIV/backend/models/Reclamo.js:224:23)
+    at async obtenerDashboard (file:///home/damian/projects/PPIV/backend/controllers/OperarioController.js:39:31) {
+  length: 121,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '318',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3665',
+  routine: 'errorMissingColumn'
+}
+POST /api/auth/verificar
+GET /api/operarios/perfil
+GET /api/operarios/dashboard
+GET /api/operarios/reclamos
+✅ Conectado a PostgreSQL
+✅ Conectado a PostgreSQL
+Error al obtener reclamos de operario: error: column r.operario_asignado_id does not exist
+    at /home/damian/projects/PPIV/backend/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Reclamo.obtenerPorOperario (file:///home/damian/projects/PPIV/backend/models/Reclamo.js:210:23)
+    at async obtenerReclamos (file:///home/damian/projects/PPIV/backend/controllers/OperarioController.js:72:25) {
+  length: 121,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '643',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3665',
+  routine: 'errorMissingColumn'
+}
+Error al obtener dashboard de operario: error: column "operario_asignado_id" does not exist
+    at /home/damian/projects/PPIV/backend/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Reclamo.obtenerResumenPorOperario (file:///home/damian/projects/PPIV/backend/models/Reclamo.js:224:23)
+    at async obtenerDashboard (file:///home/damian/projects/PPIV/backend/controllers/OperarioController.js:39:31) {
+  length: 121,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '318',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3665',
+  routine: 'errorMissingColumn'
+}
+POST /api/auth/verificar
+GET /api/operarios/reclamos
+GET /api/operarios/dashboard
+GET /api/operarios/perfil
+Error al obtener reclamos de operario: error: column r.operario_asignado_id does not exist
+    at /home/damian/projects/PPIV/backend/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Reclamo.obtenerPorOperario (file:///home/damian/projects/PPIV/backend/models/Reclamo.js:210:23)
+    at async obtenerReclamos (file:///home/damian/projects/PPIV/backend/controllers/OperarioController.js:72:25) {
+  length: 121,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '643',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3665',
+  routine: 'errorMissingColumn'
+}
+✅ Conectado a PostgreSQL
+✅ Conectado a PostgreSQL
+Error al obtener dashboard de operario: error: column "operario_asignado_id" does not exist
+    at /home/damian/projects/PPIV/backend/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Reclamo.obtenerResumenPorOperario (file:///home/damian/projects/PPIV/backend/models/Reclamo.js:224:23)
+    at async obtenerDashboard (file:///home/damian/projects/PPIV/backend/controllers/OperarioController.js:39:31) {
+  length: 121,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '318',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3665',
+  routine: 'errorMissingColumn'
+}
+GET /api/operarios/reclamos
+Error al obtener reclamos de operario: error: column r.operario_asignado_id does not exist
+    at /home/damian/projects/PPIV/backend/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Reclamo.obtenerPorOperario (file:///home/damian/projects/PPIV/backend/models/Reclamo.js:210:23)
+    at async obtenerReclamos (file:///home/damian/projects/PPIV/backend/controllers/OperarioController.js:72:25) {
+  length: 121,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '643',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3665',
+  routine: 'errorMissingColumn'
+}
+GET /api/operarios/reclamos
+✅ Conectado a PostgreSQL
+Error al obtener reclamos de operario: error: column r.operario_asignado_id does not exist
+    at /home/damian/projects/PPIV/backend/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Reclamo.obtenerPorOperario (file:///home/damian/projects/PPIV/backend/models/Reclamo.js:210:23)
+    at async obtenerReclamos (file:///home/damian/projects/PPIV/backend/controllers/OperarioController.js:72:25) {
+  length: 121,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '643',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3665',
+  routine: 'errorMissingColumn'
+}
+POST /api/auth/login
+✅ Conectado a PostgreSQL
+GET /api/operarios/perfil
+GET /api/operarios/dashboard
+GET /api/operarios/reclamos
+✅ Conectado a PostgreSQL
+✅ Conectado a PostgreSQL
+Error al obtener reclamos de operario: error: column r.operario_asignado_id does not exist
+    at /home/damian/projects/PPIV/backend/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Reclamo.obtenerPorOperario (file:///home/damian/projects/PPIV/backend/models/Reclamo.js:210:23)
+    at async obtenerReclamos (file:///home/damian/projects/PPIV/backend/controllers/OperarioController.js:72:25) {
+  length: 121,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '643',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3665',
+  routine: 'errorMissingColumn'
+}
+Error al obtener dashboard de operario: error: column "operario_asignado_id" does not exist
+    at /home/damian/projects/PPIV/backend/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Reclamo.obtenerResumenPorOperario (file:///home/damian/projects/PPIV/backend/models/Reclamo.js:224:23)
+    at async obtenerDashboard (file:///home/damian/projects/PPIV/backend/controllers/OperarioController.js:39:31) {
+  length: 121,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '318',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3665',
+  routine: 'errorMissingColumn'
+}
+POST /api/auth/login
+GET /api/operarios/perfil
+GET /api/operarios/reclamos
+GET /api/operarios/dashboard
+✅ Conectado a PostgreSQL
+✅ Conectado a PostgreSQL
+Error al obtener reclamos de operario: error: column r.operario_asignado_id does not exist
+    at /home/damian/projects/PPIV/backend/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Reclamo.obtenerPorOperario (file:///home/damian/projects/PPIV/backend/models/Reclamo.js:210:23)
+    at async obtenerReclamos (file:///home/damian/projects/PPIV/backend/controllers/OperarioController.js:72:25) {
+  length: 121,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '643',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3665',
+  routine: 'errorMissingColumn'
+}
+Error al obtener dashboard de operario: error: column "operario_asignado_id" does not exist
+    at /home/damian/projects/PPIV/backend/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Reclamo.obtenerResumenPorOperario (file:///home/damian/projects/PPIV/backend/models/Reclamo.js:224:23)
+    at async obtenerDashboard (file:///home/damian/projects/PPIV/backend/controllers/OperarioController.js:39:31) {
+  length: 121,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '318',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3665',
+  routine: 'errorMissingColumn'
+}
+POST /api/auth/login
+✅ Conectado a PostgreSQL
+GET /api/operarios/dashboard
+GET /api/operarios/reclamos
+GET /api/operarios/perfil
+Error al obtener dashboard de operario: error: column "operario_asignado_id" does not exist
+    at /home/damian/projects/PPIV/backend/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Reclamo.obtenerResumenPorOperario (file:///home/damian/projects/PPIV/backend/models/Reclamo.js:224:23)
+    at async obtenerDashboard (file:///home/damian/projects/PPIV/backend/controllers/OperarioController.js:39:31) {
+  length: 121,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '318',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3665',
+  routine: 'errorMissingColumn'
+}
+✅ Conectado a PostgreSQL
+✅ Conectado a PostgreSQL
+Error al obtener reclamos de operario: error: column r.operario_asignado_id does not exist
+    at /home/damian/projects/PPIV/backend/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Reclamo.obtenerPorOperario (file:///home/damian/projects/PPIV/backend/models/Reclamo.js:210:23)
+    at async obtenerReclamos (file:///home/damian/projects/PPIV/backend/controllers/OperarioController.js:72:25) {
+  length: 121,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '643',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3665',
+  routine: 'errorMissingColumn'
+}
+GET /api/operarios/reclamos
+Error al obtener reclamos de operario: error: column r.operario_asignado_id does not exist
+    at /home/damian/projects/PPIV/backend/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Reclamo.obtenerPorOperario (file:///home/damian/projects/PPIV/backend/models/Reclamo.js:210:23)
+    at async obtenerReclamos (file:///home/damian/projects/PPIV/backend/controllers/OperarioController.js:72:25) {
+  length: 121,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '643',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3665',
+  routine: 'errorMissingColumn'
+}
+GET /api/operarios/reclamos
+✅ Conectado a PostgreSQL
+Error al obtener reclamos de operario: error: column r.operario_asignado_id does not exist
+    at /home/damian/projects/PPIV/backend/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Reclamo.obtenerPorOperario (file:///home/damian/projects/PPIV/backend/models/Reclamo.js:210:23)
+    at async obtenerReclamos (file:///home/damian/projects/PPIV/backend/controllers/OperarioController.js:72:25) {
+  length: 121,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '643',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3665',
+  routine: 'errorMissingColumn'
+}
+POST /api/auth/verificar
+✅ Conectado a PostgreSQL
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+✅ Conectado a PostgreSQL
+✅ Conectado a PostgreSQL
+POST /api/auth/login
+GET /api/operarios/perfil
+GET /api/operarios/dashboard
+GET /api/operarios/reclamos
+Error al obtener dashboard de operario: error: column "operario_asignado_id" does not exist
+    at /home/damian/projects/PPIV/backend/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Reclamo.obtenerResumenPorOperario (file:///home/damian/projects/PPIV/backend/models/Reclamo.js:224:23)
+    at async obtenerDashboard (file:///home/damian/projects/PPIV/backend/controllers/OperarioController.js:39:31) {
+  length: 121,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '318',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3665',
+  routine: 'errorMissingColumn'
+}
+Error al obtener reclamos de operario: error: column r.operario_asignado_id does not exist
+    at /home/damian/projects/PPIV/backend/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Reclamo.obtenerPorOperario (file:///home/damian/projects/PPIV/backend/models/Reclamo.js:210:23)
+    at async obtenerReclamos (file:///home/damian/projects/PPIV/backend/controllers/OperarioController.js:72:25) {
+  length: 121,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '643',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3665',
+  routine: 'errorMissingColumn'
+}
+POST /api/auth/verificar
+✅ Conectado a PostgreSQL
+GET /api/operarios/perfil
+GET /api/operarios/dashboard
+GET /api/operarios/reclamos
+✅ Conectado a PostgreSQL
+✅ Conectado a PostgreSQL
+Error al obtener reclamos de operario: error: column r.operario_asignado_id does not exist
+    at /home/damian/projects/PPIV/backend/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Reclamo.obtenerPorOperario (file:///home/damian/projects/PPIV/backend/models/Reclamo.js:210:23)
+    at async obtenerReclamos (file:///home/damian/projects/PPIV/backend/controllers/OperarioController.js:72:25) {
+  length: 121,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '643',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3665',
+  routine: 'errorMissingColumn'
+}
+Error al obtener dashboard de operario: error: column "operario_asignado_id" does not exist
+    at /home/damian/projects/PPIV/backend/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Reclamo.obtenerResumenPorOperario (file:///home/damian/projects/PPIV/backend/models/Reclamo.js:224:23)
+    at async obtenerDashboard (file:///home/damian/projects/PPIV/backend/controllers/OperarioController.js:39:31) {
+  length: 121,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '318',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3665',
+  routine: 'errorMissingColumn'
+}
+GET /api/operarios/reclamos
+Error al obtener reclamos de operario: error: column r.operario_asignado_id does not exist
+    at /home/damian/projects/PPIV/backend/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Reclamo.obtenerPorOperario (file:///home/damian/projects/PPIV/backend/models/Reclamo.js:210:23)
+    at async obtenerReclamos (file:///home/damian/projects/PPIV/backend/controllers/OperarioController.js:72:25) {
+  length: 121,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '643',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3665',
+  routine: 'errorMissingColumn'
+}
+POST /api/auth/verificar
+✅ Conectado a PostgreSQL
+GET /api/operarios/perfil
+GET /api/operarios/dashboard
+GET /api/operarios/reclamos
+Error al obtener dashboard de operario: error: column "operario_asignado_id" does not exist
+    at /home/damian/projects/PPIV/backend/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Reclamo.obtenerResumenPorOperario (file:///home/damian/projects/PPIV/backend/models/Reclamo.js:224:23)
+    at async obtenerDashboard (file:///home/damian/projects/PPIV/backend/controllers/OperarioController.js:39:31) {
+  length: 121,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '318',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3665',
+  routine: 'errorMissingColumn'
+}
+✅ Conectado a PostgreSQL
+Error al obtener reclamos de operario: error: column r.operario_asignado_id does not exist
+    at /home/damian/projects/PPIV/backend/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Reclamo.obtenerPorOperario (file:///home/damian/projects/PPIV/backend/models/Reclamo.js:210:23)
+    at async obtenerReclamos (file:///home/damian/projects/PPIV/backend/controllers/OperarioController.js:72:25) {
+  length: 121,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '643',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3665',
+  routine: 'errorMissingColumn'
+}
+POST /api/auth/login
+✅ Conectado a PostgreSQL
+GET /api/operarios/perfil
+GET /api/operarios/dashboard
+GET /api/operarios/reclamos
+✅ Conectado a PostgreSQL
+✅ Conectado a PostgreSQL
+Error al obtener reclamos de operario: error: column r.operario_asignado_id does not exist
+    at /home/damian/projects/PPIV/backend/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Reclamo.obtenerPorOperario (file:///home/damian/projects/PPIV/backend/models/Reclamo.js:210:23)
+    at async obtenerReclamos (file:///home/damian/projects/PPIV/backend/controllers/OperarioController.js:72:25) {
+  length: 121,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '643',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3665',
+  routine: 'errorMissingColumn'
+}
+Error al obtener dashboard de operario: error: column "operario_asignado_id" does not exist
+    at /home/damian/projects/PPIV/backend/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Reclamo.obtenerResumenPorOperario (file:///home/damian/projects/PPIV/backend/models/Reclamo.js:224:23)
+    at async obtenerDashboard (file:///home/damian/projects/PPIV/backend/controllers/OperarioController.js:39:31) {
+  length: 121,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '318',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3665',
+  routine: 'errorMissingColumn'
+}
+GET /api/operarios/reclamos
+✅ Conectado a PostgreSQL
+Error al obtener reclamos de operario: error: column r.operario_asignado_id does not exist
+    at /home/damian/projects/PPIV/backend/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Reclamo.obtenerPorOperario (file:///home/damian/projects/PPIV/backend/models/Reclamo.js:210:23)
+    at async obtenerReclamos (file:///home/damian/projects/PPIV/backend/controllers/OperarioController.js:72:25) {
+  length: 121,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '643',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3665',
+  routine: 'errorMissingColumn'
+}
+GET /api/operarios/reclamos
+✅ Conectado a PostgreSQL
+Error al obtener reclamos de operario: error: column r.operario_asignado_id does not exist
+    at /home/damian/projects/PPIV/backend/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Reclamo.obtenerPorOperario (file:///home/damian/projects/PPIV/backend/models/Reclamo.js:210:23)
+    at async obtenerReclamos (file:///home/damian/projects/PPIV/backend/controllers/OperarioController.js:72:25) {
+  length: 121,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '643',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3665',
+  routine: 'errorMissingColumn'
+}
+POST /api/auth/login
+✅ Conectado a PostgreSQL
+POST /api/auth/login
+POST /api/auth/login
+GET /api/operario/dashboard
+GET /api/operario/reclamos
