@@ -58,47 +58,131 @@ El proyecto está basado en prototipos de Figma que incluyen:
 
 ## Instalación y Ejecución
 
-### Inicio Rápido
+### Requisitos Previos
 
-#### Usando Scripts Automatizados (Recomendado)
+- **Node.js** 18+ y npm
+- **Docker** (para PostgreSQL)
+  - Si no tienes Docker: https://docs.docker.com/engine/install/
 
+### Primera Vez - Setup Completo
+
+#### 1. Clonar el Repositorio
 ```bash
-# Iniciar todo el sistema (PostgreSQL + Backend + Frontend)
-./scripts/start.sh
-
-# Detener todo el sistema
-./scripts/stop.sh
+git clone https://github.com/damianclausi/PPIV.git
+cd PPIV
+git checkout integracion-base-datos
 ```
 
-El script de inicio levanta automáticamente:
-- PostgreSQL en Docker (puerto 5432)
-- Backend API (puerto 3001)
-- Frontend React (puerto 3000)
-
-#### Instalación Manual
-
+#### 2. Instalar Dependencias
 ```bash
-# Instalar dependencias del frontend
+# Dependencias del frontend
 npm install
 
-# Instalar dependencias del backend
-cd backend && npm install
-
-# Levantar PostgreSQL
-docker-compose up -d
-
-# Iniciar backend (desde ./backend)
-npm run dev
-
-# Iniciar frontend (desde raíz)
-npm run dev
+# Dependencias del backend
+cd backend
+npm install
+cd ..
 ```
+
+#### 3. Configurar Variables de Entorno
+
+**Backend** - Crear `backend/.env`:
+```bash
+PORT=3001
+DATABASE_URL=postgresql://coop_user:cooperativa2024@localhost:5432/cooperativa_ugarte_db
+JWT_SECRET=tu-secreto-jwt-super-seguro-cambiame
+NODE_ENV=development
+```
+
+**Frontend** - Crear `.env`:
+```bash
+VITE_API_URL=http://localhost:3001
+VITE_APP_NAME=Sistema de Gestión - Cooperativa Eléctrica
+```
+
+#### 4. Iniciar Base de Datos con Docker
+
+**Opción A: Usando el script automatizado (Recomendado)**
+```bash
+./update-docker.sh
+```
+
+Este script:
+- Descarga la imagen `damian2k/cooperativa-ugarte-db:latest` desde Docker Hub
+- Crea y ejecuta el contenedor PostgreSQL con datos precargados
+- Verifica la conectividad automáticamente
+- Muestra la cantidad de registros cargados (30 reclamos, 6 clientes, 5 empleados, etc.)
+
+**Opción B: Manual**
+```bash
+docker run -d \
+  --name cooperativa-db \
+  -p 5432:5432 \
+  -e POSTGRES_DB=cooperativa_ugarte_db \
+  -e POSTGRES_USER=coop_user \
+  -e POSTGRES_PASSWORD=cooperativa2024 \
+  damian2k/cooperativa-ugarte-db:latest
+```
+
+#### 5. Iniciar el Sistema
+```bash
+./start.sh
+```
+
+Este script inicia automáticamente:
+- Backend API (puerto 3001)
+- Frontend React (puerto 3002)
+
+#### 6. Verificar que Todo Funcione
+```bash
+./status.sh
+```
+
+Deberías ver:
+```
+Backend: CORRIENDO puerto 3001
+Frontend: CORRIENDO puerto 3002
+PostgreSQL: CORRIENDO contenedor cooperativa-db
+Sistema: completamente operativo
+```
+
+### Inicio Rápido (Sistema Ya Configurado)
+
+```bash
+# Iniciar todo
+./start.sh
+
+# Ver estado
+./status.sh
+
+# Ver logs
+./logs.sh all
+
+# Detener todo
+./stop.sh
+
+# Reiniciar (útil después de cambios)
+./restart.sh
+```
+
+### Scripts Disponibles
+
+| Script | Descripción |
+|--------|-------------|
+| `./start.sh` | Inicia backend y frontend |
+| `./stop.sh` | Detiene todos los servicios |
+| `./restart.sh` | Reinicia el sistema |
+| `./status.sh` | Muestra estado del sistema |
+| `./logs.sh` | Ver logs (backend\|frontend\|all\|errors) |
+| `./update-docker.sh` | Actualiza imagen Docker desde Docker Hub |
+
+Ver **README_SCRIPTS.md** para documentación completa de scripts.
 
 ### Acceso al Sistema
 
-Una vez iniciado el sistema:
+Una vez iniciado:
 
-- **Frontend**: http://localhost:3000
+- **Frontend**: http://localhost:3002
 - **Backend API**: http://localhost:3001
 - **PostgreSQL**: localhost:5432
   - Usuario: `coop_user`
@@ -198,11 +282,23 @@ El sistema utiliza **PostgreSQL** con las siguientes tablas principales:
 
 ### Datos Pre-cargados
 
-- 6 socios (clientes)
-- 5 empleados (3 operarios + 2 admins)
-- 13 reclamos de ejemplo
-- 8 tipos de reclamo
-- 4 estados de reclamo
+La imagen Docker incluye:
+- **6 clientes** (socios con cuentas activas)
+- **5 empleados** (3 operarios + 2 administradores)
+- **30 reclamos** de ejemplo asignados a operarios
+- **8 tipos de reclamo** (Falta de Suministro, Fluctuaciones de Tensión, Daños en Red, Medidor Defectuoso, Facturación, Conexión Nueva, Reconexión, Calidad del Servicio)
+- **11 usuarios** configurados (6 clientes + 3 operarios + 2 admins)
+- **23 órdenes de trabajo** asignadas al operario Pedro García
+
+### Actualizar Base de Datos
+
+Si se actualiza la imagen en Docker Hub con nuevos datos:
+
+```bash
+./stop.sh
+./update-docker.sh
+./start.sh
+```
 
 ## Ramas del Proyecto
 

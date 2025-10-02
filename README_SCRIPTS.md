@@ -4,7 +4,75 @@ Sistema completo de gestión para cooperativa eléctrica con módulos de adminis
 
 ---
 
-## Inicio Rápido
+## Configuración Inicial (Primera vez)
+
+Si acabas de clonar el proyecto, sigue estos pasos en orden:
+
+### 1. Instalar Dependencias
+```bash
+# Instalar dependencias del frontend
+npm install
+
+# Instalar dependencias del backend
+cd backend
+npm install
+cd ..
+```
+
+### 2. Configurar Variables de Entorno
+
+**Backend** - Crear archivo `backend/.env`:
+```bash
+PORT=3001
+DATABASE_URL=postgresql://coop_user:cooperativa2024@localhost:5432/cooperativa_ugarte_db
+JWT_SECRET=tu-secreto-jwt-super-seguro-cambiame
+NODE_ENV=development
+```
+
+**Frontend** - Crear archivo `.env`:
+```bash
+VITE_API_URL=http://localhost:3001
+VITE_APP_NAME=Sistema de Gestión - Cooperativa Eléctrica
+```
+
+### 3. Iniciar Base de Datos Docker
+```bash
+# Descargar e iniciar PostgreSQL con datos precargados
+./update-docker.sh
+```
+
+Este script automáticamente:
+- Descarga la imagen Docker con la base de datos
+- Crea el contenedor PostgreSQL
+- Verifica que esté funcionando correctamente
+- Muestra la cantidad de registros cargados
+
+### 4. Iniciar el Sistema
+```bash
+./start.sh
+```
+
+### 5. Verificar que Todo Funcione
+```bash
+./status.sh
+```
+
+Deberías ver:
+- Backend: CORRIENDO en puerto 3001
+- Frontend: CORRIENDO en puerto 3002
+- PostgreSQL: CORRIENDO
+
+### 6. Acceder al Sistema
+Abre tu navegador en: **http://localhost:3002**
+
+**Usuarios de prueba:**
+- **Admin:** admin@cooperativa-ugarte.com.ar / admin123
+- **Cliente:** juan.perez@email.com / cliente123
+- **Operario:** pedro.electricista@cooperativa-ugarte.com.ar / operario123
+
+---
+
+## Inicio Rápido (Sistema ya configurado)
 
 ### Iniciar el Sistema
 ```bash
@@ -27,12 +95,12 @@ Sistema completo de gestión para cooperativa eléctrica con módulos de adminis
 
 | Script | Descripción | Uso |
 |--------|-------------|-----|
+| `update-docker.sh` | Descarga imagen Docker desde Docker Hub | `./update-docker.sh` |
 | `start.sh` | Inicia backend y frontend | `./start.sh` |
 | `stop.sh` | Detiene todos los servicios | `./stop.sh` |
 | `restart.sh` | Reinicia el sistema completo | `./restart.sh` |
 | `status.sh` | Muestra estado del sistema | `./status.sh` |
 | `logs.sh` | Visualiza logs en tiempo real | `./logs.sh [backend\|frontend\|all\|errors]` |
-| `update-docker.sh` | Actualiza imagen Docker desde Docker Hub | `./update-docker.sh` |
 
 ---
 
@@ -215,16 +283,59 @@ DB_PORT=5432
 
 ---
 
+## Resumen: Orden de Uso de Scripts
+
+### Primera Vez (Setup Completo)
+```bash
+1. npm install && cd backend && npm install && cd ..
+2. # Configurar archivos .env (ver sección arriba)
+3. ./update-docker.sh    # Descargar imagen desde Docker Hub e iniciar base de datos
+4. ./start.sh            # Iniciar backend y frontend
+5. ./status.sh           # Verificar que todo esté corriendo
+```
+
+### Uso Diario
+```bash
+# Al comenzar
+./start.sh
+
+# Durante desarrollo (si cambias código)
+./restart.sh
+
+# Ver si hay problemas
+./logs.sh all
+
+# Al terminar
+./stop.sh
+```
+
+### Cuando se actualiza Docker Hub
+```bash
+./stop.sh
+./update-docker.sh
+./start.sh
+```
+
+### Cuando actualizas desde GitHub
+```bash
+./stop.sh
+git pull origin integracion-base-datos
+npm install && cd backend && npm install && cd ..
+./start.sh
+```
+
+---
+
 ## Estructura del Proyecto
 
 ```
 PPIV/
+├── update-docker.sh      # Script para descargar imagen Docker desde Docker Hub
 ├── start.sh              # Script para iniciar sistema
 ├── stop.sh               # Script para detener sistema
 ├── restart.sh            # Script para reiniciar sistema
 ├── status.sh             # Script para ver estado
 ├── logs.sh               # Script para ver logs
-├── update-docker.sh      # Script para actualizar imagen Docker
 │
 ├── logs/                 # Logs del sistema
 │   ├── backend.log       # Log del backend
