@@ -20,7 +20,7 @@ class OperarioService {
   }
 
   /**
-   * Obtener reclamos asignados
+   * Obtener reclamos asignados al operario
    */
   async obtenerReclamos(filtros = {}) {
     const params = new URLSearchParams();

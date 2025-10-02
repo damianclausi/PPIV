@@ -1,6 +1,6 @@
 /**
  * Dashboard para Operarios
- * Muestra estadísticas y reclamos asignados
+ * Vista Kanban con drag & drop para gestionar reclamos
  */
 
 import React, { useState } from 'react';
@@ -10,15 +10,25 @@ import { useAuth } from '../contexts/AuthContext.jsx';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
-import { Clock, Zap, CheckCircle, Wrench, MapPin, AlertTriangle } from 'lucide-react';
+import { Clock, MapPin, AlertTriangle, CheckCircle, LayoutGrid, List } from 'lucide-react';
 
 export default function DashboardOperario() {
   const navigate = useNavigate();
   const { logout } = useAuth();
   const { perfil } = usePerfil();
   const { dashboard } = useDashboard();
-  const [filtroEstado, setFiltroEstado] = useState('');
-  const { reclamos, cargando: cargandoReclamos, recargar: recargarReclamos } = useReclamos({ estado: filtroEstado, limite: 10 });
+  const { reclamos: reclamosOriginales, cargando: cargandoReclamos, recargar: recargarReclamos } = useReclamos({ limite: 50 });
+  
+  const [vistaKanban, setVistaKanban] = useState(true);
+  const [reclamos, setReclamos] = useState([]);
+  const [draggedItem, setDraggedItem] = useState(null);
+
+  // Actualizar reclamos cuando cambian los originales
+  React.useEffect(() => {
+    if (reclamosOriginales) {
+      setReclamos(reclamosOriginales);
+    }
+  }, [reclamosOriginales]);
 
   const getPriorityBadge = (prioridad) => {
     const badges = {
@@ -32,172 +42,311 @@ export default function DashboardOperario() {
   const getStatusBadge = (estado) => {
     const badges = {
       pendiente: <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">Pendiente</Badge>,
-      en_proceso: <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">En Proceso</Badge>,
+      en_curso: <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">En Curso</Badge>,
       resuelto: <Badge className="bg-green-100 text-green-800 hover:bg-green-100">Resuelto</Badge>
     };
     return badges[estado] || badges.pendiente;
   };
 
+  // Funciones de Drag & Drop
+  const handleDragStart = (e, reclamo) => {
+    setDraggedItem(reclamo);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  };
+
+  const handleDrop = (e, nuevoEstado) => {
+    e.preventDefault();
+    if (!draggedItem) return;
+
+    // Actualizar el estado del reclamo
+    const reclamosActualizados = reclamos.map(r => 
+      r.reclamo_id === draggedItem.reclamo_id 
+        ? { ...r, estado: nuevoEstado.toUpperCase() }
+        : r
+    );
+
+    setReclamos(reclamosActualizados);
+    
+    // TODO: Llamar a la API para actualizar el estado en el backend
+    console.log(`Reclamo ${draggedItem.reclamo_id} cambiado a ${nuevoEstado}`);
+    
+    setDraggedItem(null);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedItem(null);
+  };
+
+  // Filtrar reclamos por estado
+  const reclamosPendientes = reclamos.filter(r => r.estado === 'PENDIENTE' || r.estado === 'pendiente');
+  const reclamosEnCurso = reclamos.filter(r => r.estado === 'EN_CURSO' || r.estado === 'en_curso');
+  const reclamosResueltos = reclamos.filter(r => r.estado === 'RESUELTO' || r.estado === 'resuelto');
+
+  // Renderizar tarjeta de reclamo
+  const ReclamoCard = ({ reclamo }) => (
+    <div
+      draggable
+      onDragStart={(e) => handleDragStart(e, reclamo)}
+      onDragEnd={handleDragEnd}
+      onClick={() => navigate(`/dashboard/operario/reclamos/${reclamo.reclamo_id}`)}
+      className="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-all cursor-move border-2 border-transparent hover:border-blue-200"
+    >
+      <div className="space-y-3">
+        <div className="flex items-start justify-between gap-2">
+          <h4 className="font-semibold text-sm line-clamp-2">
+            {reclamo.tipo_reclamo || 'Reclamo Técnico'}
+          </h4>
+          {getPriorityBadge(reclamo.prioridad)}
+        </div>
+        
+        <div className="flex items-center gap-2 text-xs text-gray-600">
+          <MapPin className="h-3 w-3" />
+          <span className="line-clamp-1">
+            {reclamo.zona || reclamo.direccion || 'Sin dirección'}
+          </span>
+        </div>
+
+        <p className="text-xs text-gray-700">
+          {reclamo.socio_nombre} {reclamo.socio_apellido}
+        </p>
+
+        <p className="text-xs text-gray-500 line-clamp-2">
+          {reclamo.descripcion || 'Sin descripción'}
+        </p>
+
+        <div className="flex items-center gap-2 text-xs text-gray-500">
+          <Clock className="h-3 w-3" />
+          {new Date(reclamo.fecha_alta).toLocaleDateString()}
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-4xl mx-auto space-y-8">
+      <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Reclamos Asignados - Operario</h1>
+            <h1 className="text-3xl font-bold text-gray-900">Reclamos Asignados</h1>
             {perfil && (
               <p className="text-sm text-gray-600 mt-1">
                 {perfil.nombre} {perfil.apellido} - {perfil.rol_interno || perfil.cargo || 'Operario'}
               </p>
             )}
           </div>
-          <Button variant="outline" onClick={logout}>
-            Cerrar Sesión
-          </Button>
-        </div>
-
-        {/* Grid de Reclamos en Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Pendientes</p>
-                <p className="text-3xl font-bold text-yellow-600">
-                  {dashboard?.reclamos?.pendientes || 0}
-                </p>
-              </div>
-              <div className="bg-yellow-100 rounded-full p-3">
-                <svg className="w-8 h-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">En Proceso</p>
-                <p className="text-3xl font-bold text-blue-600">
-                  {dashboard?.reclamos?.en_proceso || 0}
-                </p>
-              </div>
-              <div className="bg-blue-100 rounded-full p-3">
-                <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Resueltos Hoy</p>
-                <p className="text-3xl font-bold text-green-600">
-                  {dashboard?.reclamos?.resueltos_hoy || 0}
-                </p>
-              </div>
-              <div className="bg-green-100 rounded-full p-3">
-                <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Total Asignados</p>
-                <p className="text-3xl font-bold text-gray-900">
-                  {dashboard?.reclamos?.total || 0}
-                </p>
-              </div>
-              <div className="bg-gray-100 rounded-full p-3">
-                <svg className="w-8 h-8 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                </svg>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Filtros */}
-        <div className="bg-white rounded-lg shadow p-4 mb-6">
-          <div className="flex gap-4 items-center">
-            <label className="text-sm font-medium text-gray-700">Filtrar por estado:</label>
-            <select
-              value={filtroEstado}
-              onChange={(e) => setFiltroEstado(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          <div className="flex gap-3">
+            <Button 
+              variant={vistaKanban ? "default" : "outline"}
+              size="sm"
+              onClick={() => setVistaKanban(true)}
             >
-              <option value="">Todos</option>
-              <option value="PENDIENTE">Pendientes</option>
-              <option value="EN_PROCESO">En Proceso</option>
-              <option value="RESUELTO">Resueltos</option>
-              <option value="CERRADO">Cerrados</option>
-            </select>
-            <button
-              onClick={recargarReclamos}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              <LayoutGrid className="h-4 w-4 mr-2" />
+              Kanban
+            </Button>
+            <Button 
+              variant={!vistaKanban ? "default" : "outline"}
+              size="sm"
+              onClick={() => setVistaKanban(false)}
             >
-              Recargar
-            </button>
+              <List className="h-4 w-4 mr-2" />
+              Lista
+            </Button>
+            <Button variant="outline" onClick={logout}>
+              Cerrar Sesión
+            </Button>
           </div>
         </div>
 
-        {/* Lista de Reclamos en Cards (estilo Figma) */}
+        {/* Estadísticas */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Card>
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600">Pendientes</p>
+                  <p className="text-3xl font-bold text-yellow-600">
+                    {reclamosPendientes.length}
+                  </p>
+                </div>
+                <div className="bg-yellow-100 rounded-full p-3">
+                  <Clock className="h-6 w-6 text-yellow-600" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600">En Curso</p>
+                  <p className="text-3xl font-bold text-blue-600">
+                    {reclamosEnCurso.length}
+                  </p>
+                </div>
+                <div className="bg-blue-100 rounded-full p-3">
+                  <AlertTriangle className="h-6 w-6 text-blue-600" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600">Resueltos</p>
+                  <p className="text-3xl font-bold text-green-600">
+                    {reclamosResueltos.length}
+                  </p>
+                </div>
+                <div className="bg-green-100 rounded-full p-3">
+                  <CheckCircle className="h-6 w-6 text-green-600" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Vista Kanban o Lista */}
         {cargandoReclamos ? (
           <div className="text-center py-12">
             <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
             <p className="mt-4 text-gray-600">Cargando reclamos...</p>
           </div>
-        ) : reclamos && reclamos.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {reclamos
-              .filter(r => r.estado !== 'CERRADO' && r.estado !== 'RESUELTO')
-              .map((reclamo) => (
-                <Card
-                  key={reclamo.reclamo_id}
-                  className="cursor-pointer hover:shadow-md transition-shadow"
-                  onClick={() => navigate(`/dashboard/operario/reclamos/${reclamo.reclamo_id}`)}
-                >
-                  <CardHeader className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <CardTitle className="text-base">
-                        {reclamo.tipo_reclamo || 'Reclamo Técnico'}
-                      </CardTitle>
-                      {getPriorityBadge(reclamo.prioridad)}
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <MapPin className="h-4 w-4" />
-                      {reclamo.zona || reclamo.direccion?.substring(0, 30) || 'Sin dirección'}
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <p className="text-sm text-gray-700">
-                      Cliente: {reclamo.socio_nombre} {reclamo.socio_apellido}
-                    </p>
-                    <p className="text-sm text-gray-600">
-                      {reclamo.descripcion?.substring(0, 100) || 'Sin descripción'}
-                      {reclamo.descripcion?.length > 100 && '...'}
-                    </p>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Clock className="h-4 w-4" />
-                        {new Date(reclamo.fecha_alta).toLocaleDateString()}
-                      </div>
-                      {getStatusBadge(reclamo.estado?.toLowerCase())}
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+        ) : vistaKanban ? (
+          /* Vista Kanban con Drag & Drop */
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Columna Pendientes */}
+            <div 
+              className="bg-yellow-50 rounded-lg p-4 min-h-[600px]"
+              onDragOver={handleDragOver}
+              onDrop={(e) => handleDrop(e, 'pendiente')}
+            >
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-semibold text-lg flex items-center gap-2">
+                  <Clock className="h-5 w-5 text-yellow-600" />
+                  Pendientes
+                  <Badge className="bg-yellow-100 text-yellow-800">
+                    {reclamosPendientes.length}
+                  </Badge>
+                </h3>
+              </div>
+              <div className="space-y-3">
+                {reclamosPendientes.length > 0 ? (
+                  reclamosPendientes.map(reclamo => (
+                    <ReclamoCard key={reclamo.reclamo_id} reclamo={reclamo} />
+                  ))
+                ) : (
+                  <p className="text-center text-gray-500 text-sm py-8">
+                    No hay reclamos pendientes
+                  </p>
+                )}
+              </div>
+            </div>
+
+            {/* Columna En Curso */}
+            <div 
+              className="bg-blue-50 rounded-lg p-4 min-h-[600px]"
+              onDragOver={handleDragOver}
+              onDrop={(e) => handleDrop(e, 'en_curso')}
+            >
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-semibold text-lg flex items-center gap-2">
+                  <AlertTriangle className="h-5 w-5 text-blue-600" />
+                  En Curso
+                  <Badge className="bg-blue-100 text-blue-800">
+                    {reclamosEnCurso.length}
+                  </Badge>
+                </h3>
+              </div>
+              <div className="space-y-3">
+                {reclamosEnCurso.length > 0 ? (
+                  reclamosEnCurso.map(reclamo => (
+                    <ReclamoCard key={reclamo.reclamo_id} reclamo={reclamo} />
+                  ))
+                ) : (
+                  <p className="text-center text-gray-500 text-sm py-8">
+                    No hay reclamos en curso
+                  </p>
+                )}
+              </div>
+            </div>
+
+            {/* Columna Resueltos */}
+            <div 
+              className="bg-green-50 rounded-lg p-4 min-h-[600px]"
+              onDragOver={handleDragOver}
+              onDrop={(e) => handleDrop(e, 'resuelto')}
+            >
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-semibold text-lg flex items-center gap-2">
+                  <CheckCircle className="h-5 w-5 text-green-600" />
+                  Resueltos
+                  <Badge className="bg-green-100 text-green-800">
+                    {reclamosResueltos.length}
+                  </Badge>
+                </h3>
+              </div>
+              <div className="space-y-3">
+                {reclamosResueltos.length > 0 ? (
+                  reclamosResueltos.map(reclamo => (
+                    <ReclamoCard key={reclamo.reclamo_id} reclamo={reclamo} />
+                  ))
+                ) : (
+                  <p className="text-center text-gray-500 text-sm py-8">
+                    No hay reclamos resueltos
+                  </p>
+                )}
+              </div>
+            </div>
           </div>
         ) : (
+          /* Vista Lista */
           <Card>
-            <CardContent className="p-12 text-center">
-              <p className="text-gray-500">No hay reclamos asignados</p>
+            <CardContent className="p-6">
+              <div className="space-y-3">
+                {reclamos.length > 0 ? (
+                  reclamos.map(reclamo => (
+                    <div 
+                      key={reclamo.reclamo_id}
+                      onClick={() => navigate(`/dashboard/operario/reclamos/${reclamo.reclamo_id}`)}
+                      className="p-4 border rounded-lg hover:shadow-md transition-all cursor-pointer"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-2">
+                            <h4 className="font-semibold">{reclamo.tipo_reclamo || 'Reclamo Técnico'}</h4>
+                            {getPriorityBadge(reclamo.prioridad)}
+                            {getStatusBadge(reclamo.estado?.toLowerCase())}
+                          </div>
+                          <p className="text-sm text-gray-600 mb-1">
+                            Cliente: {reclamo.socio_nombre} {reclamo.socio_apellido}
+                          </p>
+                          <div className="flex items-center gap-4 text-xs text-gray-500">
+                            <span className="flex items-center gap-1">
+                              <MapPin className="h-3 w-3" />
+                              {reclamo.zona || reclamo.direccion || 'Sin dirección'}
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <Clock className="h-3 w-3" />
+                              {new Date(reclamo.fecha_alta).toLocaleDateString()}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-center text-gray-500 py-8">No hay reclamos asignados</p>
+                )}
+              </div>
             </CardContent>
           </Card>
         )}

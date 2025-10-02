@@ -23,7 +23,7 @@ export default function ReclamoDetalle() {
     titulo: 'Corte de luz intermitente',
     descripcion: 'Se corta la luz cada 2 horas aproximadamente desde hace 3 días',
     tipo: 'Técnico',
-    estado: 'en_proceso',
+    estado: 'en_curso',
     prioridad: 'alta',
     fecha: '2024-12-01',
     zona: 'Zona Norte',
@@ -47,7 +47,7 @@ export default function ReclamoDetalle() {
   const getStatusBadge = (estado) => {
     const badges = {
       pendiente: <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">Pendiente</Badge>,
-      en_proceso: <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">En Proceso</Badge>,
+      en_curso: <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">En Curso</Badge>,
       resuelto: <Badge className="bg-green-100 text-green-800 hover:bg-green-100">Resuelto</Badge>
     };
     return badges[estado] || badges.pendiente;
@@ -60,10 +60,10 @@ export default function ReclamoDetalle() {
   };
 
   const handleCerrar = () => {
-    if (confirm('¿Está seguro que desea cerrar este reclamo?')) {
+    if (confirm('¿Está seguro que desea marcar este reclamo como resuelto?')) {
       // TODO: Integrar con API real
-      console.log('Cerrando reclamo:', id);
-      alert('Reclamo cerrado exitosamente');
+      console.log('Marcando reclamo como resuelto:', id);
+      alert('Reclamo marcado como resuelto exitosamente');
       navigate('/dashboard/operario');
     }
   };
@@ -165,7 +165,7 @@ export default function ReclamoDetalle() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="pendiente">Pendiente</SelectItem>
-                  <SelectItem value="en_proceso">En Proceso</SelectItem>
+                  <SelectItem value="en_curso">En Curso</SelectItem>
                   <SelectItem value="resuelto">Resuelto</SelectItem>
                 </SelectContent>
               </Select>
@@ -205,7 +205,7 @@ export default function ReclamoDetalle() {
             <div className="flex gap-4 pt-4">
               <Button className="flex-1" onClick={handleCerrar}>
                 <CheckCircle className="h-4 w-4 mr-2" />
-                Cerrar Reclamo
+                Marcar como Resuelto
               </Button>
               <Button variant="outline" onClick={handleGuardar}>
                 Guardar Cambios
