@@ -2,11 +2,12 @@
 > PPIV - El Quinto Elemento@0.1.0 dev
 > vite
 
-[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
-Port 3000 is in use, trying another one...
-Port 3001 is in use, trying another one...
 
-  VITE v6.3.5  ready in 152 ms
+  VITE v6.3.5  ready in 2496 ms
 
   ➜  Local:   http://localhost:3002/
   ➜  Network: use --host to expose
+3:39:13 AM [vite] .env changed, restarting server...
+3:39:13 AM [vite] vite.config.ts changed, restarting server...
+3:39:13 AM [vite] .env changed, restarting server...
+3:39:13 AM [vite] server restarted.

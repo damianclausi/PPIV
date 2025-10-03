@@ -6,23 +6,54 @@
 📊 Verificación de salud: http://localhost:3001/api/salud
 GET /api/salud
 ✅ Conectado a PostgreSQL
-POST /api/auth/verificar
+GET /
+GET /favicon.ico
+POST /api/auth/login
+GET /api/operarios/reclamos
+GET /api/operarios/perfil
+GET /api/operarios/dashboard
+✅ Conectado a PostgreSQL
+✅ Conectado a PostgreSQL
+POST /api/auth/login
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+✅ Conectado a PostgreSQL
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+POST /api/auth/login
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+GET /api/clientes/facturas
+GET /api/clientes/dashboard
+GET /api/clientes/perfil
+✅ Conectado a PostgreSQL
+GET /api/clientes/facturas
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+POST /api/auth/login
+GET /api/administradores/perfil
+GET /api/administradores/dashboard
+GET /api/administradores/socios
+GET /api/administradores/dashboard
+GET /api/administradores/perfil
+GET /api/administradores/perfil
+GET /api/administradores/dashboard
+POST /api/auth/login
+✅ Conectado a PostgreSQL
 GET /api/clientes/perfil
 GET /api/clientes/dashboard
 ✅ Conectado a PostgreSQL
 ✅ Conectado a PostgreSQL
+GET /api/clientes/facturas
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+✅ Conectado a PostgreSQL
 POST /api/auth/login
-GET /api/operarios/reclamos
-GET /api/operarios/dashboard
-GET /api/operarios/perfil
-POST /api/auth/login
-GET /api/administradores/perfil
-GET /api/administradores/dashboard
-GET /api/administradores/dashboard
-GET /api/administradores/perfil
-GET /api/administradores/reclamos
-GET /api/administradores/perfil
-GET /api/administradores/dashboard
-GET /api/administradores/socios
-GET /api/administradores/perfil
-GET /api/administradores/dashboard
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+POST /api/auth/verificar
+✅ Conectado a PostgreSQL
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+✅ Conectado a PostgreSQL
+✅ Conectado a PostgreSQL
