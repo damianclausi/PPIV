@@ -116,7 +116,7 @@ class Socio {
   /**
    * Listar todos los socios con paginación
    */
-  static async listar({ limite = 50, offset = 0, activo = null, busqueda = null }) {
+  static async listar({ limite = 50, offset = 0, activo = null, busqueda = null, orden = 'socio_id', direccion = 'ASC' }) {
     let query = `
       SELECT 
         s.socio_id,
@@ -153,7 +153,12 @@ class Socio {
       paramCount++;
     }
 
-    query += ` GROUP BY s.socio_id ORDER BY s.fecha_alta DESC LIMIT $${paramCount} OFFSET $${paramCount + 1}`;
+    // Validar campo de orden para prevenir inyección SQL
+    const camposPermitidos = ['socio_id', 'nombre', 'apellido', 'dni', 'email', 'fecha_alta', 'activo'];
+    const campoOrden = camposPermitidos.includes(orden) ? orden : 'socio_id';
+    const direccionOrden = direccion.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
+    
+    query += ` GROUP BY s.socio_id ORDER BY s.${campoOrden} ${direccionOrden} LIMIT $${paramCount} OFFSET $${paramCount + 1}`;
     params.push(limite, offset);
 
     const resultado = await pool.query(query, params);

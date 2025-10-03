@@ -5,7 +5,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSocios } from '../../hooks/useAdministrador.js';
-import { ArrowLeft, Search, UserPlus, Edit, Eye, Trash2, Users } from 'lucide-react';
+import { ArrowLeft, Search, UserPlus, Edit, Eye, Trash2, Users, ChevronUp, ChevronDown } from 'lucide-react';
 
 export default function GestionSocios() {
   const navigate = useNavigate();
@@ -13,12 +13,38 @@ export default function GestionSocios() {
     busqueda: '',
     estado: 'todos', // todos, activo, inactivo
     pagina: 1,
-    limite: 20
+    limite: 20,
+    orden: 'socio_id',
+    direccion: 'ASC'
   });
 
-  const { socios, total, cargando } = useSocios(filtros);
+  const { socios, total, cargando } = useSocios({
+    ...filtros,
+    buscar: filtros.busqueda,
+    activo: filtros.estado === 'todos' ? undefined : filtros.estado === 'activo'
+  });
 
   const totalPaginas = Math.ceil(total / filtros.limite);
+
+  // Función para manejar el ordenamiento
+  const manejarOrdenamiento = (campo) => {
+    setFiltros(prev => ({
+      ...prev,
+      orden: campo,
+      direccion: prev.orden === campo && prev.direccion === 'ASC' ? 'DESC' : 'ASC',
+      pagina: 1
+    }));
+  };
+
+  // Función para renderizar el icono de ordenamiento
+  const renderizarIconoOrden = (campo) => {
+    if (filtros.orden !== campo) {
+      return <ChevronUp className="w-4 h-4 text-gray-300" />;
+    }
+    return filtros.direccion === 'ASC' 
+      ? <ChevronUp className="w-4 h-4 text-blue-600" />
+      : <ChevronDown className="w-4 h-4 text-blue-600" />;
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -105,22 +131,52 @@ export default function GestionSocios() {
                   <thead className="bg-gray-50">
                     <tr>
                       <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        ID
+                        <button
+                          onClick={() => manejarOrdenamiento('socio_id')}
+                          className="flex items-center gap-1 hover:text-blue-600 transition-colors"
+                        >
+                          Nº Socio
+                          {renderizarIconoOrden('socio_id')}
+                        </button>
                       </th>
                       <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        Socio
+                        <button
+                          onClick={() => manejarOrdenamiento('nombre')}
+                          className="flex items-center gap-1 hover:text-blue-600 transition-colors"
+                        >
+                          Socio
+                          {renderizarIconoOrden('nombre')}
+                        </button>
                       </th>
                       <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        DNI
+                        <button
+                          onClick={() => manejarOrdenamiento('dni')}
+                          className="flex items-center gap-1 hover:text-blue-600 transition-colors"
+                        >
+                          DNI
+                          {renderizarIconoOrden('dni')}
+                        </button>
                       </th>
                       <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                         Contacto
                       </th>
                       <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        Estado
+                        <button
+                          onClick={() => manejarOrdenamiento('activo')}
+                          className="flex items-center gap-1 hover:text-blue-600 transition-colors"
+                        >
+                          Estado
+                          {renderizarIconoOrden('activo')}
+                        </button>
                       </th>
                       <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        Fecha Alta
+                        <button
+                          onClick={() => manejarOrdenamiento('fecha_alta')}
+                          className="flex items-center gap-1 hover:text-blue-600 transition-colors"
+                        >
+                          Fecha Alta
+                          {renderizarIconoOrden('fecha_alta')}
+                        </button>
                       </th>
                       <th className="px-6 py-4 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
                         Acciones
@@ -169,7 +225,11 @@ export default function GestionSocios() {
                               <Eye className="w-4 h-4" />
                             </button>
                             <button
-                              onClick={() => navigate(`/dashboard/admin/socios/${socio.socio_id}/editar`)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                console.log('Navegando a editar socio:', socio.socio_id);
+                                navigate(`/dashboard/admin/socios/${socio.socio_id}/editar`);
+                              }}
                               className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
                               title="Editar"
                             >

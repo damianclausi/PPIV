@@ -32,25 +32,29 @@ export default function SocioEditar() {
   const cargarSocio = async () => {
     try {
       setCargando(true);
-      // TODO: Implementar llamada al backend
-      // const data = await administradorService.obtenerSocio(id);
+      console.log('Cargando socio con ID:', id);
       
-      // Datos simulados
-      setTimeout(() => {
+      // Importar el servicio
+      const { default: administradorService } = await import('../../services/administradorService.js');
+      const response = await administradorService.obtenerSocio(id);
+      
+      if (response.exito && response.datos) {
+        const socio = response.datos;
         setFormData({
-          nombre: 'Juan Carlos',
-          apellido: 'Pérez',
-          dni: '12345678',
-          email: 'juan.perez@email.com',
-          telefono: '3804-123456',
-          direccion: 'Calle Principal 123',
-          fecha_nacimiento: '1980-05-20',
-          activo: true
+          nombre: socio.nombre || '',
+          apellido: socio.apellido || '',
+          dni: socio.dni || '',
+          email: socio.email || '',
+          telefono: socio.telefono || '',
+          direccion: socio.direccion || '',
+          fecha_nacimiento: socio.fecha_nacimiento ? new Date(socio.fecha_nacimiento).toISOString().split('T')[0] : '',
+          activo: socio.activo !== undefined ? socio.activo : true
         });
-        setCargando(false);
-      }, 500);
+      }
     } catch (error) {
       console.error('Error al cargar socio:', error);
+      alert('Error al cargar los datos del socio');
+    } finally {
       setCargando(false);
     }
   };
@@ -68,17 +72,20 @@ export default function SocioEditar() {
     
     try {
       setGuardando(true);
-      // TODO: Implementar llamada al backend
-      // await administradorService.actualizarSocio(id, formData);
       
-      // Simulación
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Importar el servicio
+      const { default: administradorService } = await import('../../services/administradorService.js');
+      const response = await administradorService.actualizarSocio(id, formData);
       
-      alert('Socio actualizado correctamente');
-      navigate(`/dashboard/admin/socios/${id}`);
+      if (response.exito) {
+        alert('Socio actualizado correctamente');
+        navigate(`/dashboard/admin/socios/${id}`);
+      } else {
+        alert(response.mensaje || 'Error al actualizar el socio');
+      }
     } catch (error) {
       console.error('Error al actualizar socio:', error);
-      alert('Error al actualizar el socio');
+      alert('Error al actualizar el socio: ' + (error.message || 'Error desconocido'));
     } finally {
       setGuardando(false);
     }

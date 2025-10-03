@@ -29,6 +29,8 @@ class AdministradorService {
     if (filtros.pagina) params.append('pagina', filtros.pagina);
     if (filtros.limite) params.append('limite', filtros.limite);
     if (filtros.buscar) params.append('buscar', filtros.buscar);
+    if (filtros.orden) params.append('orden', filtros.orden);
+    if (filtros.direccion) params.append('direccion', filtros.direccion);
     
     const query = params.toString() ? `?${params.toString()}` : '';
     return apiClient.get(`/api/administradores/socios${query}`);

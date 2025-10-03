@@ -76,7 +76,7 @@ export function useSocios(filtros = {}) {
 
   useEffect(() => {
     cargarSocios();
-  }, [filtros.activo, filtros.pagina, filtros.buscar]);
+  }, [filtros.activo, filtros.pagina, filtros.buscar, filtros.orden, filtros.direccion]);
 
   const cargarSocios = async () => {
     try {

@@ -3,11 +3,7 @@
 > vite
 
 
-  VITE v6.3.5  ready in 2496 ms
+  VITE v6.3.5  ready in 309 ms
 
   ➜  Local:   http://localhost:3002/
   ➜  Network: use --host to expose
-3:39:13 AM [vite] .env changed, restarting server...
-3:39:13 AM [vite] vite.config.ts changed, restarting server...
-3:39:13 AM [vite] .env changed, restarting server...
-3:39:13 AM [vite] server restarted.
