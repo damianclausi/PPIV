@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 import pool from './db.js';
 
 // Importar rutas
@@ -14,8 +16,44 @@ dotenv.config();
 const app = express();
 const PUERTO = process.env.PORT || 3001;
 
+// Seguridad: Helmet - Headers HTTP seguros
+app.use(helmet());
+
+// Seguridad: CORS configurado correctamente
+const corsOptions = {
+  origin: process.env.FRONTEND_URL || 'http://localhost:3002',
+  credentials: true,
+  optionsSuccessStatus: 200,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+app.use(cors(corsOptions));
+
+// Seguridad: Rate limiting general
+const limiterGeneral = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  max: 100, // máximo 100 requests por IP
+  message: {
+    exito: false,
+    mensaje: 'Demasiadas peticiones desde esta IP, intente más tarde'
+  },
+  standardHeaders: true, // Return rate limit info in `RateLimit-*` headers
+  legacyHeaders: false, // Disable `X-RateLimit-*` headers
+});
+
+// Seguridad: Rate limiting estricto para login
+const limiterLogin = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  max: 5, // máximo 5 intentos de login
+  message: {
+    exito: false,
+    mensaje: 'Demasiados intentos de login. Por favor, intente nuevamente en 15 minutos'
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 // Middlewares
-app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -24,6 +62,12 @@ app.use((req, res, next) => {
   console.log(`${req.method} ${req.path}`);
   next();
 });
+
+// Aplicar rate limiting general a todas las rutas API
+app.use('/api/', limiterGeneral);
+
+// Aplicar rate limiting específico para login (antes de las rutas)
+app.use('/api/auth/login', limiterLogin);
 
 // Rutas
 app.use('/api/auth', rutasAuth);
