@@ -23,6 +23,12 @@ CREDENTIALS.md
 SETUP.md
 SECURITY_ROTATION.md
 
+# Internal documentation (not for academic submission)
+RECOMENDACIONES.md
+MEJORAS_PENDIENTES.md
+docs/CHANGELOG_SEGURIDAD.md
+README_SCRIPTS.md
+
 # IDE
 .vscode
 .idea
