@@ -86,6 +86,36 @@ export const useFacturas = (params = {}) => {
 };
 
 /**
+ * Hook para obtener una factura individual
+ */
+export const useFactura = (id) => {
+  const [factura, setFactura] = useState(null);
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState(null);
+
+  const cargarFactura = async () => {
+    try {
+      setCargando(true);
+      const datos = await clienteService.obtenerFactura(id);
+      setFactura(datos);
+      setError(null);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setCargando(false);
+    }
+  };
+
+  useEffect(() => {
+    if (id) {
+      cargarFactura();
+    }
+  }, [id]);
+
+  return { factura, cargando, error, recargar: cargarFactura };
+};
+
+/**
  * Hook para obtener los reclamos del cliente
  */
 export const useReclamos = (params = {}) => {

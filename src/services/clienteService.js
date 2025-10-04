@@ -45,6 +45,14 @@ const clienteService = {
   },
 
   /**
+   * Registrar pago de una factura
+   */
+  async pagarFactura(id, datosPago) {
+    const response = await apiClient.post(`/api/clientes/facturas/${id}/pagar`, datosPago);
+    return response.datos;
+  },
+
+  /**
    * Obtener reclamos del cliente
    */
   async obtenerReclamos(params = {}) {

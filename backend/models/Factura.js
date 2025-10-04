@@ -97,16 +97,16 @@ class Factura {
     try {
       await client.query('BEGIN');
 
-      // Insertar pago
+      // Insertar pago (usando nombres correctos de columnas: monto, medio, fecha, external_ref)
       const pago = await client.query(`
-        INSERT INTO pago (factura_id, monto_pagado, metodo_pago, comprobante, fecha_pago)
-        VALUES ($1, $2, $3, $4, NOW())
+        INSERT INTO pago (factura_id, monto, medio, external_ref, estado, fecha)
+        VALUES ($1, $2, $3, $4, $5, NOW())
         RETURNING *
-      `, [facturaId, montoPagado, metodoPago, comprobante]);
+      `, [facturaId, montoPagado, metodoPago, comprobante, 'APROBADO']);
 
       // Actualizar estado de factura
       const factura = await client.query(
-        'UPDATE factura SET estado = $1, updated_at = NOW() WHERE factura_id = $2 RETURNING *',
+        'UPDATE factura SET estado = $1 WHERE factura_id = $2 RETURNING *',
         ['PAGADA', facturaId]
       );
 

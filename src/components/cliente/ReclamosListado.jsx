@@ -1,14 +1,17 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { Skeleton } from '../ui/skeleton';
-import { ArrowLeft, AlertCircle, MapPin, Calendar, Clock, Plus, AlertTriangle, Info, CheckCircle } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import { ArrowLeft, AlertCircle, MapPin, Calendar, Clock, Plus, AlertTriangle, Info, CheckCircle, Filter } from 'lucide-react';
 import { useReclamos } from '../../hooks/useCliente';
 
 export default function ReclamosListado() {
   const navigate = useNavigate();
   const { reclamos, cargando, error } = useReclamos();
+  const [estadoFiltro, setEstadoFiltro] = useState('TODOS');
 
   const getBadgeColor = (estado) => {
     switch (estado) {
@@ -18,8 +21,6 @@ export default function ReclamosListado() {
         return 'bg-blue-100 text-blue-800 border-blue-200';
       case 'RESUELTO':
         return 'bg-green-100 text-green-800 border-green-200';
-      case 'CERRADO':
-        return 'bg-gray-100 text-gray-800 border-gray-200';
       default:
         return 'bg-gray-100 text-gray-800 border-gray-200';
     }
@@ -30,6 +31,12 @@ export default function ReclamosListado() {
     if (prioridad === 'MEDIA') return <AlertTriangle className="h-4 w-4 text-yellow-600" />;
     return <CheckCircle className="h-4 w-4 text-green-600" />;
   };
+
+  // Filtrar reclamos por estado
+  const reclamosFiltrados = reclamos?.filter(reclamo => {
+    if (estadoFiltro === 'TODOS') return true;
+    return reclamo.estado === estadoFiltro;
+  }) || [];
 
   if (cargando) {
     return (
@@ -58,7 +65,7 @@ export default function ReclamosListado() {
             <div>
               <h1 className="text-3xl font-bold text-gray-900">Mis Reclamos</h1>
               <p className="text-sm text-gray-600 mt-1">
-                {reclamos?.length || 0} reclamo(s) registrado(s)
+                {reclamosFiltrados.length} de {reclamos?.length || 0} reclamo(s)
               </p>
             </div>
           </div>
@@ -67,6 +74,31 @@ export default function ReclamosListado() {
             Nuevo Reclamo
           </Button>
         </div>
+
+        {/* Filtros */}
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-4">
+              <Filter className="h-5 w-5 text-gray-500" />
+              <div className="flex-1 grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700">Estado</label>
+                  <Select value={estadoFiltro} onValueChange={setEstadoFiltro}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Todos los estados" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="TODOS">Todos los estados</SelectItem>
+                      <SelectItem value="PENDIENTE">Pendiente</SelectItem>
+                      <SelectItem value="EN_PROCESO">En Proceso</SelectItem>
+                      <SelectItem value="RESUELTO">Resuelto</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Error */}
         {error && (
@@ -94,13 +126,28 @@ export default function ReclamosListado() {
               </Button>
             </CardContent>
           </Card>
+        ) : reclamosFiltrados.length === 0 ? (
+          <Card>
+            <CardContent className="pt-6 text-center py-12">
+              <Info className="h-12 w-12 text-blue-400 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                No hay reclamos con este filtro
+              </h3>
+              <p className="text-gray-600 mb-4">
+                Intenta cambiar los filtros para ver más resultados
+              </p>
+              <Button variant="outline" onClick={() => setEstadoFiltro('TODOS')}>
+                Limpiar Filtros
+              </Button>
+            </CardContent>
+          </Card>
         ) : (
           <div className="grid gap-4">
-            {reclamos.map(reclamo => (
+            {reclamosFiltrados.map(reclamo => (
               <Card 
                 key={reclamo.reclamo_id} 
                 className="hover:shadow-lg transition-shadow cursor-pointer"
-                onClick={() => console.log('Ver detalle reclamo:', reclamo.reclamo_id)}
+                onClick={() => navigate(`/dashboard/reclamos/${reclamo.reclamo_id}`)}
               >
                 <CardHeader className="pb-3">
                   <div className="flex items-start justify-between">

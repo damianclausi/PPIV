@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
@@ -18,6 +18,7 @@ import {
   Shield
 } from 'lucide-react';
 import { useFacturas } from '../../hooks/useCliente';
+import clienteService from '../../services/clienteService';
 
 // Simulador de pasarela de pago
 class PasarelaPagoSimulada {
@@ -96,7 +97,8 @@ class PasarelaPagoSimulada {
 
 export default function PagoOnline() {
   const navigate = useNavigate();
-  const { facturas, cargando } = useFacturas();
+  const location = useLocation();
+  const { facturas: facturasAPI, cargando } = useFacturas();
   const [facturaSeleccionada, setFacturaSeleccionada] = useState(null);
   const [procesando, setProcesando] = useState(false);
   const [pagoExitoso, setPagoExitoso] = useState(false);
@@ -110,10 +112,62 @@ export default function PagoOnline() {
   });
   const [erroresValidacion, setErroresValidacion] = useState({});
 
-  const facturasImpagas = facturas?.filter(f => f.estado === 'PENDIENTE') || [];
+  // Normalizar facturas de la API
+  const normalizarFactura = (factura) => {
+    if (!factura) return null;
+    
+    // Si ya está normalizada (viene de FacturaDetalle), devolverla tal cual
+    if (factura.monto && factura.numero && factura.periodo) {
+      return factura;
+    }
+    
+    // Normalizar desde formato API
+    const monto = parseFloat(factura.importe || factura.monto || 0);
+    
+    return {
+      id: factura.factura_id || factura.id,
+      numero: factura.numero_externo || factura.numero || `F-${String(factura.factura_id || factura.id).padStart(6, '0')}`,
+      periodo: factura.periodo,
+      monto: monto,
+      estado: factura.estado || 'pendiente',
+      vencimiento: factura.vencimiento
+    };
+  };
+
+  // Normalizar todas las facturas
+  const facturas = Array.isArray(facturasAPI) 
+    ? facturasAPI.map(normalizarFactura)
+    : facturasAPI?.facturas 
+      ? facturasAPI.facturas.map(normalizarFactura)
+      : [];
+
+  const facturasImpagas = facturas?.filter(f => {
+    const estadoLower = f.estado?.toLowerCase();
+    return estadoLower === 'pendiente' || estadoLower === 'vencida';
+  }) || [];
+
+  // Si viene una factura desde FacturaDetalle, seleccionarla automáticamente
+  useEffect(() => {
+    if (location.state?.factura) {
+      const facturaNormalizada = normalizarFactura(location.state.factura);
+      setFacturaSeleccionada(facturaNormalizada);
+    }
+  }, [location.state]);
 
   const handleSeleccionarFactura = (factura) => {
-    setFacturaSeleccionada(factura);
+    const facturaNormalizada = normalizarFactura(factura);
+    setFacturaSeleccionada(facturaNormalizada);
+  };
+
+  const formatearPeriodo = (fecha) => {
+    if (!fecha) return 'N/A';
+    if (typeof fecha === 'string' && fecha.includes(' ')) {
+      // Ya está formateado (ej: "Octubre 2024")
+      return fecha;
+    }
+    const date = new Date(fecha);
+    const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+    return `${meses[date.getMonth()]} ${date.getFullYear()}`;
   };
 
   const handleInputChange = (e) => {
@@ -189,18 +243,26 @@ export default function PagoOnline() {
     
     try {
       // Procesar pago a través de la pasarela simulada
-      const respuesta = await PasarelaPagoSimulada.procesarPago({
+      const monto = parseFloat(facturaSeleccionada.monto) || 0;
+      const respuestaPasarela = await PasarelaPagoSimulada.procesarPago({
         numeroTarjeta: formPago.numeroTarjeta,
         vencimiento: formPago.vencimiento,
         cvv: formPago.cvv,
         nombreTitular: formPago.nombreTitular,
-        monto: facturaSeleccionada.monto
+        monto: monto
       });
 
-      // TODO: Aquí se enviaría al backend para actualizar el estado de la factura
-      // await clienteService.pagarFactura(facturaSeleccionada.factura_id, respuesta);
+      // Registrar pago en el backend
+      const datosPago = {
+        monto_pagado: monto,
+        metodo_pago: 'TARJETA',
+        // Comprobante reducido para cumplir con límite de 100 caracteres
+        comprobante: `${respuestaPasarela.codigo_autorizacion}|${respuestaPasarela.tipo_tarjeta}|${respuestaPasarela.ultimos_digitos}`
+      };
 
-      setRespuestaPago(respuesta);
+      await clienteService.pagarFactura(facturaSeleccionada.id, datosPago);
+
+      setRespuestaPago(respuestaPasarela);
       setPagoExitoso(true);
       
     } catch (error) {
@@ -405,9 +467,9 @@ export default function PagoOnline() {
 
                 return (
                   <div
-                    key={factura.factura_id}
+                    key={factura.id}
                     className={`p-4 border rounded-lg cursor-pointer transition-all ${
-                      facturaSeleccionada?.factura_id === factura.factura_id
+                      facturaSeleccionada?.id === factura.id
                         ? 'border-blue-500 bg-blue-50'
                         : 'border-gray-200 hover:bg-gray-50'
                     }`}
@@ -416,24 +478,26 @@ export default function PagoOnline() {
                     <div className="flex items-center justify-between">
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-2">
-                          <p className="font-semibold">Factura #{factura.factura_id}</p>
-                          <Badge variant="destructive">Pendiente</Badge>
+                          <p className="font-semibold">{factura.numero}</p>
+                          <Badge variant="destructive">
+                            {factura.estado === 'vencida' ? 'Vencida' : 'Pendiente'}
+                          </Badge>
                         </div>
                         <div className="flex items-center gap-2 text-sm text-gray-600">
                           <Calendar className="h-4 w-4" />
                           <span>
-                            Vencimiento: {formatearFecha(factura.fecha_vencimiento)}
+                            Vencimiento: {formatearFecha(factura.vencimiento)}
                           </span>
                         </div>
                         <p className="text-xs text-gray-500 mt-1">
-                          Período: {factura.periodo_mes || '-'}/{factura.periodo_anio || '-'}
+                          Período: {formatearPeriodo(factura.periodo)}
                         </p>
                       </div>
                       <div className="text-right">
                         <p className="text-2xl font-bold text-gray-900">
-                          ${factura.monto?.toLocaleString('es-AR') || '0'}
+                          ${factura.monto?.toFixed(2) || '0.00'}
                         </p>
-                        {estaVencida() && (
+                        {factura.estado === 'vencida' && (
                           <Badge variant="destructive" className="mt-1">Vencida</Badge>
                         )}
                       </div>
@@ -555,11 +619,21 @@ export default function PagoOnline() {
 
               {/* Total y Botón de Pago */}
               <div className="pt-4 border-t">
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-lg font-semibold">Total a Pagar:</span>
-                  <span className="text-3xl font-bold text-blue-600">
-                    ${facturaSeleccionada.monto?.toLocaleString('es-AR')}
-                  </span>
+                <div className="space-y-2 mb-4">
+                  <div className="flex items-center justify-between text-sm text-gray-600">
+                    <span>Factura:</span>
+                    <span>{facturaSeleccionada.numero}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm text-gray-600">
+                    <span>Período:</span>
+                    <span>{formatearPeriodo(facturaSeleccionada.periodo)}</span>
+                  </div>
+                  <div className="flex items-center justify-between pt-2 border-t">
+                    <span className="text-lg font-semibold">Total a Pagar:</span>
+                    <span className="text-3xl font-bold text-blue-600">
+                      ${facturaSeleccionada.monto?.toFixed(2) || '0.00'}
+                    </span>
+                  </div>
                 </div>
 
                 <Button

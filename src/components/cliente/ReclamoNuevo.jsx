@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
@@ -15,16 +15,82 @@ export default function ReclamoNuevo() {
   const [enviando, setEnviando] = useState(false);
   const [exito, setExito] = useState(false);
   const [error, setError] = useState(null);
+  const [cuentas, setCuentas] = useState([]);
+  const [cargandoCuentas, setCargandoCuentas] = useState(true);
   const [formData, setFormData] = useState({
-    tipo_reclamo: '',
-    descripcion: '',
-    prioridad: 'MEDIA'
+    cuenta_id: '',
+    tipo_id: '',
+    descripcion: ''
+    // prioridad_id se calculará automáticamente según el tipo
   });
+
+  // Mapeo de tipos de reclamo a IDs
+  const tiposReclamo = {
+    'FALTA_SUMINISTRO': 1,
+    'FLUCTUACIONES': 2,
+    'DAÑOS_RED': 3,
+    'MEDIDOR_DEFECTUOSO': 4,
+    'FACTURACION': 5,
+    'CONEXION_NUEVA': 6,
+    'RECONEXION': 7,
+    'CALIDAD_SERVICIO': 8
+  };
+
+  // Mapeo de prioridades a IDs
+  const prioridades = {
+    'ALTA': 1,
+    'MEDIA': 2,
+    'BAJA': 3
+  };
+
+  useEffect(() => {
+    cargarCuentas();
+  }, []);
+
+  const cargarCuentas = async () => {
+    try {
+      setCargandoCuentas(true);
+      const datos = await clienteService.obtenerCuentas();
+      setCuentas(datos || []);
+      // Seleccionar la primera cuenta por defecto si existe
+      if (datos && datos.length > 0) {
+        setFormData(prev => ({ ...prev, cuenta_id: datos[0].cuenta_id.toString() }));
+      }
+    } catch (err) {
+      console.error('Error al cargar cuentas:', err);
+      setError('Error al cargar las cuentas');
+    } finally {
+      setCargandoCuentas(false);
+    }
+  };
+
+  // Determinar prioridad automáticamente según el tipo de reclamo
+  const obtenerPrioridad = (tipoId) => {
+    const tipo = parseInt(tipoId);
+    // Tipos críticos (Prioridad ALTA = 1):
+    // - 1: Falta de Suministro
+    // - 3: Daños en Red
+    if (tipo === 1 || tipo === 3) {
+      return 1; // Alta
+    }
+    // Tipos importantes (Prioridad MEDIA = 2):
+    // - 2: Fluctuaciones de Tensión
+    // - 4: Medidor Defectuoso
+    // - 8: Calidad del Servicio
+    if (tipo === 2 || tipo === 4 || tipo === 8) {
+      return 2; // Media
+    }
+    // Tipos no urgentes (Prioridad BAJA = 3):
+    // - 5: Facturación
+    // - 6: Conexión Nueva
+    // - 7: Reconexión
+    return 3; // Baja
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!formData.tipo_reclamo || !formData.descripcion) {
+    if (!formData.cuenta_id || !formData.tipo_id || !formData.descripcion) {
       setError('Por favor complete todos los campos obligatorios');
       return;
     }
@@ -33,7 +99,18 @@ export default function ReclamoNuevo() {
     setError(null);
 
     try {
-      await clienteService.crearReclamo(formData);
+      // Determinar prioridad automáticamente según el tipo
+      const prioridadAutomatica = obtenerPrioridad(formData.tipo_id);
+      
+      // Preparar datos en el formato que espera el backend
+      const datosReclamo = {
+        cuenta_id: parseInt(formData.cuenta_id),
+        tipo_id: parseInt(formData.tipo_id),
+        descripcion: formData.descripcion,
+        prioridad_id: prioridadAutomatica
+      };
+
+      await clienteService.crearReclamo(datosReclamo);
       setExito(true);
       
       // Redirigir después de 2 segundos
@@ -106,27 +183,54 @@ export default function ReclamoNuevo() {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Cuenta */}
+              {cuentas.length > 1 && (
+                <div className="space-y-2">
+                  <Label htmlFor="cuenta_id">
+                    Cuenta <span className="text-red-500">*</span>
+                  </Label>
+                  <Select 
+                    value={formData.cuenta_id}
+                    onValueChange={(value) => setFormData({ ...formData, cuenta_id: value })}
+                    disabled={cargandoCuentas}
+                    required
+                  >
+                    <SelectTrigger id="cuenta_id">
+                      <SelectValue placeholder="Seleccione la cuenta" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {cuentas.map(cuenta => (
+                        <SelectItem key={cuenta.cuenta_id} value={cuenta.cuenta_id.toString()}>
+                          Cuenta {cuenta.numero_cuenta} - {cuenta.direccion}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+
               {/* Tipo de Reclamo */}
               <div className="space-y-2">
-                <Label htmlFor="tipo_reclamo">
+                <Label htmlFor="tipo_id">
                   Tipo de Reclamo <span className="text-red-500">*</span>
                 </Label>
                 <Select 
-                  value={formData.tipo_reclamo}
-                  onValueChange={(value) => setFormData({ ...formData, tipo_reclamo: value })}
+                  value={formData.tipo_id}
+                  onValueChange={(value) => setFormData({ ...formData, tipo_id: value })}
                   required
                 >
-                  <SelectTrigger id="tipo_reclamo">
+                  <SelectTrigger id="tipo_id">
                     <SelectValue placeholder="Seleccione el tipo de reclamo" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="FALTA_SUMINISTRO">Falta de Suministro</SelectItem>
-                    <SelectItem value="BAJA_TENSION">Baja Tensión</SelectItem>
-                    <SelectItem value="MEDIDOR_DEFECTUOSO">Medidor Defectuoso</SelectItem>
-                    <SelectItem value="FACTURACION">Facturación</SelectItem>
-                    <SelectItem value="CABLES_SUELTOS">Cables Sueltos</SelectItem>
-                    <SelectItem value="POSTE_DAÑADO">Poste Dañado</SelectItem>
-                    <SelectItem value="OTRO">Otro</SelectItem>
+                    <SelectItem value="1">Falta de Suministro</SelectItem>
+                    <SelectItem value="2">Fluctuaciones de Tensión</SelectItem>
+                    <SelectItem value="3">Daños en Red</SelectItem>
+                    <SelectItem value="4">Medidor Defectuoso</SelectItem>
+                    <SelectItem value="5">Facturación</SelectItem>
+                    <SelectItem value="6">Conexión Nueva</SelectItem>
+                    <SelectItem value="7">Reconexión</SelectItem>
+                    <SelectItem value="8">Calidad del Servicio</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -149,23 +253,14 @@ export default function ReclamoNuevo() {
                 </p>
               </div>
 
-              {/* Prioridad */}
-              <div className="space-y-2">
-                <Label htmlFor="prioridad">Prioridad</Label>
-                <Select 
-                  value={formData.prioridad}
-                  onValueChange={(value) => setFormData({ ...formData, prioridad: value })}
-                >
-                  <SelectTrigger id="prioridad">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="BAJA">Baja - No urgente</SelectItem>
-                    <SelectItem value="MEDIA">Media - Atención normal</SelectItem>
-                    <SelectItem value="ALTA">Alta - Requiere atención urgente</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+              {/* Información sobre prioridad automática */}
+              <Alert className="bg-blue-50 border-blue-200">
+                <AlertCircle className="h-4 w-4 text-blue-600" />
+                <AlertDescription className="text-blue-800 text-sm">
+                  <strong>Prioridad automática:</strong> La prioridad del reclamo se asigna automáticamente según el tipo seleccionado.
+                  Los problemas de suministro y daños en red se consideran de alta prioridad.
+                </AlertDescription>
+              </Alert>
 
               {/* Botones */}
               <div className="flex gap-4 pt-4">

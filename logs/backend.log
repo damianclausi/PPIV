@@ -6,62 +6,31 @@
 📊 Verificación de salud: http://localhost:3001/api/salud
 GET /api/salud
 ✅ Conectado a PostgreSQL
+GET /
+GET /favicon.ico
 POST /api/auth/login
-GET /api/administradores/perfil
-GET /api/administradores/dashboard
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
 ✅ Conectado a PostgreSQL
-GET /api/administradores/socios
-GET /api/administradores/socios/2
-GET /api/administradores/socios
-GET /api/administradores/socios/1
-GET /api/administradores/socios
-GET /api/administradores/socios/3
-PUT /api/administradores/socios/3
-Error al actualizar socio: error: column "direccion" of relation "socio" does not exist
-    at /home/damian/projects/PPIV/backend/node_modules/pg-pool/index.js:45:11
-    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
-    at async Socio.actualizar (file:///home/damian/projects/PPIV/backend/models/Socio.js:95:23)
-    at async actualizarSocio (file:///home/damian/projects/PPIV/backend/controllers/AdministradorController.js:143:21) {
-  length: 129,
-  severity: 'ERROR',
-  code: '42703',
-  detail: undefined,
-  hint: undefined,
-  position: '97',
-  internalPosition: undefined,
-  internalQuery: undefined,
-  where: undefined,
-  schema: undefined,
-  table: undefined,
-  column: undefined,
-  dataType: undefined,
-  constraint: undefined,
-  file: 'analyze.c',
-  line: '2515',
-  routine: 'transformUpdateTargetList'
-}
-GET /api/administradores/socios
 ✅ Conectado a PostgreSQL
-GET /api/administradores/socios
-GET /api/administradores/perfil
-GET /api/administradores/dashboard
+GET /api/clientes/facturas
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
+GET /api/clientes/reclamos
+GET /api/clientes/dashboard
+GET /api/clientes/perfil
+GET /api/clientes/reclamos
+GET /api/clientes/reclamos/6
+GET /api/clientes/reclamos
+GET /api/clientes/dashboard
+GET /api/clientes/perfil
 ✅ Conectado a PostgreSQL
-GET /api/administradores/reclamos
-GET /api/administradores/perfil
-GET /api/administradores/dashboard
+GET /api/clientes/reclamos
+GET /api/clientes/reclamos/32
+GET /api/clientes/reclamos
+GET /api/clientes/perfil
+GET /api/clientes/dashboard
 POST /api/auth/login
-✅ Conectado a PostgreSQL
+GET /api/operarios/perfil
 GET /api/operarios/dashboard
 GET /api/operarios/reclamos
-GET /api/operarios/perfil
-✅ Conectado a PostgreSQL
-✅ Conectado a PostgreSQL
-POST /api/auth/login
-GET /api/administradores/perfil
-GET /api/administradores/dashboard
-GET /api/administradores/reclamos
-POST /api/auth/verificar
-GET /api/administradores/perfil
-GET /api/administradores/dashboard
-POST /api/auth/verificar
-GET /api/administradores/socios

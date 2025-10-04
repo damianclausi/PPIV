@@ -16,6 +16,7 @@ router.get('/dashboard', ClienteController.obtenerDashboard);
 // Rutas de facturas
 router.get('/facturas', ClienteController.obtenerFacturas);
 router.get('/facturas/:id', ClienteController.obtenerFactura);
+router.post('/facturas/:id/pagar', ClienteController.pagarFactura);
 
 // Rutas de reclamos
 router.get('/reclamos', ClienteController.obtenerReclamos);

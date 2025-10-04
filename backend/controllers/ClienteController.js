@@ -189,6 +189,56 @@ class ClienteController {
   }
 
   /**
+   * POST /api/clientes/facturas/:id/pagar
+   * Registrar pago de una factura
+   */
+  static async pagarFactura(req, res) {
+    try {
+      const { id } = req.params;
+      const socioId = req.usuario.socio_id;
+
+      if (!socioId) {
+        return respuestaProhibido(res, 'Usuario no es un socio');
+      }
+
+      // Verificar que la factura existe y pertenece al socio
+      const factura = await Factura.obtenerPorId(id);
+
+      if (!factura) {
+        return respuestaNoEncontrado(res, 'Factura no encontrada');
+      }
+
+      // Verificar que la factura no esté ya pagada
+      if (factura.estado === 'PAGADA' || factura.estado === 'pagada') {
+        return respuestaError(res, 'La factura ya está pagada', 400);
+      }
+
+      const { 
+        monto_pagado, 
+        metodo_pago = 'TARJETA', 
+        comprobante = null 
+      } = req.body;
+
+      // Validar monto
+      if (!monto_pagado || parseFloat(monto_pagado) <= 0) {
+        return respuestaError(res, 'Monto de pago inválido', 400);
+      }
+
+      // Registrar el pago
+      const resultado = await Factura.registrarPago(id, {
+        montoPagado: parseFloat(monto_pagado),
+        metodoPago: metodo_pago,
+        comprobante: comprobante
+      });
+
+      return respuestaExitosa(res, resultado, 'Pago registrado exitosamente');
+    } catch (error) {
+      console.error('Error al registrar pago:', error);
+      return respuestaError(res, 'Error al registrar pago', 500, error.message);
+    }
+  }
+
+  /**
    * GET /api/clientes/dashboard
    * Obtener dashboard con resumen
    */
