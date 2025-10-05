@@ -10,6 +10,7 @@ import rutasAuth from './routes/auth.js';
 import rutasClientes from './routes/clientes.js';
 import rutasOperarios from './routes/operarios.js';
 import rutasAdministradores from './routes/administradores.js';
+import rutasTiposReclamo from './routes/tiposReclamo.js';
 
 dotenv.config();
 
@@ -74,6 +75,7 @@ app.use('/api/auth', rutasAuth);
 app.use('/api/clientes', rutasClientes);
 app.use('/api/operarios', rutasOperarios);
 app.use('/api/administradores', rutasAdministradores);
+app.use('/api/tipos-reclamo', rutasTiposReclamo);
 
 // Ruta de verificación de salud
 app.get('/api/salud', async (req, res) => {

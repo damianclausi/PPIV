@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Alert, AlertDescription } from '../ui/alert';
 import { ArrowLeft, Send, CheckCircle, AlertCircle } from 'lucide-react';
 import clienteService from '../../services/clienteService';
+import { useTiposReclamo } from '../../hooks/useTiposReclamo';
 
 export default function ReclamoNuevo() {
   const navigate = useNavigate();
@@ -24,28 +25,18 @@ export default function ReclamoNuevo() {
     // prioridad_id se calculará automáticamente según el tipo
   });
 
-  // Mapeo de tipos de reclamo a IDs
-  const tiposReclamo = {
-    'FALTA_SUMINISTRO': 1,
-    'FLUCTUACIONES': 2,
-    'DAÑOS_RED': 3,
-    'MEDIDOR_DEFECTUOSO': 4,
-    'FACTURACION': 5,
-    'CONEXION_NUEVA': 6,
-    'RECONEXION': 7,
-    'CALIDAD_SERVICIO': 8
-  };
-
-  // Mapeo de prioridades a IDs
-  const prioridades = {
-    'ALTA': 1,
-    'MEDIA': 2,
-    'BAJA': 3
-  };
+  // Cargar tipos de reclamo desde la base de datos
+  const { tipos: tiposReclamo, cargando: cargandoTipos, error: errorTipos } = useTiposReclamo();
 
   useEffect(() => {
     cargarCuentas();
   }, []);
+
+  useEffect(() => {
+    if (errorTipos) {
+      setError('Error al cargar tipos de reclamo: ' + errorTipos);
+    }
+  }, [errorTipos]);
 
   const cargarCuentas = async () => {
     try {
@@ -217,20 +208,25 @@ export default function ReclamoNuevo() {
                 <Select 
                   value={formData.tipo_id}
                   onValueChange={(value) => setFormData({ ...formData, tipo_id: value })}
+                  disabled={cargandoTipos}
                   required
                 >
                   <SelectTrigger id="tipo_id">
-                    <SelectValue placeholder="Seleccione el tipo de reclamo" />
+                    <SelectValue placeholder={
+                      cargandoTipos 
+                        ? "Cargando tipos..." 
+                        : "Seleccione el tipo de reclamo"
+                    } />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="1">Falta de Suministro</SelectItem>
-                    <SelectItem value="2">Fluctuaciones de Tensión</SelectItem>
-                    <SelectItem value="3">Daños en Red</SelectItem>
-                    <SelectItem value="4">Medidor Defectuoso</SelectItem>
-                    <SelectItem value="5">Facturación</SelectItem>
-                    <SelectItem value="6">Conexión Nueva</SelectItem>
-                    <SelectItem value="7">Reconexión</SelectItem>
-                    <SelectItem value="8">Calidad del Servicio</SelectItem>
+                    {tiposReclamo.map(tipo => (
+                      <SelectItem 
+                        key={tipo.tipo_id} 
+                        value={tipo.tipo_id.toString()}
+                      >
+                        {tipo.nombre}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
