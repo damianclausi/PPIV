@@ -23,9 +23,6 @@ CREDENTIALS.md
 SETUP.md
 SECURITY_ROTATION.md
 
-# Internal documentation (not for academic submission)
-.internal-docs/
-
 # IDE
 .vscode
 .idea
@@ -60,3 +57,4 @@ coverage
 # Temporary folders
 tmp
 temp
+*.log
