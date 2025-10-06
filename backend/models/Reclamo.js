@@ -59,13 +59,15 @@ class Reclamo {
         c.localidad,
         s.nombre as socio_nombre,
         s.apellido as socio_apellido,
-        s.telefono as socio_telefono
+        s.telefono as socio_telefono,
+        ot.empleado_id as operario_asignado_id
       FROM reclamo r
       INNER JOIN detalle_tipo_reclamo d ON r.detalle_id = d.detalle_id
       INNER JOIN tipo_reclamo t ON d.tipo_id = t.tipo_id
       INNER JOIN prioridad p ON r.prioridad_id = p.prioridad_id
       INNER JOIN cuenta c ON r.cuenta_id = c.cuenta_id
       INNER JOIN socio s ON c.socio_id = s.socio_id
+      LEFT JOIN orden_trabajo ot ON r.reclamo_id = ot.reclamo_id
       WHERE r.reclamo_id = $1
     `, [reclamoId]);
     return resultado.rows[0];
