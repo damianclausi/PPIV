@@ -63,7 +63,7 @@ export default class AdministradorController {
    */
   static async listarSocios(req, res) {
     try {
-      const { activo, pagina = 1, limite = 10, buscar, orden = 'socio_id', direccion = 'ASC' } = req.query;
+  const { activo, pagina = 1, limite = 10, busqueda, orden = 'socio_id', direccion = 'ASC' } = req.query;
       
       const paginaNum = parseInt(pagina);
       const limiteNum = parseInt(limite);
@@ -73,7 +73,7 @@ export default class AdministradorController {
         activo: activo !== undefined ? activo === 'true' : null,
         offset,
         limite: limiteNum,
-        buscar,
+        busqueda,
         orden,
         direccion
       });
