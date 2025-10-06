@@ -22,7 +22,7 @@ export default function GestionSocios() {
 
   const { socios, total, cargando, recargar } = useSocios({
     ...filtros,
-    buscar: filtros.busqueda,
+    busqueda: filtros.busqueda,
     activo: filtros.estado === 'todos' ? undefined : filtros.estado === 'activo'
   });
 

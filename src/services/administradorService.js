@@ -28,7 +28,7 @@ class AdministradorService {
     if (filtros.activo !== undefined) params.append('activo', filtros.activo);
     if (filtros.pagina) params.append('pagina', filtros.pagina);
     if (filtros.limite) params.append('limite', filtros.limite);
-    if (filtros.buscar) params.append('buscar', filtros.buscar);
+  params.append('busqueda', filtros.busqueda ?? '');
     if (filtros.orden) params.append('orden', filtros.orden);
     if (filtros.direccion) params.append('direccion', filtros.direccion);
     
