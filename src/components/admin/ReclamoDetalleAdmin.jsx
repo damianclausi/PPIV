@@ -9,6 +9,7 @@ import {
   Calendar, FileText, UserCog, Edit, Trash2, CheckCircle, XCircle
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import administradorService from '../../services/administradorService';
 import { Button } from '../ui/button';
 import { Skeleton } from '../ui/skeleton';
 import { formatearFechaHora } from '../../utils/formatters.js';
@@ -22,44 +23,21 @@ export default function ReclamoDetalleAdmin() {
   const [nuevoEstado, setNuevoEstado] = useState('');
 
   useEffect(() => {
+    const cargarReclamo = async () => {
+      try {
+        setCargando(true);
+        const response = await administradorService.obtenerReclamo(id);
+        setReclamo(response.datos);
+        setNuevoEstado(response.datos?.estado ?? '');
+      } catch (error) {
+        console.error('Error al cargar reclamo:', error);
+        setReclamo(null);
+      } finally {
+        setCargando(false);
+      }
+    };
     cargarReclamo();
   }, [id]);
-
-  const cargarReclamo = async () => {
-    try {
-      setCargando(true);
-      // TODO: Implementar llamada al backend
-      // const data = await administradorService.obtenerReclamo(id);
-      
-      // Datos simulados
-      setTimeout(() => {
-        setReclamo({
-          reclamo_id: id,
-          tipo_reclamo: 'Falta de suministro',
-          descripcion: 'No hay agua desde hace 2 días en toda la zona',
-          estado: 'PENDIENTE',
-          prioridad: 'ALTA',
-          fecha_alta: '2024-10-01T10:30:00',
-          fecha_cierre: null,
-          direccion: 'Calle Las Flores 456',
-          zona: 'Zona Norte',
-          numero_cuenta: '00123',
-          socio_nombre: 'María',
-          socio_apellido: 'González',
-          socio_dni: '23456789',
-          socio_email: 'maria.gonzalez@email.com',
-          socio_telefono: '3804-234567',
-          operario_asignado: null,
-          notas: 'Verificar válvulas de la zona'
-        });
-        setNuevoEstado('PENDIENTE');
-        setCargando(false);
-      }, 500);
-    } catch (error) {
-      console.error('Error al cargar reclamo:', error);
-      setCargando(false);
-    }
-  };
 
   const handleCambiarEstado = async () => {
     if (nuevoEstado === reclamo.estado) return;

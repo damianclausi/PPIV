@@ -47,7 +47,7 @@ class Reclamo {
    * Obtener reclamo por ID
    */
   static async obtenerPorId(reclamoId) {
-    const resultado = await pool.query(`
+  const resultado = await pool.query(`
       SELECT 
         r.*,
         d.nombre as detalle_reclamo,
@@ -66,11 +66,12 @@ class Reclamo {
       INNER JOIN tipo_reclamo t ON d.tipo_id = t.tipo_id
       INNER JOIN prioridad p ON r.prioridad_id = p.prioridad_id
       INNER JOIN cuenta c ON r.cuenta_id = c.cuenta_id
-      INNER JOIN socio s ON c.socio_id = s.socio_id
+      LEFT JOIN socio s ON c.socio_id = s.socio_id
       LEFT JOIN orden_trabajo ot ON r.reclamo_id = ot.reclamo_id
       WHERE r.reclamo_id = $1
     `, [reclamoId]);
-    return resultado.rows[0];
+  console.log('Resultado reclamo obtenerPorId:', resultado.rows);
+  return resultado.rows[0];
   }
 
   /**
