@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSocios } from '../../hooks/useAdministrador.js';
 import { ArrowLeft, Search, UserPlus, Edit, Eye, Trash2, Users, ChevronUp, ChevronDown } from 'lucide-react';
 import { formatearFecha } from '../../utils/formatters.js';
+import administradorService from '../../services/administradorService.js';
 
 export default function GestionSocios() {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ export default function GestionSocios() {
     direccion: 'ASC'
   });
 
-  const { socios, total, cargando } = useSocios({
+  const { socios, total, cargando, recargar } = useSocios({
     ...filtros,
     buscar: filtros.busqueda,
     activo: filtros.estado === 'todos' ? undefined : filtros.estado === 'activo'
@@ -45,6 +46,28 @@ export default function GestionSocios() {
     return filtros.direccion === 'ASC' 
       ? <ChevronUp className="w-4 h-4 text-blue-600" />
       : <ChevronDown className="w-4 h-4 text-blue-600" />;
+  };
+
+  // Función para eliminar socio
+  const handleEliminarSocio = async (socioId, nombreCompleto) => {
+    if (!confirm(`¿Está seguro de eliminar a ${nombreCompleto}?\n\nEsta acción no se puede deshacer y eliminará también todas las cuentas asociadas.`)) {
+      return;
+    }
+
+    try {
+      const response = await administradorService.eliminarSocio(socioId);
+      
+      if (response.exito) {
+        alert('Socio eliminado correctamente');
+        recargar(); // Recargar la lista
+      } else {
+        alert(response.mensaje || 'Error al eliminar el socio');
+      }
+    } catch (error) {
+      console.error('Error al eliminar socio:', error);
+      const mensaje = error.response?.data?.mensaje || error.message || 'Error al eliminar el socio';
+      alert(mensaje);
+    }
   };
 
   return (
@@ -237,10 +260,9 @@ export default function GestionSocios() {
                               <Edit className="w-4 h-4" />
                             </button>
                             <button
-                              onClick={() => {
-                                if (confirm('¿Está seguro de eliminar este socio?')) {
-                                  // Implementar eliminación
-                                }
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleEliminarSocio(socio.socio_id, `${socio.nombre} ${socio.apellido}`);
                               }}
                               className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                               title="Eliminar"
