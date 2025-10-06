@@ -220,7 +220,7 @@ export default function SocioEditar() {
                   type="button"
                   variant="outline"
                   className="flex-1"
-                  onClick={() => navigate(`/dashboard/admin/socios/${id}`)}
+                  onClick={() => navigate(`/dashboard/admin/socios`)}
                   disabled={guardando}
                 >
                   <X className="h-4 w-4 mr-2" />

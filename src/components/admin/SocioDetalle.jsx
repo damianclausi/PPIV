@@ -236,9 +236,9 @@ export default function SocioDetalle() {
                     <div className="text-right">
                       <p className="text-sm text-gray-600">Deuda</p>
                       <p className={`text-lg font-bold ${
-                        cuenta.deuda > 0 ? 'text-red-600' : 'text-green-600'
+                        (cuenta.deuda || 0) > 0 ? 'text-red-600' : 'text-green-600'
                       }`}>
-                        ${cuenta.deuda.toLocaleString('es-AR', { minimumFractionDigits: 2 })}
+                        ${(cuenta.deuda || 0).toLocaleString('es-AR', { minimumFractionDigits: 2 })}
                       </p>
                     </div>
                   </div>

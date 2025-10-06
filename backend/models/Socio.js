@@ -34,7 +34,14 @@ class Socio {
         c.principal,
         c.activa,
         s.nombre as servicio_nombre,
-        s.descripcion as servicio_descripcion
+        s.descripcion as servicio_descripcion,
+        COALESCE(
+          (SELECT SUM(f.importe) 
+           FROM factura f 
+           WHERE f.cuenta_id = c.cuenta_id 
+           AND f.estado = 'PENDIENTE'),
+          0
+        ) as deuda
       FROM cuenta c
       INNER JOIN servicio s ON c.servicio_id = s.servicio_id
       WHERE c.socio_id = $1
