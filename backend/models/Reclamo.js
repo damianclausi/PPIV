@@ -184,7 +184,8 @@ class Reclamo {
         r.estado,
         r.fecha_alta,
         r.fecha_cierre,
-        tr.nombre as tipo_reclamo,
+        d.nombre as detalle_reclamo,
+        t.nombre as tipo_reclamo,
         p.nombre as prioridad,
         c.numero_cuenta,
         c.direccion,
@@ -195,7 +196,8 @@ class Reclamo {
         COUNT(*) OVER() as total
       FROM reclamo r
       INNER JOIN orden_trabajo ot ON r.reclamo_id = ot.reclamo_id
-      INNER JOIN tipo_reclamo tr ON r.tipo_id = tr.tipo_id
+      INNER JOIN detalle_tipo_reclamo d ON r.detalle_id = d.detalle_id
+      INNER JOIN tipo_reclamo t ON d.tipo_id = t.tipo_id
       INNER JOIN prioridad p ON r.prioridad_id = p.prioridad_id
       INNER JOIN cuenta c ON r.cuenta_id = c.cuenta_id
       INNER JOIN socio s ON c.socio_id = s.socio_id
