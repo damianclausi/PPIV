@@ -5,7 +5,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSocios } from '../../hooks/useAdministrador.js';
-import { ArrowLeft, Search, UserPlus, Edit, Eye, Trash2, Users, ChevronUp, ChevronDown } from 'lucide-react';
+import { ArrowLeft, Search, UserPlus, Edit, Eye, Trash2, Users, ChevronUp, ChevronDown, UserX, UserCheck } from 'lucide-react';
 import { formatearFecha } from '../../utils/formatters.js';
 import administradorService from '../../services/administradorService.js';
 
@@ -48,24 +48,29 @@ export default function GestionSocios() {
       : <ChevronDown className="w-4 h-4 text-blue-600" />;
   };
 
-  // Función para eliminar socio
-  const handleEliminarSocio = async (socioId, nombreCompleto) => {
-    if (!confirm(`¿Está seguro de eliminar a ${nombreCompleto}?\n\nEsta acción no se puede deshacer y eliminará también todas las cuentas asociadas.`)) {
+  // Función para desactivar socio (en lugar de eliminar)
+  const handleDesactivarSocio = async (socioId, nombreCompleto, activo) => {
+    const accion = activo ? 'desactivar' : 'activar';
+    const mensaje = activo 
+      ? `¿Está seguro de desactivar a ${nombreCompleto}?\n\nEl socio no aparecerá en los listados pero se mantendrá su historial.`
+      : `¿Está seguro de activar a ${nombreCompleto}?`;
+    
+    if (!confirm(mensaje)) {
       return;
     }
 
     try {
-      const response = await administradorService.eliminarSocio(socioId);
+      const response = await administradorService.cambiarEstadoSocio(socioId, !activo);
       
       if (response.exito) {
-        alert('Socio eliminado correctamente');
+        alert(`Socio ${activo ? 'desactivado' : 'activado'} correctamente`);
         recargar(); // Recargar la lista
       } else {
-        alert(response.mensaje || 'Error al eliminar el socio');
+        alert(response.mensaje || `Error al ${accion} el socio`);
       }
     } catch (error) {
-      console.error('Error al eliminar socio:', error);
-      const mensaje = error.response?.data?.mensaje || error.message || 'Error al eliminar el socio';
+      console.error(`Error al ${accion} socio:`, error);
+      const mensaje = error.response?.data?.mensaje || error.message || `Error al ${accion} el socio`;
       alert(mensaje);
     }
   };
@@ -262,12 +267,16 @@ export default function GestionSocios() {
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
-                                handleEliminarSocio(socio.socio_id, `${socio.nombre} ${socio.apellido}`);
+                                handleDesactivarSocio(socio.socio_id, `${socio.nombre} ${socio.apellido}`, socio.activo);
                               }}
-                              className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                              title="Eliminar"
+                              className={`p-2 rounded-lg transition-colors ${
+                                socio.activo 
+                                  ? 'text-orange-600 hover:bg-orange-50' 
+                                  : 'text-green-600 hover:bg-green-50'
+                              }`}
+                              title={socio.activo ? 'Desactivar' : 'Activar'}
                             >
-                              <Trash2 className="w-4 h-4" />
+                              {socio.activo ? <UserX className="w-4 h-4" /> : <UserCheck className="w-4 h-4" />}
                             </button>
                           </div>
                         </td>

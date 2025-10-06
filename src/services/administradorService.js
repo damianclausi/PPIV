@@ -58,10 +58,17 @@ class AdministradorService {
   }
 
   /**
-   * Eliminar un socio
+   * Eliminar un socio (DELETE físico)
    */
   async eliminarSocio(id) {
     return apiClient.delete(`/api/administradores/socios/${id}`);
+  }
+
+  /**
+   * Desactivar/Activar un socio (cambiar estado activo)
+   */
+  async cambiarEstadoSocio(id, activo) {
+    return apiClient.patch(`/api/administradores/socios/${id}/estado`, { activo });
   }
 
   /**

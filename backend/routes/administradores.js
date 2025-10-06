@@ -24,6 +24,7 @@ router.get('/socios', AdministradorController.listarSocios);
 router.post('/socios', AdministradorController.crearSocio);
 router.get('/socios/:id', AdministradorController.obtenerSocio);
 router.put('/socios/:id', AdministradorController.actualizarSocio);
+router.patch('/socios/:id/estado', AdministradorController.cambiarEstadoSocio);
 router.delete('/socios/:id', AdministradorController.eliminarSocio);
 
 // Gestión de reclamos

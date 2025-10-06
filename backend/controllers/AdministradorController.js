@@ -154,7 +154,33 @@ export default class AdministradorController {
   }
 
   /**
-   * Eliminar un socio
+   * Cambiar estado de un socio (activar/desactivar)
+   */
+  static async cambiarEstadoSocio(req, res) {
+    try {
+      const { id } = req.params;
+      const { activo } = req.body;
+      
+      if (activo === undefined) {
+        return respuestaError(res, 'El campo activo es requerido', 400);
+      }
+      
+      const socioActualizado = await Socio.cambiarEstado(id, activo);
+      
+      if (!socioActualizado) {
+        return respuestaNoEncontrado(res, 'Socio no encontrado');
+      }
+      
+      const mensaje = activo ? 'Socio activado exitosamente' : 'Socio desactivado exitosamente';
+      return respuestaExitosa(res, socioActualizado, mensaje);
+    } catch (error) {
+      console.error('Error al cambiar estado del socio:', error);
+      return respuestaError(res, 'Error al cambiar estado del socio');
+    }
+  }
+
+  /**
+   * Eliminar un socio (DELETE físico)
    */
   static async eliminarSocio(req, res) {
     try {
