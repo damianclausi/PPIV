@@ -132,8 +132,8 @@ class Reclamo {
   /**
    * Listar todos los reclamos (para administrativos)
    */
-  static async listarTodos({ estado = null, prioridadId = null, limite = 50, offset = 0 }) {
-    let query = `
+  static async listarTodos({ estado = null, prioridadId = null, tipo = null, limite = 50, offset = 0 }) {
+  let query = `
       SELECT 
         r.reclamo_id,
         r.descripcion,
@@ -156,19 +156,25 @@ class Reclamo {
       WHERE 1=1
     `;
 
-    const params = [];
+  const params = [];
+  let paramCount = 1;
 
     if (estado) {
-      query += ` AND r.estado = $${params.length + 1}`;
+      query += ` AND r.estado = $${paramCount}`;
       params.push(estado);
+      paramCount++;
     }
-
     if (prioridadId) {
-      query += ` AND r.prioridad_id = $${params.length + 1}`;
+      query += ` AND r.prioridad_id = $${paramCount}`;
       params.push(prioridadId);
+      paramCount++;
     }
-
-    query += ` ORDER BY r.fecha_alta DESC LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
+    if (typeof tipo !== 'undefined' && tipo && tipo.toLowerCase() !== 'todos') {
+      query += ` AND UPPER(t.nombre) = $${paramCount}`;
+      params.push(tipo.toUpperCase());
+      paramCount++;
+    }
+    query += ` ORDER BY r.fecha_alta DESC LIMIT $${paramCount} OFFSET $${paramCount + 1}`;
     params.push(limite, offset);
 
     const resultado = await pool.query(query, params);
