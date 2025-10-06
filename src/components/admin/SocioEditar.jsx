@@ -20,8 +20,6 @@ export default function SocioEditar() {
     dni: '',
     email: '',
     telefono: '',
-    direccion: '',
-    fecha_nacimiento: '',
     activo: true
   });
 
@@ -46,8 +44,6 @@ export default function SocioEditar() {
           dni: socio.dni || '',
           email: socio.email || '',
           telefono: socio.telefono || '',
-          direccion: socio.direccion || '',
-          fecha_nacimiento: socio.fecha_nacimiento ? new Date(socio.fecha_nacimiento).toISOString().split('T')[0] : '',
           activo: socio.activo !== undefined ? socio.activo : true
         });
       }
@@ -198,34 +194,6 @@ export default function SocioEditar() {
                   type="tel"
                   name="telefono"
                   value={formData.telefono}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
-
-              {/* Dirección */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Dirección
-                </label>
-                <input
-                  type="text"
-                  name="direccion"
-                  value={formData.direccion}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
-
-              {/* Fecha de Nacimiento */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Fecha de Nacimiento
-                </label>
-                <input
-                  type="date"
-                  name="fecha_nacimiento"
-                  value={formData.fecha_nacimiento}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />

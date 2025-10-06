@@ -53,8 +53,6 @@ class Socio {
       dni, 
       email, 
       telefono, 
-      direccion, 
-      fecha_nacimiento, 
       activo = true 
     } = datos;
     
@@ -65,13 +63,11 @@ class Socio {
         dni, 
         email, 
         telefono, 
-        direccion, 
-        fecha_nacimiento, 
         activo
       )
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      VALUES ($1, $2, $3, $4, $5, $6)
       RETURNING *
-    `, [nombre, apellido, dni, email, telefono, direccion, fecha_nacimiento, activo]);
+    `, [nombre, apellido, dni, email, telefono, activo]);
     
     return resultado.rows[0];
   }

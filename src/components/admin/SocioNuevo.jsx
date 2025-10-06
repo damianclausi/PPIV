@@ -18,8 +18,6 @@ export default function SocioNuevo() {
     dni: '',
     email: '',
     telefono: '',
-    direccion: '',
-    fecha_nacimiento: '',
     activo: true
   });
 
@@ -55,14 +53,7 @@ export default function SocioNuevo() {
     try {
       setGuardando(true);
       
-      // Preparar datos para el backend
-      const datosEnviar = {
-        ...formData,
-        // Convertir fecha de nacimiento a formato ISO si existe
-        fecha_nacimiento: formData.fecha_nacimiento || null
-      };
-      
-      const response = await administradorService.crearSocio(datosEnviar);
+      const response = await administradorService.crearSocio(formData);
       
       console.log('Socio creado:', response);
       
@@ -189,35 +180,6 @@ export default function SocioNuevo() {
                   onChange={handleChange}
                   className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="3804-123456"
-                />
-              </div>
-
-              {/* Dirección */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Dirección
-                </label>
-                <input
-                  type="text"
-                  name="direccion"
-                  value={formData.direccion}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Calle Ejemplo 123"
-                />
-              </div>
-
-              {/* Fecha de Nacimiento */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Fecha de Nacimiento
-                </label>
-                <input
-                  type="date"
-                  name="fecha_nacimiento"
-                  value={formData.fecha_nacimiento}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
 
