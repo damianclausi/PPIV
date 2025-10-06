@@ -86,7 +86,7 @@ export default class AdministradorController {
   }
 
   /**
-   * Obtener perfil de un socio específico
+   * Obtener perfil de un socio específico con sus cuentas
    */
   static async obtenerSocio(req, res) {
     try {
@@ -98,7 +98,16 @@ export default class AdministradorController {
         return respuestaNoEncontrado(res, 'Socio no encontrado');
       }
       
-      return respuestaExitosa(res, socio, 'Socio obtenido exitosamente');
+      // Obtener también las cuentas del socio
+      const cuentas = await Socio.obtenerCuentas(id);
+      
+      // Combinar datos
+      const socioCompleto = {
+        ...socio,
+        cuentas: cuentas || []
+      };
+      
+      return respuestaExitosa(res, socioCompleto, 'Socio obtenido exitosamente');
     } catch (error) {
       console.error('Error al obtener socio:', error);
       return respuestaError(res, 'Error al obtener socio');

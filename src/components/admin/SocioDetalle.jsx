@@ -24,38 +24,31 @@ export default function SocioDetalle() {
   const cargarSocio = async () => {
     try {
       setCargando(true);
-      // TODO: Implementar llamada al backend
-      // const data = await administradorService.obtenerSocio(id);
       
-      // Datos simulados
-      setTimeout(() => {
-        setSocio({
-          socio_id: id,
-          nombre: 'Juan Carlos',
-          apellido: 'Pérez',
-          dni: '12345678',
-          email: 'juan.perez@email.com',
-          telefono: '3804-123456',
-          direccion: 'Calle Principal 123',
-          fecha_alta: '2023-01-15',
-          fecha_nacimiento: '1980-05-20',
-          activo: true
-        });
+      // Importar el servicio dinámicamente
+      const { default: administradorService } = await import('../../services/administradorService.js');
+      
+      // Obtener datos del socio desde la API
+      const response = await administradorService.obtenerSocio(id);
+      
+      if (response.exito && response.datos) {
+        setSocio(response.datos);
         
-        setCuentas([
-          {
-            cuenta_id: 1,
-            numero_cuenta: '00001',
-            direccion: 'Calle Principal 123',
-            activa: true,
-            deuda: 1500.00
-          }
-        ]);
-        
-        setCargando(false);
-      }, 500);
+        // Si el backend devuelve cuentas en la respuesta, usarlas
+        if (response.datos.cuentas) {
+          setCuentas(response.datos.cuentas);
+        } else {
+          // Si no, inicializar como array vacío (se pueden cargar después si hay endpoint separado)
+          setCuentas([]);
+        }
+      } else {
+        console.error('No se pudo cargar el socio');
+        alert('Error al cargar los datos del socio');
+      }
     } catch (error) {
       console.error('Error al cargar socio:', error);
+      alert('Error al cargar los datos del socio: ' + (error.message || 'Error desconocido'));
+    } finally {
       setCargando(false);
     }
   };
