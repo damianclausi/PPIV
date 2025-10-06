@@ -87,8 +87,9 @@ class AdministradorService {
       params.append('prioridad', filtros.prioridad);
     }
     
-    if (filtros.pagina) params.append('pagina', filtros.pagina);
-    if (filtros.limite) params.append('limite', filtros.limite);
+  if (filtros.tipo) params.append('tipo', filtros.tipo);
+  if (filtros.pagina) params.append('pagina', filtros.pagina);
+  if (filtros.limite) params.append('limite', filtros.limite);
     
     const query = params.toString() ? `?${params.toString()}` : '';
     return apiClient.get(`/api/administradores/reclamos${query}`);

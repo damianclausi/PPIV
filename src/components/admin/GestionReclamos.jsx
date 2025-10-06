@@ -14,6 +14,7 @@ export default function GestionReclamos() {
     busqueda: '',
     estado: 'todos',
     prioridad: 'todas',
+    tipo: 'todos',
     pagina: 1,
     limite: 20
   });
@@ -148,7 +149,21 @@ export default function GestionReclamos() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Filtros */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Tipo de reclamo
+              </label>
+              <select
+                value={filtros.tipo}
+                onChange={(e) => setFiltros({ ...filtros, tipo: e.target.value, pagina: 1 })}
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+              >
+                <option value="todos">Todos</option>
+                <option value="ADMINISTRATIVO">Administrativo</option>
+                <option value="TECNICO">Técnico</option>
+              </select>
+            </div>
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Buscar reclamo

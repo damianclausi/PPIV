@@ -219,10 +219,11 @@ export default class AdministradorController {
    */
   static async listarReclamos(req, res) {
     try {
-      const { estado, pagina = 1, limite = 10 } = req.query;
+  const { estado, tipo, pagina = 1, limite = 10 } = req.query;
       
       const resultado = await Reclamo.listarTodos({
         estado,
+        tipo,
         pagina: parseInt(pagina),
         limite: parseInt(limite)
       });
