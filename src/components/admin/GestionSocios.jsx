@@ -6,6 +6,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSocios } from '../../hooks/useAdministrador.js';
 import { ArrowLeft, Search, UserPlus, Edit, Eye, Trash2, Users, ChevronUp, ChevronDown } from 'lucide-react';
+import { formatearFecha } from '../../utils/formatters.js';
 
 export default function GestionSocios() {
   const navigate = useNavigate();
@@ -213,7 +214,7 @@ export default function GestionSocios() {
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {new Date(socio.fecha_alta).toLocaleDateString('es-AR')}
+                          {formatearFecha(socio.fecha_alta)}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                           <div className="flex items-center justify-end gap-2">

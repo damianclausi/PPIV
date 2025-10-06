@@ -4,6 +4,7 @@ import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { Skeleton } from '../ui/skeleton';
 import { Alert, AlertDescription } from '../ui/alert';
+import { formatearFechaHora } from '../../utils/formatters.js';
 import { 
   ArrowLeft, 
   MapPin, 
@@ -78,21 +79,6 @@ export default function ReclamoDetalle() {
     if (prioridadUpper === 'ALTA') return <AlertTriangle className="h-5 w-5 text-red-600" />;
     if (prioridadUpper === 'MEDIA') return <AlertTriangle className="h-5 w-5 text-yellow-600" />;
     return <CheckCircle className="h-5 w-5 text-green-600" />;
-  };
-
-  const formatearFecha = (fecha) => {
-    if (!fecha) return 'N/A';
-    try {
-      return new Date(fecha).toLocaleDateString('es-AR', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      });
-    } catch {
-      return 'N/A';
-    }
   };
 
   if (cargando) {
@@ -205,7 +191,7 @@ export default function ReclamoDetalle() {
                 <Calendar className="h-4 w-4" />
                 <div>
                   <p className="text-sm text-gray-600">Fecha de Alta</p>
-                  <p className="font-medium">{formatearFecha(reclamo.fecha_alta)}</p>
+                  <p className="font-medium">{formatearFechaHora(reclamo.fecha_alta)}</p>
                 </div>
               </div>
             </div>
@@ -243,7 +229,7 @@ export default function ReclamoDetalle() {
               <strong>Reclamo Resuelto</strong>
               {reclamo.fecha_cierre && (
                 <span className="block text-sm mt-1">
-                  Fecha de resolución: {formatearFecha(reclamo.fecha_cierre)}
+                  Fecha de resolución: {formatearFechaHora(reclamo.fecha_cierre)}
                 </span>
               )}
             </AlertDescription>

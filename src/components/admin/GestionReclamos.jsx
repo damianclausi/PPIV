@@ -6,6 +6,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useReclamos } from '../../hooks/useAdministrador.js';
 import { ArrowLeft, Search, AlertCircle, MapPin, Clock, User, UserCog, MoreVertical, Eye, Edit, Trash2, Flag, CheckCircle } from 'lucide-react';
+import { formatearFecha } from '../../utils/formatters.js';
 
 export default function GestionReclamos() {
   const navigate = useNavigate();
@@ -346,7 +347,7 @@ export default function GestionReclamos() {
                     <div className="flex items-center gap-2 text-sm">
                       <Clock className="w-4 h-4 text-gray-400 flex-shrink-0" />
                       <span className="text-gray-600">
-                        {new Date(reclamo.fecha_alta).toLocaleDateString('es-AR')}
+                        {formatearFecha(reclamo.fecha_alta)}
                       </span>
                     </div>
 

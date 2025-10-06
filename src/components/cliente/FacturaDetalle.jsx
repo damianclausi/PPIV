@@ -18,6 +18,7 @@ import {
   Zap,
   AlertCircle
 } from 'lucide-react';
+import { formatearFecha, formatearMesAnio } from '../../utils/formatters.js';
 
 export default function FacturaDetalle() {
   const navigate = useNavigate();
@@ -25,25 +26,6 @@ export default function FacturaDetalle() {
   
   // Usar hook para obtener factura de la API
   const { factura: facturaAPI, cargando, error } = useFactura(id);
-
-  // Funciones de formateo
-  const formatearFecha = (fecha) => {
-    if (!fecha) return 'N/A';
-    const date = new Date(fecha);
-    return date.toLocaleDateString('es-AR', { 
-      year: 'numeric', 
-      month: '2-digit', 
-      day: '2-digit' 
-    });
-  };
-
-  const formatearPeriodo = (fecha) => {
-    if (!fecha) return 'N/A';
-    const date = new Date(fecha);
-    const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
-                   'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-    return `${meses[date.getMonth()]} ${date.getFullYear()}`;
-  };
 
   // Normalizar datos de la factura
   const normalizarFactura = (facturaData) => {
@@ -71,7 +53,7 @@ export default function FacturaDetalle() {
     return {
       id: facturaData.factura_id || facturaData.id,
       numero: facturaData.numero_externo || `F-${String(facturaData.factura_id || facturaData.id).padStart(6, '0')}`,
-      periodo: formatearPeriodo(facturaData.periodo),
+      periodo: formatearMesAnio(facturaData.periodo),
       fecha_emision: formatearFecha(facturaData.periodo),
       vencimiento: formatearFecha(facturaData.vencimiento),
       monto: monto,

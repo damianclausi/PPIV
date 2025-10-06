@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { useFacturas } from '../../hooks/useCliente';
 import clienteService from '../../services/clienteService';
+import { formatearFecha, formatearFechaHora, formatearMesAnio } from '../../utils/formatters.js';
 
 // Simulador de pasarela de pago
 class PasarelaPagoSimulada {
@@ -157,17 +158,6 @@ export default function PagoOnline() {
   const handleSeleccionarFactura = (factura) => {
     const facturaNormalizada = normalizarFactura(factura);
     setFacturaSeleccionada(facturaNormalizada);
-  };
-
-  const formatearPeriodo = (fecha) => {
-    if (!fecha) return 'N/A';
-    if (typeof fecha === 'string' && fecha.includes(' ')) {
-      // Ya está formateado (ej: "Octubre 2024")
-      return fecha;
-    }
-    const date = new Date(fecha);
-    const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
-    return `${meses[date.getMonth()]} ${date.getFullYear()}`;
   };
 
   const handleInputChange = (e) => {
@@ -319,7 +309,7 @@ export default function PagoOnline() {
                       <div>
                         <p className="text-gray-600">Fecha</p>
                         <p className="font-semibold">
-                          {new Date(respuestaPago?.fecha_transaccion).toLocaleString('es-AR')}
+                          {formatearFechaHora(respuestaPago?.fecha_transaccion)}
                         </p>
                       </div>
                       <div>
@@ -438,17 +428,12 @@ export default function PagoOnline() {
               </Alert>
             ) : (
               facturasImpagas.map(factura => {
-                // Formatear fecha de vencimiento de forma segura
-                const formatearFecha = (fecha) => {
+                // Función helper local para formatear con fallback
+                const formatearFechaConFallback = (fecha) => {
                   if (!fecha) return 'No especificado';
                   try {
-                    const fechaObj = new Date(fecha);
-                    if (isNaN(fechaObj.getTime())) return 'No especificado';
-                    return fechaObj.toLocaleDateString('es-AR', { 
-                      day: '2-digit', 
-                      month: '2-digit', 
-                      year: 'numeric' 
-                    });
+                    const fechaFormateada = formatearFecha(fecha);
+                    return fechaFormateada || 'No especificado';
                   } catch {
                     return 'No especificado';
                   }
@@ -486,11 +471,11 @@ export default function PagoOnline() {
                         <div className="flex items-center gap-2 text-sm text-gray-600">
                           <Calendar className="h-4 w-4" />
                           <span>
-                            Vencimiento: {formatearFecha(factura.vencimiento)}
+                            Vencimiento: {formatearFechaConFallback(factura.vencimiento)}
                           </span>
                         </div>
                         <p className="text-xs text-gray-500 mt-1">
-                          Período: {formatearPeriodo(factura.periodo)}
+                          Período: {formatearMesAnio(factura.periodo)}
                         </p>
                       </div>
                       <div className="text-right">
@@ -626,7 +611,7 @@ export default function PagoOnline() {
                   </div>
                   <div className="flex items-center justify-between text-sm text-gray-600">
                     <span>Período:</span>
-                    <span>{formatearPeriodo(facturaSeleccionada.periodo)}</span>
+                    <span>{formatearMesAnio(facturaSeleccionada.periodo)}</span>
                   </div>
                   <div className="flex items-center justify-between pt-2 border-t">
                     <span className="text-lg font-semibold">Total a Pagar:</span>

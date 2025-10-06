@@ -8,6 +8,7 @@ import { ArrowLeft, User, Mail, Phone, MapPin, Calendar, Edit, CreditCard, FileT
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Skeleton } from '../ui/skeleton';
+import { formatearFecha } from '../../utils/formatters.js';
 
 export default function SocioDetalle() {
   const navigate = useNavigate();
@@ -157,7 +158,7 @@ export default function SocioDetalle() {
                   Fecha de Nacimiento
                 </label>
                 <p className="text-gray-900">
-                  {new Date(socio.fecha_nacimiento).toLocaleDateString('es-AR')}
+                  {formatearFecha(socio.fecha_nacimiento)}
                 </p>
               </div>
             </CardContent>
@@ -188,7 +189,7 @@ export default function SocioDetalle() {
               <div>
                 <label className="text-sm font-medium text-gray-600">Fecha de Alta</label>
                 <p className="text-gray-900">
-                  {new Date(socio.fecha_alta).toLocaleDateString('es-AR')}
+                  {formatearFecha(socio.fecha_alta)}
                 </p>
               </div>
               

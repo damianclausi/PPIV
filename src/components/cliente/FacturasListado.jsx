@@ -10,6 +10,7 @@ import { Home, X } from 'lucide-react';
 import { Skeleton } from '../ui/skeleton';
 import { Alert, AlertDescription } from '../ui/alert';
 import { useFacturas } from '../../hooks/useCliente';
+import { formatearFecha, formatearMesAnio } from '../../utils/formatters.js';
 
 export default function FacturasListado() {
   const navigate = useNavigate();
@@ -23,24 +24,6 @@ export default function FacturasListado() {
 
   // Obtener todas las facturas sin filtros (filtraremos localmente)
   const { facturas, cargando, error } = useFacturas();
-
-  // Funciones de formateo
-  const formatearFecha = (fecha) => {
-    if (!fecha) return 'N/A';
-    const date = new Date(fecha);
-    return date.toLocaleDateString('es-AR', { 
-      year: 'numeric', 
-      month: '2-digit', 
-      day: '2-digit' 
-    });
-  };
-
-  const formatearPeriodo = (fecha) => {
-    if (!fecha) return 'N/A';
-    const date = new Date(fecha);
-    const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
-    return `${meses[date.getMonth()]} ${date.getFullYear()}`;
-  };
 
   // Normalizar facturas de la API al formato esperado
   const normalizarFactura = (factura) => {
@@ -62,7 +45,7 @@ export default function FacturasListado() {
       id: factura.factura_id || factura.id,
       numero: factura.numero_externo || factura.numero || `F-${String(factura.factura_id || factura.id).padStart(6, '0')}`,
       periodo: factura.periodo,
-      periodoFormateado: formatearPeriodo(factura.periodo),
+      periodoFormateado: formatearMesAnio(factura.periodo),
       vencimiento: factura.vencimiento,
       vencimientoFormateado: formatearFecha(factura.vencimiento),
       monto: monto,
@@ -325,7 +308,7 @@ export default function FacturasListado() {
                       onClick={() => navigate(`/dashboard/cliente/factura/${factura.id}`)}
                     >
                       <TableCell>{factura.numero || 'N/A'}</TableCell>
-                      <TableCell>{factura.periodoFormateado || formatearPeriodo(factura.periodo) || 'N/A'}</TableCell>
+                      <TableCell>{factura.periodoFormateado || formatearMesAnio(factura.periodo) || 'N/A'}</TableCell>
                       <TableCell>{factura.vencimientoFormateado || formatearFecha(factura.vencimiento) || 'N/A'}</TableCell>
                       <TableCell>${factura.monto ? factura.monto.toFixed(2) : '0.00'}</TableCell>
                       <TableCell>{getStatusBadge(factura.estado)}</TableCell>

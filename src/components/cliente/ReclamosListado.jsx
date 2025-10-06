@@ -7,6 +7,7 @@ import { Skeleton } from '../ui/skeleton';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { ArrowLeft, AlertCircle, MapPin, Calendar, Clock, Plus, AlertTriangle, Info, CheckCircle, Filter } from 'lucide-react';
 import { useReclamos } from '../../hooks/useCliente';
+import { formatearFecha } from '../../utils/formatters.js';
 
 export default function ReclamosListado() {
   const navigate = useNavigate();
@@ -178,7 +179,7 @@ export default function ReclamosListado() {
                     <div className="flex items-center gap-2 text-sm text-gray-600">
                       <Calendar className="h-4 w-4" />
                       <span>
-                        Creado: {new Date(reclamo.fecha_alta).toLocaleDateString('es-AR')}
+                        Creado: {formatearFecha(reclamo.fecha_alta)}
                       </span>
                     </div>
                     
@@ -193,7 +194,7 @@ export default function ReclamosListado() {
                   {reclamo.estado === 'RESUELTO' && (
                     <div className="bg-green-50 border border-green-200 rounded-lg p-3 mt-3">
                       <p className="text-sm text-green-800 font-medium">
-                        ✓ Reclamo resuelto el {new Date(reclamo.fecha_cierre).toLocaleDateString('es-AR')}
+                        ✓ Reclamo resuelto el {formatearFecha(reclamo.fecha_cierre)}
                       </p>
                     </div>
                   )}

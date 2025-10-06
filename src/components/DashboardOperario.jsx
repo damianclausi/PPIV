@@ -11,6 +11,8 @@ import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Clock, MapPin, AlertTriangle, CheckCircle, LayoutGrid, List } from 'lucide-react';
+import operarioService from '../services/operarioService.js';
+import { formatearFecha } from '../utils/formatters.js';
 
 export default function DashboardOperario() {
   const navigate = useNavigate();
@@ -59,23 +61,46 @@ export default function DashboardOperario() {
     e.dataTransfer.dropEffect = 'move';
   };
 
-  const handleDrop = (e, nuevoEstado) => {
+  const handleDrop = async (e, nuevoEstado) => {
     e.preventDefault();
     if (!draggedItem) return;
 
-    // Actualizar el estado del reclamo
+    const estadoAnterior = draggedItem.estado;
+    const estadoNuevo = nuevoEstado.toUpperCase();
+
+    // Actualizar el estado localmente de forma optimista
     const reclamosActualizados = reclamos.map(r => 
       r.reclamo_id === draggedItem.reclamo_id 
-        ? { ...r, estado: nuevoEstado.toUpperCase() }
+        ? { ...r, estado: estadoNuevo }
         : r
     );
 
     setReclamos(reclamosActualizados);
-    
-    // TODO: Llamar a la API para actualizar el estado en el backend
-    console.log(`Reclamo ${draggedItem.reclamo_id} cambiado a ${nuevoEstado}`);
-    
     setDraggedItem(null);
+    
+    try {
+      // Actualizar en el backend
+      await operarioService.actualizarEstadoReclamo(
+        draggedItem.reclamo_id,
+        estadoNuevo,
+        `Estado cambiado de ${estadoAnterior} a ${estadoNuevo} mediante Kanban`
+      );
+      
+      // Recargar reclamos para tener datos frescos del backend
+      recargarReclamos();
+    } catch (error) {
+      console.error('Error al actualizar estado del reclamo:', error);
+      
+      // Revertir el cambio local si falló
+      const reclamosRevertidos = reclamos.map(r => 
+        r.reclamo_id === draggedItem.reclamo_id 
+          ? { ...r, estado: estadoAnterior }
+          : r
+      );
+      setReclamos(reclamosRevertidos);
+      
+      alert('Error al actualizar el estado del reclamo. Por favor, intente nuevamente.');
+    }
   };
 
   const handleDragEnd = () => {
@@ -121,7 +146,7 @@ export default function DashboardOperario() {
 
         <div className="flex items-center gap-2 text-xs text-gray-500">
           <Clock className="h-3 w-3" />
-          {new Date(reclamo.fecha_alta).toLocaleDateString()}
+          {formatearFecha(reclamo.fecha_alta)}
         </div>
       </div>
     </div>
@@ -336,7 +361,7 @@ export default function DashboardOperario() {
                             </span>
                             <span className="flex items-center gap-1">
                               <Clock className="h-3 w-3" />
-                              {new Date(reclamo.fecha_alta).toLocaleDateString()}
+                              {formatearFecha(reclamo.fecha_alta)}
                             </span>
                           </div>
                         </div>

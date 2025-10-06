@@ -11,6 +11,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Skeleton } from '../ui/skeleton';
+import { formatearFechaHora } from '../../utils/formatters.js';
 
 export default function ReclamoDetalleAdmin() {
   const navigate = useNavigate();
@@ -238,7 +239,7 @@ export default function ReclamoDetalleAdmin() {
                   Fecha de Alta
                 </label>
                 <p className="text-gray-900">
-                  {new Date(reclamo.fecha_alta).toLocaleString('es-AR')}
+                  {formatearFechaHora(reclamo.fecha_alta)}
                 </p>
               </div>
 

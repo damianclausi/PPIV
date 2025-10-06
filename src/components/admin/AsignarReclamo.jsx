@@ -5,6 +5,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, UserCog, AlertCircle, Check, MapPin, Calendar } from 'lucide-react';
+import { formatearFecha } from '../../utils/formatters.js';
 
 export default function AsignarReclamo() {
   const navigate = useNavigate();
@@ -149,7 +150,7 @@ export default function AsignarReclamo() {
                   <Calendar className="w-4 h-4" />
                   Fecha de Alta
                 </label>
-                <p className="text-gray-900">{reclamo.fecha_alta.toLocaleDateString('es-AR')}</p>
+                <p className="text-gray-900">{formatearFecha(reclamo.fecha_alta)}</p>
               </div>
             </div>
           </div>
