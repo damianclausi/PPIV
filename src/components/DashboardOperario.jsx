@@ -99,7 +99,7 @@ export default function DashboardOperario() {
       <div className="space-y-3">
         <div className="flex items-start justify-between gap-2">
           <h4 className="font-semibold text-sm line-clamp-2">
-            {reclamo.tipo_reclamo || 'Reclamo Técnico'}
+            {reclamo.detalle_reclamo || reclamo.tipo_reclamo || 'Reclamo Técnico'}
           </h4>
           {getPriorityBadge(reclamo.prioridad)}
         </div>
@@ -322,7 +322,7 @@ export default function DashboardOperario() {
                       <div className="flex items-center justify-between">
                         <div className="flex-1">
                           <div className="flex items-center gap-3 mb-2">
-                            <h4 className="font-semibold">{reclamo.tipo_reclamo || 'Reclamo Técnico'}</h4>
+                            <h4 className="font-semibold">{reclamo.detalle_reclamo || reclamo.tipo_reclamo || 'Reclamo Técnico'}</h4>
                             {getPriorityBadge(reclamo.prioridad)}
                             {getStatusBadge(reclamo.estado?.toLowerCase())}
                           </div>
