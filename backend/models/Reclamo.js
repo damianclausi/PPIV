@@ -202,6 +202,7 @@ class Reclamo {
       INNER JOIN cuenta c ON r.cuenta_id = c.cuenta_id
       INNER JOIN socio s ON c.socio_id = s.socio_id
       WHERE ot.empleado_id = $1
+        AND t.tipo_id = 1
     `;
 
     const params = [operarioId];
@@ -239,7 +240,10 @@ class Reclamo {
         COUNT(*) as total
       FROM reclamo r
       INNER JOIN orden_trabajo ot ON r.reclamo_id = ot.reclamo_id
+      INNER JOIN detalle_tipo_reclamo d ON r.detalle_id = d.detalle_id
+      INNER JOIN tipo_reclamo t ON d.tipo_id = t.tipo_id
       WHERE ot.empleado_id = $1
+        AND t.tipo_id = 1
     `, [operarioId]);
     return resultado.rows[0];
   }
