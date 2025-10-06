@@ -157,10 +157,10 @@ class ClienteController {
   static async crearReclamo(req, res) {
     try {
       const socioId = req.usuario.socio_id;
-      const { cuenta_id, tipo_id, descripcion, prioridad_id = 2 } = req.body;
+      const { cuenta_id, detalle_id, descripcion, prioridad_id = 2 } = req.body;
 
       // Validar campos requeridos
-      if (!cuenta_id || !tipo_id || !descripcion) {
+      if (!cuenta_id || !detalle_id || !descripcion) {
         return respuestaError(res, 'Faltan campos requeridos', 400);
       }
 
@@ -175,7 +175,7 @@ class ClienteController {
       // Crear reclamo
       const reclamo = await Reclamo.crear({
         cuentaId: cuenta_id,
-        tipoId: tipo_id,
+        detalleId: detalle_id,
         descripcion,
         prioridadId: prioridad_id,
         canal: 'WEB'

@@ -10,6 +10,7 @@ import { Alert, AlertDescription } from '../ui/alert';
 import { ArrowLeft, Send, CheckCircle, AlertCircle } from 'lucide-react';
 import clienteService from '../../services/clienteService';
 import { useTiposReclamo } from '../../hooks/useTiposReclamo';
+import { useDetallesTipoReclamo, agruparDetallesPorTipo } from '../../hooks/useDetallesTipoReclamo';
 
 export default function ReclamoNuevo() {
   const navigate = useNavigate();
@@ -20,13 +21,19 @@ export default function ReclamoNuevo() {
   const [cargandoCuentas, setCargandoCuentas] = useState(true);
   const [formData, setFormData] = useState({
     cuenta_id: '',
-    tipo_id: '',
+    detalle_id: '',
     descripcion: ''
-    // prioridad_id se calculará automáticamente según el tipo
+    // prioridad_id se calculará automáticamente según el detalle
   });
 
-  // Cargar tipos de reclamo desde la base de datos
+  // Cargar tipos principales (TECNICO / ADMINISTRATIVO)
   const { tipos: tiposReclamo, cargando: cargandoTipos, error: errorTipos } = useTiposReclamo();
+  
+  // Cargar detalles de tipos de reclamo
+  const { detalles, cargando: cargandoDetalles, error: errorDetalles } = useDetallesTipoReclamo();
+  
+  // Agrupar detalles por tipo para mostrar de forma organizada
+  const detallesAgrupados = agruparDetallesPorTipo(detalles);
 
   useEffect(() => {
     cargarCuentas();
@@ -36,7 +43,10 @@ export default function ReclamoNuevo() {
     if (errorTipos) {
       setError('Error al cargar tipos de reclamo: ' + errorTipos);
     }
-  }, [errorTipos]);
+    if (errorDetalles) {
+      setError('Error al cargar detalles de reclamo: ' + errorDetalles);
+    }
+  }, [errorTipos, errorDetalles]);
 
   const cargarCuentas = async () => {
     try {
@@ -55,23 +65,23 @@ export default function ReclamoNuevo() {
     }
   };
 
-  // Determinar prioridad automáticamente según el tipo de reclamo
-  const obtenerPrioridad = (tipoId) => {
-    const tipo = parseInt(tipoId);
-    // Tipos críticos (Prioridad ALTA = 1):
+  // Determinar prioridad automáticamente según el detalle de reclamo
+  const obtenerPrioridad = (detalleId) => {
+    const detalle = parseInt(detalleId);
+    // Detalles críticos (Prioridad ALTA = 1):
     // - 1: Falta de Suministro
     // - 3: Daños en Red
-    if (tipo === 1 || tipo === 3) {
+    if (detalle === 1 || detalle === 3) {
       return 1; // Alta
     }
-    // Tipos importantes (Prioridad MEDIA = 2):
+    // Detalles importantes (Prioridad MEDIA = 2):
     // - 2: Fluctuaciones de Tensión
     // - 4: Medidor Defectuoso
     // - 8: Calidad del Servicio
-    if (tipo === 2 || tipo === 4 || tipo === 8) {
+    if (detalle === 2 || detalle === 4 || detalle === 8) {
       return 2; // Media
     }
-    // Tipos no urgentes (Prioridad BAJA = 3):
+    // Detalles no urgentes (Prioridad BAJA = 3):
     // - 5: Facturación
     // - 6: Conexión Nueva
     // - 7: Reconexión
@@ -81,7 +91,7 @@ export default function ReclamoNuevo() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!formData.cuenta_id || !formData.tipo_id || !formData.descripcion) {
+    if (!formData.cuenta_id || !formData.detalle_id || !formData.descripcion) {
       setError('Por favor complete todos los campos obligatorios');
       return;
     }
@@ -90,13 +100,13 @@ export default function ReclamoNuevo() {
     setError(null);
 
     try {
-      // Determinar prioridad automáticamente según el tipo
-      const prioridadAutomatica = obtenerPrioridad(formData.tipo_id);
+      // Determinar prioridad automáticamente según el detalle
+      const prioridadAutomatica = obtenerPrioridad(formData.detalle_id);
       
       // Preparar datos en el formato que espera el backend
       const datosReclamo = {
         cuenta_id: parseInt(formData.cuenta_id),
-        tipo_id: parseInt(formData.tipo_id),
+        detalle_id: parseInt(formData.detalle_id),
         descripcion: formData.descripcion,
         prioridad_id: prioridadAutomatica
       };
@@ -200,32 +210,40 @@ export default function ReclamoNuevo() {
                 </div>
               )}
 
-              {/* Tipo de Reclamo */}
+              {/* Tipo de Reclamo (con jerarquía) */}
               <div className="space-y-2">
-                <Label htmlFor="tipo_id">
+                <Label htmlFor="detalle_id">
                   Tipo de Reclamo <span className="text-red-500">*</span>
                 </Label>
                 <Select 
-                  value={formData.tipo_id}
-                  onValueChange={(value) => setFormData({ ...formData, tipo_id: value })}
-                  disabled={cargandoTipos}
+                  value={formData.detalle_id}
+                  onValueChange={(value) => setFormData({ ...formData, detalle_id: value })}
+                  disabled={cargandoDetalles}
                   required
                 >
-                  <SelectTrigger id="tipo_id">
+                  <SelectTrigger id="detalle_id">
                     <SelectValue placeholder={
-                      cargandoTipos 
+                      cargandoDetalles 
                         ? "Cargando tipos..." 
                         : "Seleccione el tipo de reclamo"
                     } />
                   </SelectTrigger>
                   <SelectContent>
-                    {tiposReclamo.map(tipo => (
-                      <SelectItem 
-                        key={tipo.tipo_id} 
-                        value={tipo.tipo_id.toString()}
-                      >
-                        {tipo.nombre}
-                      </SelectItem>
+                    {Object.entries(detallesAgrupados).map(([tipo, detallesDelTipo]) => (
+                      <div key={tipo}>
+                        <div className="px-2 py-1.5 text-sm font-semibold text-gray-500">
+                          {tipo}
+                        </div>
+                        {detallesDelTipo.map(detalle => (
+                          <SelectItem 
+                            key={detalle.detalle_id} 
+                            value={detalle.detalle_id.toString()}
+                            className="pl-6"
+                          >
+                            {detalle.nombre}
+                          </SelectItem>
+                        ))}
+                      </div>
                     ))}
                   </SelectContent>
                 </Select>

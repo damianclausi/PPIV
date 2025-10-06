@@ -9,19 +9,21 @@ class Reclamo {
       SELECT 
         r.reclamo_id,
         r.cuenta_id,
-        r.tipo_id,
+        r.detalle_id,
         r.descripcion,
         r.estado,
         r.prioridad_id,
         r.fecha_alta,
         r.fecha_cierre,
         r.canal,
-        tr.nombre as tipo_reclamo,
+        d.nombre as detalle_reclamo,
+        t.nombre as tipo_reclamo,
         p.nombre as prioridad,
         c.numero_cuenta,
         c.direccion
       FROM reclamo r
-      INNER JOIN tipo_reclamo tr ON r.tipo_id = tr.tipo_id
+      INNER JOIN detalle_tipo_reclamo d ON r.detalle_id = d.detalle_id
+      INNER JOIN tipo_reclamo t ON d.tipo_id = t.tipo_id
       INNER JOIN prioridad p ON r.prioridad_id = p.prioridad_id
       INNER JOIN cuenta c ON r.cuenta_id = c.cuenta_id
       WHERE c.socio_id = $1
@@ -48,8 +50,9 @@ class Reclamo {
     const resultado = await pool.query(`
       SELECT 
         r.*,
-        tr.nombre as tipo_reclamo,
-        tr.descripcion as tipo_descripcion,
+        d.nombre as detalle_reclamo,
+        t.nombre as tipo_reclamo,
+        t.descripcion as tipo_descripcion,
         p.nombre as prioridad,
         c.numero_cuenta,
         c.direccion,
@@ -58,7 +61,8 @@ class Reclamo {
         s.apellido as socio_apellido,
         s.telefono as socio_telefono
       FROM reclamo r
-      INNER JOIN tipo_reclamo tr ON r.tipo_id = tr.tipo_id
+      INNER JOIN detalle_tipo_reclamo d ON r.detalle_id = d.detalle_id
+      INNER JOIN tipo_reclamo t ON d.tipo_id = t.tipo_id
       INNER JOIN prioridad p ON r.prioridad_id = p.prioridad_id
       INNER JOIN cuenta c ON r.cuenta_id = c.cuenta_id
       INNER JOIN socio s ON c.socio_id = s.socio_id
@@ -70,12 +74,12 @@ class Reclamo {
   /**
    * Crear nuevo reclamo
    */
-  static async crear({ cuentaId, tipoId, descripcion, prioridadId = 2, canal = 'WEB' }) {
+  static async crear({ cuentaId, detalleId, descripcion, prioridadId = 2, canal = 'WEB' }) {
     const resultado = await pool.query(`
-      INSERT INTO reclamo (cuenta_id, tipo_id, descripcion, prioridad_id, canal, estado, fecha_alta)
+      INSERT INTO reclamo (cuenta_id, detalle_id, descripcion, prioridad_id, canal, estado, fecha_alta)
       VALUES ($1, $2, $3, $4, $5, 'PENDIENTE', NOW())
       RETURNING *
-    `, [cuentaId, tipoId, descripcion, prioridadId, canal]);
+    `, [cuentaId, detalleId, descripcion, prioridadId, canal]);
     return resultado.rows[0];
   }
 
@@ -134,14 +138,16 @@ class Reclamo {
         r.estado,
         r.fecha_alta,
         r.fecha_cierre,
-        tr.nombre as tipo_reclamo,
+        d.nombre as detalle_reclamo,
+        t.nombre as tipo_reclamo,
         p.nombre as prioridad,
         c.numero_cuenta,
         c.direccion,
         s.nombre as socio_nombre,
         s.apellido as socio_apellido
       FROM reclamo r
-      INNER JOIN tipo_reclamo tr ON r.tipo_id = tr.tipo_id
+      INNER JOIN detalle_tipo_reclamo d ON r.detalle_id = d.detalle_id
+      INNER JOIN tipo_reclamo t ON d.tipo_id = t.tipo_id
       INNER JOIN prioridad p ON r.prioridad_id = p.prioridad_id
       INNER JOIN cuenta c ON r.cuenta_id = c.cuenta_id
       INNER JOIN socio s ON c.socio_id = s.socio_id
