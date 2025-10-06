@@ -69,13 +69,33 @@ export default function DashboardOperario() {
     const estadoNuevo = nuevoEstado.toUpperCase();
 
     // Actualizar el estado localmente de forma optimista
+    // Agregar timestamp de cambio para ordenar al final
+    const ahora = new Date().toISOString();
     const reclamosActualizados = reclamos.map(r => 
       r.reclamo_id === draggedItem.reclamo_id 
-        ? { ...r, estado: estadoNuevo }
+        ? { ...r, estado: estadoNuevo, ultima_actualizacion: ahora }
         : r
     );
 
-    setReclamos(reclamosActualizados);
+    // Ordenar: los que tienen ultima_actualizacion van al final de su columna
+    const reclamosOrdenados = reclamosActualizados.sort((a, b) => {
+      // Primero agrupar por estado
+      if (a.estado !== b.estado) return 0;
+      
+      // Dentro del mismo estado, los recién movidos van al final
+      if (a.ultima_actualizacion && !b.ultima_actualizacion) return 1;
+      if (!a.ultima_actualizacion && b.ultima_actualizacion) return -1;
+      
+      // Si ambos tienen timestamp, ordenar por fecha (más reciente al final)
+      if (a.ultima_actualizacion && b.ultima_actualizacion) {
+        return new Date(a.ultima_actualizacion) - new Date(b.ultima_actualizacion);
+      }
+      
+      // Por defecto, mantener orden original (por fecha_alta)
+      return new Date(a.fecha_alta) - new Date(b.fecha_alta);
+    });
+
+    setReclamos(reclamosOrdenados);
     setDraggedItem(null);
     
     try {
@@ -94,7 +114,7 @@ export default function DashboardOperario() {
       // Revertir el cambio local si falló
       const reclamosRevertidos = reclamos.map(r => 
         r.reclamo_id === draggedItem.reclamo_id 
-          ? { ...r, estado: estadoAnterior }
+          ? { ...r, estado: estadoAnterior, ultima_actualizacion: undefined }
           : r
       );
       setReclamos(reclamosRevertidos);
