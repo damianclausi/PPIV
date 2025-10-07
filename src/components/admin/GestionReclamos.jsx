@@ -108,14 +108,14 @@ export default function GestionReclamos() {
 
   const getPrioridadColor = (prioridad) => {
     switch (prioridad) {
-      case 'ALTA':
-        return 'text-red-600 font-bold';
-      case 'MEDIA':
-        return 'text-yellow-600 font-semibold';
-      case 'BAJA':
-        return 'text-gray-600';
+      case 'Alta':
+        return 'bg-red-100 text-red-800 border-red-200';
+      case 'Media':
+        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case 'Baja':
+        return 'bg-blue-100 text-blue-800 border-blue-200';
       default:
-        return 'text-gray-600';
+        return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   };
 
@@ -367,8 +367,19 @@ export default function GestionReclamos() {
                     </div>
 
                     <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-                      <span className={`text-sm ${getPrioridadColor(reclamo.prioridad)}`}>
-                        {reclamo.prioridad}
+                      <span className="flex items-center gap-2">
+                        <Flag className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                        <span className="font-medium text-gray-600">Prioridad:</span>
+                        <span 
+                          className={`px-3 py-1 text-xs font-semibold rounded-full border ${
+                            reclamo.prioridad === 'Alta' ? 'bg-red-100 text-red-800 border-red-200' :
+                            reclamo.prioridad === 'Media' ? 'bg-yellow-100 text-yellow-800 border-yellow-200' :
+                            reclamo.prioridad === 'Baja' ? 'bg-blue-100 text-blue-800 border-blue-200' :
+                            'bg-gray-100 text-gray-800 border-gray-200'
+                          }`}
+                        >
+                          {reclamo.prioridad}
+                        </span>
                       </span>
                       {reclamo.estado === 'PENDIENTE' && (
                         <button

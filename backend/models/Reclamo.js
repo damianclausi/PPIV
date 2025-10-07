@@ -70,7 +70,6 @@ class Reclamo {
       LEFT JOIN orden_trabajo ot ON r.reclamo_id = ot.reclamo_id
       WHERE r.reclamo_id = $1
     `, [reclamoId]);
-  console.log('Resultado reclamo obtenerPorId:', resultado.rows);
   return resultado.rows[0];
   }
 
