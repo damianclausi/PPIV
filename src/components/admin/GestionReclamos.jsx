@@ -95,12 +95,10 @@ export default function GestionReclamos() {
     switch (estado) {
       case 'PENDIENTE':
         return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'EN_PROCESO':
+      case 'EN CURSO':
         return 'bg-blue-100 text-blue-800 border-blue-200';
       case 'RESUELTO':
         return 'bg-green-100 text-green-800 border-green-200';
-      case 'CERRADO':
-        return 'bg-gray-100 text-gray-800 border-gray-200';
       default:
         return 'bg-gray-100 text-gray-800 border-gray-200';
     }
@@ -191,9 +189,8 @@ export default function GestionReclamos() {
               >
                 <option value="todos">Todos</option>
                 <option value="PENDIENTE">Pendientes</option>
-                <option value="EN_PROCESO">En Proceso</option>
+                <option value="EN CURSO">En Curso</option>
                 <option value="RESUELTO">Resueltos</option>
-                <option value="CERRADO">Cerrados</option>
               </select>
             </div>
 
@@ -302,19 +299,17 @@ export default function GestionReclamos() {
                                   Cambiar prioridad
                                 </button>
                                 
-                                {reclamo.estado !== 'CERRADO' && (
-                                  <button
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleCerrarReclamo(reclamo.reclamo_id);
-                                      setMenuAbierto(null);
-                                    }}
-                                    className="w-full px-4 py-2 text-sm text-left text-green-700 hover:bg-green-50 flex items-center gap-2"
-                                  >
-                                    <CheckCircle className="w-4 h-4" />
-                                    Marcar como cerrado
-                                  </button>
-                                )}
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleCerrarReclamo(reclamo.reclamo_id);
+                                    setMenuAbierto(null);
+                                  }}
+                                  className="w-full px-4 py-2 text-sm text-left text-green-700 hover:bg-green-50 flex items-center gap-2"
+                                >
+                                  <CheckCircle className="w-4 h-4" />
+                                  Marcar como cerrado
+                                </button>
                                 
                                 <div className="border-t border-gray-100 my-1"></div>
                                 
