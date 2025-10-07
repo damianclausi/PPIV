@@ -219,23 +219,33 @@ export default class AdministradorController {
    */
   static async listarReclamos(req, res) {
     try {
-  const { estado, tipo, pagina = 1, limite = 10 } = req.query;
-      
+  const { estado, prioridad, tipo, pagina = 1, limite = 10 } = req.query;
+
+      // Convertir nombre de prioridad a ID
+      let prioridadId = null;
+      if (prioridad && prioridad !== 'todas') {
+        const prioridadesMap = {
+          'ALTA': 1,
+          'MEDIA': 2,
+          'BAJA': 3
+        };
+        prioridadId = prioridadesMap[prioridad.toUpperCase()];
+      }
+
       const resultado = await Reclamo.listarTodos({
         estado,
+        prioridadId,
         tipo,
-        pagina: parseInt(pagina),
-        limite: parseInt(limite)
+        limite: parseInt(limite),
+        offset: (parseInt(pagina) - 1) * parseInt(limite)
       });
-      
+
       return respuestaExitosa(res, resultado, 'Reclamos obtenidos exitosamente');
     } catch (error) {
       console.error('Error al listar reclamos:', error);
       return respuestaError(res, 'Error al listar reclamos');
     }
-  }
-
-  /**
+  }  /**
    * Obtener un reclamo específico
    */
   static async obtenerReclamo(req, res) {
