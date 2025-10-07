@@ -19,9 +19,7 @@ backend/.env
 backend/.env.test
 
 # Credentials documentation (local only)
-CREDENTIALS.md
-SETUP.md
-SECURITY_ROTATION.md
+local-docs/
 
 # IDE
 .vscode
