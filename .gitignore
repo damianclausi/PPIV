@@ -18,7 +18,7 @@ build
 backend/.env
 backend/.env.test
 
-# Credentials documentation (local only)
+# Documentación de Credenciales  (solo local)
 local-docs/
 
 # IDE
