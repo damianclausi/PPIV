@@ -87,7 +87,8 @@ class AdministradorService {
       params.append('prioridad', filtros.prioridad);
     }
     
-        if (filtros.busqueda !== undefined) params.append('busqueda', filtros.busqueda);
+    // Siempre enviar busqueda, incluso si está vacío
+    params.append('busqueda', filtros.busqueda || '');
     if (filtros.tipo) params.append('tipo', filtros.tipo);
     if (filtros.pagina) params.append('pagina', filtros.pagina);
     if (filtros.limite) params.append('limite', filtros.limite);

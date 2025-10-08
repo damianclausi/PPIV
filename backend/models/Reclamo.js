@@ -132,7 +132,7 @@ class Reclamo {
   /**
    * Listar todos los reclamos (para administrativos)
    */
-  static async listarTodos({ estado = null, prioridadId = null, tipo = null, limite = 50, offset = 0 }) {
+  static async listarTodos({ estado = null, prioridadId = null, tipo = null, busqueda = null, limite = 50, offset = 0 }) {
   let query = `
       SELECT 
         r.reclamo_id,
@@ -172,6 +172,11 @@ class Reclamo {
     if (typeof tipo !== 'undefined' && tipo && tipo.toLowerCase() !== 'todos') {
       query += ` AND UPPER(t.nombre) = $${paramCount}`;
       params.push(tipo.toUpperCase());
+      paramCount++;
+    }
+    if (busqueda) {
+      query += ` AND (CAST(r.reclamo_id AS TEXT) ILIKE $${paramCount} OR s.nombre ILIKE $${paramCount} OR s.apellido ILIKE $${paramCount} OR c.direccion ILIKE $${paramCount})`;
+      params.push(`%${busqueda}%`);
       paramCount++;
     }
     query += ` ORDER BY r.fecha_alta DESC LIMIT $${paramCount} OFFSET $${paramCount + 1}`;

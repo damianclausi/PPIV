@@ -2,7 +2,7 @@
  * Custom Hooks para Administradores
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import administradorService from '../services/administradorService.js';
 
 /**
@@ -117,12 +117,10 @@ export function useReclamos(filtros = {}) {
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    cargarReclamos();
-  }, [JSON.stringify(filtros)]);
+  // Memoizar los filtros stringified para evitar re-ejecuciones innecesarias
+  const filtrosMemo = useMemo(() => JSON.stringify(filtros), [filtros]);
 
-  const cargarReclamos = async () => {
-    console.log('📞 cargarReclamos ejecutándose con filtros:', filtros);
+  const cargarReclamos = useCallback(async () => {
     try {
       setCargando(true);
       const data = await administradorService.listarReclamos(filtros);
@@ -137,7 +135,11 @@ export function useReclamos(filtros = {}) {
     } finally {
       setCargando(false);
     }
-  };
+  }, [filtrosMemo]);
+
+  useEffect(() => {
+    cargarReclamos();
+  }, [cargarReclamos]);
 
   return { 
     reclamos, 
