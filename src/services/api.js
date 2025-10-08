@@ -74,6 +74,10 @@ class ApiClient {
 
       return data;
     } catch (error) {
+      console.error('❌ Error en API request:', error);
+      if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        console.error('🚫 Error de red - No se puede conectar al servidor');
+      }
       if (error.status === 401) {
         // Token inválido o expirado
         this.removeToken();

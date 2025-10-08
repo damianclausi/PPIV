@@ -75,7 +75,6 @@ class AdministradorService {
    * Listar todos los reclamos
    */
   async listarReclamos(filtros = {}) {
-    console.log('🔍 administradorService.listarReclamos llamado con filtros:', filtros);
     const params = new URLSearchParams();
     
     // Solo enviar estado si no es "todos"
@@ -94,7 +93,6 @@ class AdministradorService {
     if (filtros.limite) params.append('limite', filtros.limite);
     
     const query = params.toString() ? `?${params.toString()}` : '';
-    console.log('🌐 URL generada:', `/api/administradores/reclamos${query}`);
     return apiClient.get(`/api/administradores/reclamos${query}`);
   }
 

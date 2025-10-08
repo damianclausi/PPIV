@@ -119,9 +119,10 @@ export function useReclamos(filtros = {}) {
 
   useEffect(() => {
     cargarReclamos();
-  }, [filtros.estado, filtros.prioridad, filtros.tipo, filtros.pagina, filtros.limite, filtros.busqueda]);
+  }, [JSON.stringify(filtros)]);
 
   const cargarReclamos = async () => {
+    console.log('📞 cargarReclamos ejecutándose con filtros:', filtros);
     try {
       setCargando(true);
       const data = await administradorService.listarReclamos(filtros);

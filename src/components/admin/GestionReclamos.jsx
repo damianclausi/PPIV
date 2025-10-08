@@ -23,8 +23,6 @@ export default function GestionReclamos() {
   const { reclamos, total, cargando } = useReclamos(filtros);
   const totalPaginas = Math.ceil(total / filtros.limite);
 
-  console.log('🎯 GestionReclamos render - reclamos:', reclamos?.length || 0);
-
   // Handlers para acciones del menú
   const handleCambiarPrioridad = async (reclamoId) => {
     const nuevaPrioridad = prompt('Ingrese la nueva prioridad (ALTA, MEDIA, BAJA):');
