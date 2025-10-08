@@ -23,6 +23,8 @@ export default function GestionReclamos() {
   const { reclamos, total, cargando } = useReclamos(filtros);
   const totalPaginas = Math.ceil(total / filtros.limite);
 
+  console.log('🎯 GestionReclamos render - reclamos:', reclamos?.length || 0);
+
   // Handlers para acciones del menú
   const handleCambiarPrioridad = async (reclamoId) => {
     const nuevaPrioridad = prompt('Ingrese la nueva prioridad (ALTA, MEDIA, BAJA):');
@@ -172,7 +174,9 @@ export default function GestionReclamos() {
                   type="text"
                   placeholder="ID, cliente, dirección..."
                   value={filtros.busqueda}
-                  onChange={(e) => setFiltros({ ...filtros, busqueda: e.target.value, pagina: 1 })}
+                  onChange={(e) => {
+                    setFiltros({ ...filtros, busqueda: e.target.value, pagina: 1 });
+                  }}
                   className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 />
               </div>

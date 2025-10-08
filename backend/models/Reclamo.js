@@ -182,6 +182,49 @@ class Reclamo {
   }
 
   /**
+   * Contar reclamos con filtros
+   */
+  static async contarTodos({ estado = null, prioridadId = null, tipo = null, busqueda = null }) {
+    let query = `
+      SELECT COUNT(*) as total
+      FROM reclamo r
+      INNER JOIN detalle_tipo_reclamo d ON r.detalle_id = d.detalle_id
+      INNER JOIN tipo_reclamo t ON d.tipo_id = t.tipo_id
+      INNER JOIN prioridad p ON r.prioridad_id = p.prioridad_id
+      INNER JOIN cuenta c ON r.cuenta_id = c.cuenta_id
+      INNER JOIN socio s ON c.socio_id = s.socio_id
+      WHERE 1=1
+    `;
+
+    const params = [];
+    let paramCount = 1;
+
+    if (estado) {
+      query += ` AND r.estado = $${paramCount}`;
+      params.push(estado);
+      paramCount++;
+    }
+    if (prioridadId) {
+      query += ` AND r.prioridad_id = $${paramCount}`;
+      params.push(prioridadId);
+      paramCount++;
+    }
+    if (typeof tipo !== 'undefined' && tipo && tipo.toLowerCase() !== 'todos') {
+      query += ` AND UPPER(t.nombre) = $${paramCount}`;
+      params.push(tipo.toUpperCase());
+      paramCount++;
+    }
+    if (busqueda) {
+      query += ` AND (CAST(r.reclamo_id AS TEXT) ILIKE $${paramCount} OR s.nombre ILIKE $${paramCount} OR s.apellido ILIKE $${paramCount} OR c.direccion ILIKE $${paramCount})`;
+      params.push(`%${busqueda}%`);
+      paramCount++;
+    }
+
+    const resultado = await pool.query(query, params);
+    return parseInt(resultado.rows[0].total);
+  }
+
+  /**
    * Obtener reclamos asignados a un operario
    */
   static async obtenerPorOperario(operarioId, { estado = null, pagina = 1, limite = 10 } = {}) {

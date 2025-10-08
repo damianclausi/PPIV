@@ -75,6 +75,7 @@ class AdministradorService {
    * Listar todos los reclamos
    */
   async listarReclamos(filtros = {}) {
+    console.log('🔍 administradorService.listarReclamos llamado con filtros:', filtros);
     const params = new URLSearchParams();
     
     // Solo enviar estado si no es "todos"
@@ -87,11 +88,13 @@ class AdministradorService {
       params.append('prioridad', filtros.prioridad);
     }
     
-  if (filtros.tipo) params.append('tipo', filtros.tipo);
-  if (filtros.pagina) params.append('pagina', filtros.pagina);
-  if (filtros.limite) params.append('limite', filtros.limite);
+        if (filtros.busqueda !== undefined) params.append('busqueda', filtros.busqueda);
+    if (filtros.tipo) params.append('tipo', filtros.tipo);
+    if (filtros.pagina) params.append('pagina', filtros.pagina);
+    if (filtros.limite) params.append('limite', filtros.limite);
     
     const query = params.toString() ? `?${params.toString()}` : '';
+    console.log('🌐 URL generada:', `/api/administradores/reclamos${query}`);
     return apiClient.get(`/api/administradores/reclamos${query}`);
   }
 

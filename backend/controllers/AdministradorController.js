@@ -219,7 +219,7 @@ export default class AdministradorController {
    */
   static async listarReclamos(req, res) {
     try {
-  const { estado, prioridad, tipo, pagina = 1, limite = 10 } = req.query;
+  const { estado, prioridad, tipo, pagina = 1, limite = 10, busqueda } = req.query;
 
       // Convertir nombre de prioridad a ID
       let prioridadId = null;
@@ -236,11 +236,28 @@ export default class AdministradorController {
         estado,
         prioridadId,
         tipo,
+        busqueda,
         limite: parseInt(limite),
         offset: (parseInt(pagina) - 1) * parseInt(limite)
       });
 
-      return respuestaExitosa(res, resultado, 'Reclamos obtenidos exitosamente');
+      // Obtener el total de registros para paginación
+      const totalRegistros = await Reclamo.contarTodos({
+        estado,
+        prioridadId,
+        tipo,
+        busqueda
+      });
+
+      const respuesta = {
+        reclamos: resultado,
+        total: totalRegistros,
+        pagina: parseInt(pagina),
+        limite: parseInt(limite),
+        totalPaginas: Math.ceil(totalRegistros / parseInt(limite))
+      };
+
+      return respuestaExitosa(res, respuesta, 'Reclamos obtenidos exitosamente');
     } catch (error) {
       console.error('Error al listar reclamos:', error);
       return respuestaError(res, 'Error al listar reclamos');

@@ -119,7 +119,7 @@ export function useReclamos(filtros = {}) {
 
   useEffect(() => {
     cargarReclamos();
-  }, [filtros.estado, filtros.prioridad, filtros.tipo, filtros.pagina, filtros.limite]);
+  }, [filtros.estado, filtros.prioridad, filtros.tipo, filtros.pagina, filtros.limite, filtros.busqueda]);
 
   const cargarReclamos = async () => {
     try {
