@@ -5,6 +5,7 @@
 
 import express from 'express';
 import AdministradorController from '../controllers/AdministradorController.js';
+import OTAdministrativasController from '../controllers/OTAdministrativasController.js';
 import { autenticar, esAdmin } from '../middleware/auth.js';
 
 const router = express.Router();
@@ -34,5 +35,12 @@ router.patch('/reclamos/:id/asignar', AdministradorController.asignarOperarioRec
 
 // Gestión de empleados
 router.get('/empleados', AdministradorController.listarEmpleados);
+
+// Gestión de OTs Administrativas (sin empleado asignado)
+router.get('/ots/administrativas/resumen', OTAdministrativasController.obtenerResumen);
+router.get('/ots/administrativas', OTAdministrativasController.listar);
+router.get('/ots/administrativas/:id', OTAdministrativasController.obtenerDetalle);
+router.patch('/ots/administrativas/:id/en-proceso', OTAdministrativasController.marcarEnProceso);
+router.patch('/ots/administrativas/:id/cerrar', OTAdministrativasController.cerrar);
 
 export default router;

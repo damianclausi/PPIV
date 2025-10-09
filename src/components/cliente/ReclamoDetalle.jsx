@@ -15,9 +15,10 @@ import {
   AlertCircle,
   CheckCircle,
   AlertTriangle,
-  Info
+  Info,
+  RefreshCw
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import clienteService from '../../services/clienteService';
 
 export default function ReclamoDetalle() {
@@ -26,21 +27,56 @@ export default function ReclamoDetalle() {
   const [reclamo, setReclamo] = useState(null);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
+  const [recargando, setRecargando] = useState(false);
 
-  useEffect(() => {
-    cargarReclamo();
-  }, [id]);
-
-  const cargarReclamo = async () => {
+  const cargarReclamo = useCallback(async (silencioso = false) => {
     try {
-      setCargando(true);
+      if (!silencioso) {
+        setCargando(true);
+      }
+      console.log('📥 Cargando detalle del reclamo:', id);
       const datos = await clienteService.obtenerReclamo(id);
+      console.log('✅ Reclamo cargado, estado:', datos.estado);
       setReclamo(datos);
       setError(null);
     } catch (err) {
+      console.error('❌ Error al cargar reclamo:', err);
       setError(err.message || 'Error al cargar el reclamo');
     } finally {
-      setCargando(false);
+      if (!silencioso) {
+        setCargando(false);
+      }
+    }
+  }, [id]);
+
+  useEffect(() => {
+    cargarReclamo();
+  }, [cargarReclamo]);
+
+  // Auto-recargar cada 30 segundos para mantener estado actualizado
+  useEffect(() => {
+    const intervalo = setInterval(() => {
+      console.log('🔄 Auto-recargando detalle del reclamo...');
+      cargarReclamo(true); // true = silencioso (no muestra loading)
+    }, 30000); // 30 segundos
+
+    console.log('✅ Intervalo de auto-recarga configurado para detalle');
+    return () => {
+      console.log('🧹 Limpiando intervalo de auto-recarga del detalle');
+      clearInterval(intervalo);
+    };
+  }, [cargarReclamo]);
+
+  const handleRecargar = async () => {
+    console.log('🔄 Recarga manual del detalle');
+    setRecargando(true);
+    try {
+      await cargarReclamo();
+      console.log('✅ Recarga manual completada');
+    } catch (error) {
+      console.error('❌ Error en recarga manual:', error);
+    } finally {
+      setRecargando(false);
     }
   };
 
@@ -128,6 +164,15 @@ export default function ReclamoDetalle() {
               <p className="text-sm text-gray-600 mt-1">Reclamo #{reclamo.reclamo_id}</p>
             </div>
           </div>
+          <Button 
+            variant="outline" 
+            size="lg"
+            onClick={handleRecargar}
+            disabled={recargando}
+          >
+            <RefreshCw className={`h-4 w-4 mr-2 ${recargando ? 'animate-spin' : ''}`} />
+            {recargando ? 'Actualizando...' : 'Actualizar'}
+          </Button>
         </div>
 
         {/* Estado y Prioridad */}
@@ -242,7 +287,9 @@ export default function ReclamoDetalle() {
             <AlertDescription className="text-yellow-800">
               <strong>Reclamo Pendiente</strong>
               <span className="block text-sm mt-1">
-                Tu reclamo está en cola de asignación. Pronto será atendido por un operario.
+                {reclamo.tipo_reclamo === 'ADMINISTRATIVO' 
+                  ? 'Tu reclamo está en cola de atención. Pronto será procesado por el área administrativa.'
+                  : 'Tu reclamo está en cola de asignación. Pronto será atendido por un operario.'}
               </span>
             </AlertDescription>
           </Alert>
@@ -254,7 +301,9 @@ export default function ReclamoDetalle() {
             <AlertDescription className="text-blue-800">
               <strong>Reclamo en Proceso</strong>
               <span className="block text-sm mt-1">
-                Un operario está trabajando en tu reclamo. Te notificaremos cuando sea resuelto.
+                {reclamo.tipo_reclamo === 'ADMINISTRATIVO'
+                  ? 'El área administrativa está procesando tu reclamo. Te notificaremos cuando sea resuelto.'
+                  : 'Un operario está trabajando en tu reclamo. Te notificaremos cuando sea resuelto.'}
               </span>
             </AlertDescription>
           </Alert>

@@ -1,18 +1,49 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { Skeleton } from '../ui/skeleton';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { ArrowLeft, AlertCircle, MapPin, Calendar, Clock, Plus, AlertTriangle, Info, CheckCircle, Filter } from 'lucide-react';
+import { ArrowLeft, AlertCircle, MapPin, Calendar, Clock, Plus, AlertTriangle, Info, CheckCircle, Filter, RefreshCw } from 'lucide-react';
 import { useReclamos } from '../../hooks/useCliente';
 import { formatearFecha } from '../../utils/formatters.js';
 
 export default function ReclamosListado() {
   const navigate = useNavigate();
-  const { reclamos, cargando, error } = useReclamos();
+  const { reclamos, cargando, error, recargar } = useReclamos();
   const [estadoFiltro, setEstadoFiltro] = useState('TODOS');
+  const [recargando, setRecargando] = useState(false);
+
+  // Auto-recargar cada 30 segundos para mantener datos actualizados
+  useEffect(() => {
+    if (!recargar) return;
+    
+    const intervalo = setInterval(() => {
+      console.log('🔄 Auto-recargando reclamos...');
+      recargar();
+    }, 30000); // 30 segundos
+
+    console.log('✅ Intervalo de auto-recarga configurado (cada 30s)');
+    return () => {
+      console.log('🧹 Limpiando intervalo de auto-recarga');
+      clearInterval(intervalo);
+    };
+  }, [recargar]); // Ahora recargar está memoizado, así que es seguro
+
+  // Función para recarga manual
+  const handleRecargar = async () => {
+    console.log('🔄 Recarga manual iniciada');
+    setRecargando(true);
+    try {
+      await recargar();
+      console.log('✅ Recarga manual completada');
+    } catch (error) {
+      console.error('❌ Error en recarga manual:', error);
+    } finally {
+      setRecargando(false);
+    }
+  };
 
   const getBadgeColor = (estado) => {
     switch (estado) {
@@ -70,10 +101,21 @@ export default function ReclamosListado() {
               </p>
             </div>
           </div>
-          <Button onClick={() => navigate('/dashboard/reclamos/nuevo')} size="lg">
-            <Plus className="h-4 w-4 mr-2" />
-            Nuevo Reclamo
-          </Button>
+          <div className="flex gap-2">
+            <Button 
+              variant="outline" 
+              size="lg"
+              onClick={handleRecargar}
+              disabled={recargando}
+            >
+              <RefreshCw className={`h-4 w-4 mr-2 ${recargando ? 'animate-spin' : ''}`} />
+              {recargando ? 'Actualizando...' : 'Actualizar'}
+            </Button>
+            <Button onClick={() => navigate('/dashboard/reclamos/nuevo')} size="lg">
+              <Plus className="h-4 w-4 mr-2" />
+              Nuevo Reclamo
+            </Button>
+          </div>
         </div>
 
         {/* Filtros */}

@@ -75,14 +75,63 @@ class Reclamo {
 
   /**
    * Crear nuevo reclamo
+   * Si es administrativo, crea automáticamente la OT sin empleado asignado
    */
   static async crear({ cuentaId, detalleId, descripcion, prioridadId = 2, canal = 'WEB' }) {
-    const resultado = await pool.query(`
-      INSERT INTO reclamo (cuenta_id, detalle_id, descripcion, prioridad_id, canal, estado, fecha_alta)
-      VALUES ($1, $2, $3, $4, $5, 'PENDIENTE', NOW())
-      RETURNING *
-    `, [cuentaId, detalleId, descripcion, prioridadId, canal]);
-    return resultado.rows[0];
+    const client = await pool.connect();
+    
+    try {
+      await client.query('BEGIN');
+      
+      // 1. Crear el reclamo
+      const resultadoReclamo = await client.query(`
+        INSERT INTO reclamo (cuenta_id, detalle_id, descripcion, prioridad_id, canal, estado, fecha_alta)
+        VALUES ($1, $2, $3, $4, $5, 'PENDIENTE', NOW())
+        RETURNING *
+      `, [cuentaId, detalleId, descripcion, prioridadId, canal]);
+      
+      const reclamo = resultadoReclamo.rows[0];
+      
+      // 2. Verificar si es un reclamo administrativo
+      const tipoReclamo = await client.query(`
+        SELECT t.nombre as tipo, d.nombre as detalle, c.direccion
+        FROM detalle_tipo_reclamo d
+        INNER JOIN tipo_reclamo t ON d.tipo_id = t.tipo_id
+        INNER JOIN cuenta c ON c.cuenta_id = $2
+        WHERE d.detalle_id = $1
+      `, [detalleId, cuentaId]);
+      
+      // 3. Si es administrativo, crear OT automáticamente
+      if (tipoReclamo.rows[0]?.tipo === 'ADMINISTRATIVO') {
+        await client.query(`
+          INSERT INTO orden_trabajo (
+            reclamo_id,
+            empleado_id,
+            direccion_intervencion,
+            observaciones,
+            estado,
+            created_at,
+            updated_at
+          )
+          VALUES ($1, NULL, $2, $3, 'PENDIENTE', NOW(), NOW())
+        `, [
+          reclamo.reclamo_id,
+          tipoReclamo.rows[0].direccion,
+          `OT creada automáticamente para: ${tipoReclamo.rows[0].detalle}`
+        ]);
+        
+        console.log(`✅ OT administrativa creada automáticamente para reclamo #${reclamo.reclamo_id}`);
+      }
+      
+      await client.query('COMMIT');
+      return reclamo;
+      
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw error;
+    } finally {
+      client.release();
+    }
   }
 
   /**

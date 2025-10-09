@@ -20,6 +20,7 @@ import SocioDetalle from './components/admin/SocioDetalle';
 import SocioEditar from './components/admin/SocioEditar';
 import SocioNuevo from './components/admin/SocioNuevo';
 import ReclamoDetalleAdmin from './components/admin/ReclamoDetalleAdmin';
+import OTsAdministrativas from './components/admin/OTsAdministrativas';
 
 // Componente para rutas protegidas
 function RutaProtegida({ children }: { children: React.ReactNode }) {
@@ -237,6 +238,14 @@ function AppRoutes() {
         element={
           <RutaProtegida>
             <GestionEmpleados />
+          </RutaProtegida>
+        }
+      />
+      <Route
+        path="/dashboard/admin/ots-administrativas"
+        element={
+          <RutaProtegida>
+            <OTsAdministrativas />
           </RutaProtegida>
         }
       />

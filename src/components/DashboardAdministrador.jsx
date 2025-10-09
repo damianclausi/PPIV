@@ -146,6 +146,14 @@ export default function DashboardAdministrador() {
               </Button>
               <Button 
                 className="w-full justify-start" 
+                variant="default"
+                onClick={() => navigate('/dashboard/admin/ots-administrativas')}
+              >
+                <ClipboardList className="h-4 w-4 mr-2" />
+                OTs Administrativas
+              </Button>
+              <Button 
+                className="w-full justify-start" 
                 variant="outline"
                 onClick={() => navigate('/dashboard/admin/reportes')}
               >

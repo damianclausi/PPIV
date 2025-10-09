@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import clienteService from '../services/clienteService';
 
 /**
@@ -123,22 +123,25 @@ export const useReclamos = (params = {}) => {
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
 
-  const cargarReclamos = async () => {
+  const cargarReclamos = useCallback(async () => {
     try {
+      console.log('📥 Cargando reclamos del servidor...');
       setCargando(true);
       const datos = await clienteService.obtenerReclamos(params);
+      console.log('✅ Reclamos cargados:', datos.length);
       setReclamos(datos);
       setError(null);
     } catch (err) {
+      console.error('❌ Error al cargar reclamos:', err);
       setError(err.message);
     } finally {
       setCargando(false);
     }
-  };
+  }, [JSON.stringify(params)]); // Memoizar basado en params
 
   useEffect(() => {
     cargarReclamos();
-  }, [JSON.stringify(params)]);
+  }, [cargarReclamos]);
 
   const crearReclamo = async (datos) => {
     try {
