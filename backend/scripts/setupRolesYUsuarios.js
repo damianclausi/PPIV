@@ -3,7 +3,7 @@ const { Pool } = pkg;
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 
-dotenv.config();
+dotenv.config({ path: '../../.env' });
 
 const pool = new Pool({
   host: process.env.DB_HOST || 'localhost',

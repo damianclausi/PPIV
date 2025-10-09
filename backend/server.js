@@ -14,7 +14,7 @@ import rutasTiposReclamo from './routes/tiposReclamo.js';
 import rutasDetallesTipoReclamo from './routes/detallesTipoReclamo.js';
 import rutasPrioridades from './routes/prioridades.js';
 
-dotenv.config();
+dotenv.config({ path: '../.env' });
 
 const app = express();
 const PUERTO = process.env.PORT || 3001;
