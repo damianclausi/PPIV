@@ -466,6 +466,7 @@ class OrdenTrabajo {
   /**
    * Operario completa trabajo (EN_PROCESO → COMPLETADA)
    * Actualiza Reclamo a RESUELTO
+   * Permite que cualquier operario de la MISMA CUADRILLA cierre la OT
    */
   static async completarTrabajo(ot_id, empleado_id, observaciones) {
     const client = await pool.connect();
@@ -477,22 +478,71 @@ class OrdenTrabajo {
         throw new Error('Las observaciones son requeridas para completar el trabajo');
       }
 
+      // Obtener información de la OT y validar permisos de cuadrilla
+      const validacion = await client.query(`
+        SELECT 
+          ot.ot_id,
+          ot.empleado_id as operario_asignado,
+          ot.observaciones,
+          ec1.cuadrilla_id as cuadrilla_asignada,
+          ec2.cuadrilla_id as cuadrilla_operario,
+          e_asignado.nombre || ' ' || e_asignado.apellido as nombre_asignado,
+          e_cierre.nombre || ' ' || e_cierre.apellido as nombre_cierre,
+          ot.estado
+        FROM orden_trabajo ot
+        -- Cuadrilla del operario asignado originalmente
+        LEFT JOIN empleado_cuadrilla ec1 
+          ON ot.empleado_id = ec1.empleado_id 
+          AND ec1.activa = true
+        -- Cuadrilla del operario que quiere cerrar
+        LEFT JOIN empleado_cuadrilla ec2 
+          ON ec2.empleado_id = $2 
+          AND ec2.activa = true
+        LEFT JOIN empleado e_asignado ON ot.empleado_id = e_asignado.empleado_id
+        LEFT JOIN empleado e_cierre ON $2 = e_cierre.empleado_id
+        WHERE ot.ot_id = $1 
+          AND ot.estado = 'EN_PROCESO'
+      `, [ot_id, empleado_id]);
+
+      if (validacion.rowCount === 0) {
+        throw new Error('OT no encontrada o no está en estado EN_PROCESO');
+      }
+
+      const ot = validacion.rows[0];
+
+      // Si la OT es de itinerario, validar que pertenezcan a la misma cuadrilla
+      const esItinerario = ot.observaciones && ot.observaciones.includes('[ITINERARIO]');
+      
+      if (esItinerario) {
+        if (!ot.cuadrilla_asignada || !ot.cuadrilla_operario) {
+          throw new Error('No perteneces a ninguna cuadrilla activa');
+        }
+        
+        if (ot.cuadrilla_asignada !== ot.cuadrilla_operario) {
+          throw new Error('Esta OT pertenece a otra cuadrilla. Solo los miembros de la cuadrilla asignada pueden cerrarla.');
+        }
+      } else {
+        // Si NO es de itinerario, solo el asignado puede cerrar (comportamiento original)
+        if (ot.operario_asignado !== empleado_id) {
+          throw new Error('Solo el operario asignado puede cerrar esta OT');
+        }
+      }
+
+      // Mensaje indicando quién tomó y quién cerró (si son diferentes)
+      const mensajeCierre = ot.operario_asignado === empleado_id
+        ? `\n[COMPLETADA POR: ${ot.nombre_cierre} - ${new Date().toLocaleString('es-AR')}]`
+        : `\n[TOMADA POR: ${ot.nombre_asignado} | COMPLETADA POR: ${ot.nombre_cierre} - ${new Date().toLocaleString('es-AR')}]`;
+
       // Actualizar OT
       const updateOT = await client.query(`
         UPDATE orden_trabajo
         SET estado = 'COMPLETADA',
             fecha_cierre = CURRENT_TIMESTAMP,
-            observaciones = COALESCE($3::TEXT, observaciones),
+            observaciones = COALESCE($2::TEXT, observaciones) || $3,
             updated_at = CURRENT_TIMESTAMP
         WHERE ot_id = $1
-          AND empleado_id = $2
-          AND estado = 'EN_PROCESO'
         RETURNING *;
-      `, [ot_id, empleado_id, observaciones]);
-
-      if (updateOT.rowCount === 0) {
-        throw new Error('OT no encontrada, no asignada a este operario, o no está en estado EN_PROCESO');
-      }
+      `, [ot_id, observaciones, mensajeCierre]);
 
       // Actualizar Reclamo a RESUELTO
       await client.query(`
@@ -507,6 +557,7 @@ class OrdenTrabajo {
       `, [ot_id, observaciones]);
 
       await client.query('COMMIT');
+      console.log(`✅ OT #${ot_id} completada por ${ot.nombre_cierre}${ot.operario_asignado !== empleado_id ? ` (originalmente asignada a ${ot.nombre_asignado})` : ''}`);
       return updateOT.rows[0];
     } catch (error) {
       await client.query('ROLLBACK');
