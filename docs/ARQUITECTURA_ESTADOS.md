@@ -29,10 +29,10 @@ El cliente **solo ve 3 estados** que reflejan el progreso de su reclamo:
 ```
 
 ### Características:
-- ✅ **Simplicidad**: Solo 3 estados fáciles de entender
-- ✅ **Claridad**: Nombres autoexplicativos
-- ✅ **Consistencia**: Mismos estados para reclamos técnicos y administrativos
-- ✅ **UX**: Cliente no necesita conocer complejidad interna
+-  **Simplicidad**: Solo 3 estados fáciles de entender
+-  **Claridad**: Nombres autoexplicativos
+-  **Consistencia**: Mismos estados para reclamos técnicos y administrativos
+-  **UX**: Cliente no necesita conocer complejidad interna
 
 ---
 
@@ -179,9 +179,9 @@ ACCIÓN:           Creación    Admin      Admin
 ### Problema Actual
 
 En la base de datos existen estados inconsistentes:
-- ❌ `EN CURSO` (con espacio) - debería ser `EN_PROCESO`
-- ❌ `CERRADO` en reclamos - debería ser `RESUELTO`
-- ❌ Mapeo inconsistente OT ↔ Reclamo
+-  `EN CURSO` (con espacio) - debería ser `EN_PROCESO`
+-  `CERRADO` en reclamos - debería ser `RESUELTO`
+-  Mapeo inconsistente OT ↔ Reclamo
 
 ### Estados a Normalizar
 
@@ -318,10 +318,10 @@ Cliente siempre ve solo: PENDIENTE, EN_PROCESO, RESUELTO
 
 ### 3. Claridad en Comunicación
 ```
-❌ MAL: "Tu reclamo está en estado ASIGNADA"
+ MAL: "Tu reclamo está en estado ASIGNADA"
         → Cliente: "¿Qué significa ASIGNADA?"
 
-✅ BIEN: "Tu reclamo está EN_PROCESO"
+ BIEN: "Tu reclamo está EN_PROCESO"
          → Cliente: "Ah, están trabajando en ello"
 ```
 
@@ -334,10 +334,10 @@ Si cambiamos workflow interno (ej: agregar estado "REVISIÓN"), no afecta fronte
 
 ### Regla 1: Cliente NUNCA ve estados internos
 ```javascript
-// ❌ MAL
+//  MAL
 return { estado: ot.estado }; // Expone 'ASIGNADA'
 
-// ✅ BIEN
+//  BIEN
 return { estado: mapearEstadoParaCliente(ot.estado) };
 ```
 
@@ -406,24 +406,24 @@ function validarEstadoOT(estado, esAdministrativa) {
 
 ## MIGRACIÓN PASO A PASO
 
-### Fase 1: Normalización de Datos ✅
+### Fase 1: Normalización de Datos 
 1. Script de normalización de estados
 2. Verificación de consistencia
 3. Backup de datos
 
-### Fase 2: Backend (Próximo) 📋
+### Fase 2: Backend (Próximo) 
 1. Agregar función `mapearEstadoParaCliente()`
 2. Modificar consultas de cliente para usar mapeo
 3. Mantener consultas admin/operario sin cambios
 4. Actualizar sincronización OT ↔ Reclamo
 
-### Fase 3: Frontend (Después) 📋
+### Fase 3: Frontend (Después) 
 1. Verificar que cliente solo vea 3 estados
 2. Actualizar badges y filtros
 3. Actualizar mensajes según estado
 4. Testing end-to-end
 
-### Fase 4: Validación (Final) 📋
+### Fase 4: Validación (Final) 
 1. Constraints en BD para validar estados
 2. Tests automáticos
 3. Documentación de API
@@ -444,5 +444,5 @@ function validarEstadoOT(estado, esAdministrativa) {
 ---
 
 **Fecha**: 9 de octubre de 2025  
-**Estado**: 📋 DISEÑO COMPLETADO - PENDIENTE IMPLEMENTACIÓN  
+**Estado**:  DISEÑO COMPLETADO - PENDIENTE IMPLEMENTACIÓN  
 **Próximo Paso**: Ejecutar script de normalización de estados
