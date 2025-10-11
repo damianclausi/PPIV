@@ -234,7 +234,7 @@ export default function OTsAdministrativas() {
           <div className="flex items-center justify-center h-64">
             <div className="text-center">
               <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-              <p className="mt-4 text-gray-600">Cargando OTs administrativas...</p>
+              <p className="mt-4 text-gray-600">Cargando reclamos comerciales...</p>
             </div>
           </div>
         </div>
@@ -285,9 +285,9 @@ export default function OTsAdministrativas() {
         {/* Header */}
         <div className="flex items-start justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">OTs Administrativas</h1>
+            <h1 className="text-2xl font-bold text-gray-900">Reclamos Comerciales</h1>
             <p className="text-gray-600 mt-1">
-              Gestión de órdenes de trabajo administrativas sin operario asignado
+              Gestión de reclamos relacionados con facturación, cobros y asuntos administrativos
             </p>
           </div>
           <div className="flex gap-2">
@@ -396,7 +396,7 @@ export default function OTsAdministrativas() {
             {otsFiltradas.length === 0 ? (
               <div className="text-center py-12">
                 <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-600">No hay OTs administrativas con los filtros aplicados</p>
+                <p className="text-gray-600">No hay reclamos comerciales con los filtros aplicados</p>
               </div>
             ) : (
               <div className="overflow-x-auto">

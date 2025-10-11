@@ -149,10 +149,10 @@ export default function DashboardAdministrador() {
               <Button 
                 className="w-full justify-start" 
                 variant="default"
-                onClick={() => navigate('/dashboard/admin/ots-administrativas')}
+                onClick={() => navigate('/dashboard/admin/reclamos-comerciales')}
               >
                 <ClipboardList className="h-4 w-4 mr-2" />
-                OTs Administrativas
+                Reclamos Comerciales
               </Button>
               <Button 
                 className="w-full justify-start" 

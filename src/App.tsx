@@ -263,7 +263,7 @@ function AppRoutes() {
         }
       />
       <Route
-        path="/dashboard/admin/ots-administrativas"
+        path="/dashboard/admin/reclamos-comerciales"
         element={
           <RutaProtegida>
             <OTsAdministrativas />
