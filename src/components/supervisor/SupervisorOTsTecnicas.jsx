@@ -11,10 +11,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../ui/select';
-import { Loader2, UserPlus, MapPin, User, RefreshCw } from 'lucide-react';
+import { Loader2, UserPlus, MapPin, User, RefreshCw, FileText } from 'lucide-react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import AsignarOperarioModal from './AsignarOperarioModal';
 
 const ESTADOS_CONFIG = {
   PENDIENTE: {
@@ -32,8 +31,23 @@ const ESTADOS_CONFIG = {
     variant: 'secondary',
     color: 'bg-yellow-100 text-yellow-800'
   },
+  'EN CURSO': {
+    label: 'En Curso',
+    variant: 'secondary',
+    color: 'bg-yellow-100 text-yellow-800'
+  },
   COMPLETADA: {
     label: 'Completada',
+    variant: 'outline',
+    color: 'bg-green-100 text-green-800'
+  },
+  CERRADO: {
+    label: 'Cerrada',
+    variant: 'outline',
+    color: 'bg-green-100 text-green-800'
+  },
+  RESUELTO: {
+    label: 'Resuelta',
     variant: 'outline',
     color: 'bg-green-100 text-green-800'
   }
@@ -45,7 +59,8 @@ const SupervisorOTsTecnicas = () => {
   
   const [filtroEstado, setFiltroEstado] = useState('');
   const [filtroCuadrilla, setFiltroCuadrilla] = useState('');
-  const [otParaAsignar, setOtParaAsignar] = useState(null);
+  const [filtroTipo, setFiltroTipo] = useState('TODOS'); // 'TODOS', 'TECNICO', 'ADMINISTRATIVO'
+  const [otsAdministrativas, setOtsAdministrativas] = useState([]);
 
   useEffect(() => {
     listarCuadrillas();
@@ -53,30 +68,98 @@ const SupervisorOTsTecnicas = () => {
 
   useEffect(() => {
     cargarOTs();
-  }, [filtroEstado, filtroCuadrilla]);
+  }, [filtroEstado, filtroCuadrilla, filtroTipo]);
 
   const cargarOTs = async () => {
-    const filtros = {};
-    if (filtroEstado) filtros.estado = filtroEstado;
-    if (filtroCuadrilla) filtros.cuadrilla_id = filtroCuadrilla;
-    await listarOTs(filtros);
+    console.log('🔄 Cargando OTs con filtros:', { filtroTipo, filtroEstado, filtroCuadrilla });
+    
+    // Cargar OTs técnicas
+    if (filtroTipo === 'TODOS' || filtroTipo === 'TECNICO') {
+      const filtros = {};
+      if (filtroEstado) filtros.estado = filtroEstado;
+      if (filtroCuadrilla) filtros.cuadrilla_id = filtroCuadrilla;
+      console.log('🔧 Cargando OTs técnicas con filtros:', filtros);
+      await listarOTs(filtros);
+    } else {
+      // Si solo queremos administrativas, limpiar técnicas
+      console.log('⚠️ Solo administrativas, limpiando técnicas');
+      await listarOTs({ estado: 'NUNCA_EXISTIRA' }); // Hack para vaciar
+    }
+    
+    // Cargar OTs administrativas
+    if (filtroTipo === 'TODOS' || filtroTipo === 'ADMINISTRATIVO') {
+      console.log('📄 Cargando OTs administrativas...');
+      await cargarOTsAdministrativas();
+    } else {
+      console.log('⚠️ Solo técnicas, limpiando administrativas');
+      setOtsAdministrativas([]);
+    }
   };
 
-  const handleAsignar = (ot) => {
-    setOtParaAsignar(ot);
+  const cargarOTsAdministrativas = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const params = new URLSearchParams();
+      if (filtroEstado) params.append('estado', filtroEstado);
+      
+      console.log('🔍 Cargando OTs administrativas con filtros:', { filtroEstado });
+      
+      const response = await fetch(
+        `http://localhost:3001/api/administradores/ots/administrativas?${params.toString()}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        }
+      );
+      
+      if (response.ok) {
+        const resultado = await response.json();
+        console.log('📦 Respuesta OTs administrativas:', resultado);
+        
+        // El backend devuelve { exito, mensaje, datos: { ots, contadores, paginacion } }
+        // Intentar diferentes estructuras de respuesta
+        const otsAdmin = resultado.datos?.ots || resultado.data?.ots || resultado.ots || [];
+        console.log('📋 OTs administrativas recibidas:', otsAdmin.length, otsAdmin);
+        
+        // Agregar un flag para identificarlas
+        const otsConFlag = otsAdmin.map(ot => ({
+          ...ot,
+          tipo_reclamo: 'ADMINISTRATIVO',
+          ot_id: ot.ot_id,
+          estado: ot.estado_ot || ot.estado
+        }));
+        console.log('✅ OTs administrativas procesadas:', otsConFlag.length);
+        setOtsAdministrativas(otsConFlag);
+      } else {
+        console.error('❌ Error al cargar OTs administrativas:', response.status);
+        setOtsAdministrativas([]);
+      }
+    } catch (error) {
+      console.error('❌ Error al cargar OTs administrativas:', error);
+      setOtsAdministrativas([]);
+    }
   };
 
-  const handleAsignacionCompleta = () => {
-    setOtParaAsignar(null);
-    cargarOTs();
-  };
+
+
+  // Combinar ambas listas
+  const todasLasOTs = [...ots, ...otsAdministrativas];
+  
+  console.log('📊 Resumen de OTs:', {
+    tecnicas: ots.length,
+    administrativas: otsAdministrativas.length,
+    total: todasLasOTs.length
+  });
 
   // Estadísticas
   const stats = {
-    pendientes: ots.filter(ot => ot.estado === 'PENDIENTE').length,
-    asignadas: ots.filter(ot => ot.estado === 'ASIGNADA').length,
-    enProceso: ots.filter(ot => ot.estado === 'EN_PROCESO').length,
-    completadas: ots.filter(ot => ot.estado === 'COMPLETADA').length
+    pendientes: todasLasOTs.filter(ot => ot.estado === 'PENDIENTE').length,
+    asignadas: todasLasOTs.filter(ot => ot.estado === 'ASIGNADA').length,
+    enProceso: todasLasOTs.filter(ot => ot.estado === 'EN_PROCESO' || ot.estado === 'EN CURSO').length,
+    completadas: todasLasOTs.filter(ot => ot.estado === 'COMPLETADA' || ot.estado === 'CERRADO' || ot.estado === 'RESUELTO').length,
+    tecnicas: ots.length,
+    administrativas: otsAdministrativas.length
   };
 
   return (
@@ -86,8 +169,19 @@ const SupervisorOTsTecnicas = () => {
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Historial de Reclamos</h1>
           <p className="text-gray-600 mt-1">
-            Consulta el historial completo de reclamos y su estado
+            Consulta el historial completo de reclamos técnicos y administrativos
           </p>
+          <div className="flex gap-4 mt-2 text-sm">
+            <span className="text-blue-600 font-medium">
+              📋 {stats.tecnicas} Técnicos
+            </span>
+            <span className="text-purple-600 font-medium">
+              📄 {stats.administrativas} Administrativos
+            </span>
+            <span className="text-gray-600 font-medium">
+              📊 {todasLasOTs.length} Total
+            </span>
+          </div>
         </div>
         <div className="flex gap-2">
           <Button onClick={cargarOTs} variant="outline" size="sm">
@@ -150,7 +244,22 @@ const SupervisorOTsTecnicas = () => {
           <CardTitle>Filtros</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid md:grid-cols-3 gap-4">
+            {/* Filtro Tipo */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Tipo de Reclamo</label>
+              <Select value={filtroTipo} onValueChange={setFiltroTipo}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Tipo de reclamo" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="TODOS">Todos</SelectItem>
+                  <SelectItem value="TECNICO">Técnicos</SelectItem>
+                  <SelectItem value="ADMINISTRATIVO">Administrativos</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
             {/* Filtro Estado */}
             <div className="space-y-2">
               <label className="text-sm font-medium">Estado</label>
@@ -168,10 +277,14 @@ const SupervisorOTsTecnicas = () => {
               </Select>
             </div>
 
-            {/* Filtro Cuadrilla */}
+            {/* Filtro Cuadrilla - solo para técnicos */}
             <div className="space-y-2">
               <label className="text-sm font-medium">Cuadrilla</label>
-              <Select value={filtroCuadrilla || 'TODAS'} onValueChange={(value) => setFiltroCuadrilla(value === 'TODAS' ? '' : value)}>
+              <Select 
+                value={filtroCuadrilla || 'TODAS'} 
+                onValueChange={(value) => setFiltroCuadrilla(value === 'TODAS' ? '' : value)}
+                disabled={filtroTipo === 'ADMINISTRATIVO'}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Todas las cuadrillas" />
                 </SelectTrigger>
@@ -194,19 +307,38 @@ const SupervisorOTsTecnicas = () => {
         <div className="flex justify-center items-center py-12">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </div>
-      ) : ots.length === 0 ? (
+      ) : todasLasOTs.length === 0 ? (
         <Card>
           <CardContent className="py-12 text-center text-muted-foreground">
-            No hay órdenes de trabajo con los filtros seleccionados
+            <div className="space-y-4">
+              <p className="text-lg font-medium">No hay órdenes de trabajo con los filtros seleccionados</p>
+              {filtroTipo === 'ADMINISTRATIVO' && (
+                <p className="text-sm">
+                  💡 Los reclamos administrativos se crean automáticamente cuando un socio hace un reclamo de tipo "ADMINISTRATIVO" (facturación, atención al cliente, etc.)
+                </p>
+              )}
+              {filtroTipo === 'TECNICO' && (
+                <p className="text-sm">
+                  💡 Los reclamos técnicos se asignan a operarios desde el panel de Itinerario o directamente a un operario
+                </p>
+              )}
+              {filtroTipo === 'TODOS' && (
+                <div className="text-sm space-y-2">
+                  <p>📋 Técnicos: {stats.tecnicas} | 📄 Administrativos: {stats.administrativas}</p>
+                  <p className="text-xs text-gray-500">Prueba cambiando los filtros de estado o tipo</p>
+                </div>
+              )}
+            </div>
           </CardContent>
         </Card>
       ) : (
         <div className="space-y-3">
-          {ots.map((ot) => {
+          {todasLasOTs.map((ot) => {
             const estadoConfig = ESTADOS_CONFIG[ot.estado] || {};
+            const esAdministrativa = ot.tipo_reclamo === 'ADMINISTRATIVO';
 
             return (
-              <Card key={ot.ot_id} className="hover:shadow-md transition-shadow">
+              <Card key={ot.ot_id} className={`hover:shadow-md transition-shadow ${esAdministrativa ? 'border-l-4 border-l-purple-400' : 'border-l-4 border-l-blue-400'}`}>
                 <CardContent className="p-4">
                   <div className="flex items-start gap-4">
                     {/* Info principal */}
@@ -215,6 +347,16 @@ const SupervisorOTsTecnicas = () => {
                         <h3 className="font-semibold text-lg">OT #{ot.ot_id}</h3>
                         <Badge variant={estadoConfig.variant}>
                           {estadoConfig.label}
+                        </Badge>
+                        <Badge 
+                          variant="outline" 
+                          className={esAdministrativa ? "bg-purple-100 text-purple-800" : "bg-blue-100 text-blue-800"}
+                        >
+                          {esAdministrativa ? (
+                            <><FileText className="h-3 w-3 mr-1 inline" />Administrativo</>
+                          ) : (
+                            <>🔧 Técnico</>
+                          )}
                         </Badge>
                         {ot.prioridad && (
                           <Badge variant="outline" className="text-xs">
@@ -236,22 +378,32 @@ const SupervisorOTsTecnicas = () => {
                         </div>
 
                         {/* Dirección */}
-                        {ot.direccion_intervencion && (
+                        {(ot.direccion_intervencion || ot.direccion) && (
                           <div className="flex items-start gap-2">
                             <MapPin className="h-4 w-4 text-muted-foreground flex-shrink-0 mt-0.5" />
                             <span className="text-muted-foreground line-clamp-1">
-                              {ot.direccion_intervencion}
+                              {ot.direccion_intervencion || ot.direccion}
                             </span>
                           </div>
                         )}
 
-                        {/* Operario asignado */}
-                        {ot.operario && (
+                        {/* Operario asignado - solo técnicas */}
+                        {!esAdministrativa && ot.operario && (
                           <div className="flex items-center gap-2">
                             <UserPlus className="h-4 w-4 text-muted-foreground flex-shrink-0" />
                             <span className="text-muted-foreground">
                               {ot.operario}
                               {ot.cuadrilla && ` - ${ot.cuadrilla}`}
+                            </span>
+                          </div>
+                        )}
+
+                        {/* Detalle del reclamo - para administrativas */}
+                        {esAdministrativa && ot.detalle_reclamo && (
+                          <div className="flex items-center gap-2">
+                            <FileText className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                            <span className="text-muted-foreground font-medium">
+                              {ot.detalle_reclamo}
                             </span>
                           </div>
                         )}
@@ -262,26 +414,16 @@ const SupervisorOTsTecnicas = () => {
                         </p>
 
                         {/* Fecha */}
-                        {ot.fecha_asignacion && (
+                        {(ot.fecha_asignacion || ot.fecha_creacion_ot || ot.created_at) && (
                           <p className="text-xs text-muted-foreground mt-2">
-                            Asignada: {format(new Date(ot.fecha_asignacion), "dd/MM/yyyy HH:mm", { locale: es })}
+                            {esAdministrativa ? 'Creada' : 'Asignada'}: {format(
+                              new Date(ot.fecha_asignacion || ot.fecha_creacion_ot || ot.created_at), 
+                              "dd/MM/yyyy HH:mm", 
+                              { locale: es }
+                            )}
                           </p>
                         )}
                       </div>
-                    </div>
-
-                    {/* Acciones */}
-                    <div className="flex flex-col gap-2">
-                      {ot.estado === 'PENDIENTE' && (
-                        <Button
-                          onClick={() => handleAsignar(ot)}
-                          size="sm"
-                          className="whitespace-nowrap"
-                        >
-                          <UserPlus className="h-4 w-4 mr-1" />
-                          Asignar Operario
-                        </Button>
-                      )}
                     </div>
                   </div>
                 </CardContent>
@@ -289,16 +431,6 @@ const SupervisorOTsTecnicas = () => {
             );
           })}
         </div>
-      )}
-
-      {/* Modal Asignar Operario */}
-      {otParaAsignar && (
-        <AsignarOperarioModal
-          open={!!otParaAsignar}
-          onClose={() => setOtParaAsignar(null)}
-          ot={otParaAsignar}
-          onAsignado={handleAsignacionCompleta}
-        />
       )}
     </div>
   );
