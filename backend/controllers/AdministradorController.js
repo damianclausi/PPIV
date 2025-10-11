@@ -326,4 +326,14 @@ export default class AdministradorController {
       return respuestaError(res, 'Error al listar empleados');
     }
   }
+
+  /**
+   * Obtener métricas avanzadas del sistema
+   * Delega en MetricasController para cálculos complejos
+   */
+  static async obtenerMetricasAvanzadas(req, res) {
+    // Importar dinámicamente para evitar problemas de dependencias circulares
+    const MetricasController = (await import('./MetricasController.js')).default;
+    return MetricasController.obtenerMetricasAvanzadas(req, res);
+  }
 }

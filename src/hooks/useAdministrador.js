@@ -188,3 +188,32 @@ export function useEmpleados(filtros = {}) {
     recargar: cargarEmpleados 
   };
 }
+
+/**
+ * Hook para obtener métricas avanzadas del sistema
+ */
+export function useMetricasAvanzadas() {
+  const [metricas, setMetricas] = useState(null);
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    cargarMetricas();
+  }, []);
+
+  const cargarMetricas = async () => {
+    try {
+      setCargando(true);
+      const data = await administradorService.obtenerMetricasAvanzadas();
+      setMetricas(data.datos);
+      setError(null);
+    } catch (err) {
+      setError(err.message);
+      console.error('Error al cargar métricas avanzadas:', err);
+    } finally {
+      setCargando(false);
+    }
+  };
+
+  return { metricas, cargando, error, recargar: cargarMetricas };
+}

@@ -20,6 +20,9 @@ router.get('/perfil', AdministradorController.obtenerPerfil);
 // Dashboard con estadísticas generales
 router.get('/dashboard', AdministradorController.obtenerDashboard);
 
+// Métricas avanzadas para reportes
+router.get('/metricas-avanzadas', AdministradorController.obtenerMetricasAvanzadas);
+
 // Gestión de socios
 router.get('/socios', AdministradorController.listarSocios);
 router.post('/socios', AdministradorController.crearSocio);

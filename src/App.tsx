@@ -25,6 +25,7 @@ import MisOTsOperario from './components/operario/MisOTsOperario';
 import SupervisorOTsTecnicas from './components/supervisor/SupervisorOTsTecnicas';
 import ItinerarioCuadrillas from './components/admin/ItinerarioCuadrillas';
 import ItinerarioOperario from './components/operario/ItinerarioOperario';
+import Reportes from './components/admin/Reportes';
 
 // Componente para rutas protegidas
 function RutaProtegida({ children }: { children: React.ReactNode }) {
@@ -282,6 +283,14 @@ function AppRoutes() {
         element={
           <RutaProtegida>
             <ItinerarioCuadrillas />
+          </RutaProtegida>
+        }
+      />
+      <Route
+        path="/dashboard/admin/reportes"
+        element={
+          <RutaProtegida>
+            <Reportes />
           </RutaProtegida>
         }
       />

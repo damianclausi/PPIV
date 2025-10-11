@@ -124,6 +124,13 @@ class AdministradorService {
     const query = params.toString() ? `?${params.toString()}` : '';
     return apiClient.get(`/api/administradores/empleados${query}`);
   }
+
+  /**
+   * Obtener métricas avanzadas del sistema
+   */
+  async obtenerMetricasAvanzadas() {
+    return apiClient.get('/api/administradores/metricas-avanzadas');
+  }
 }
 
 export default new AdministradorService();
