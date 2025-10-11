@@ -52,9 +52,13 @@ El proyecto está basado en prototipos de Figma que incluyen:
 ## Estructura del Proyecto
 
 - `src/components/ui/` - Componentes de interfaz reutilizables
-- `src/components/figma/` - Componentes específicos del diseño de Figma
+- `src/components/admin/` - Componentes del dashboard administrativo
+- `src/components/cliente/` - Componentes del dashboard de clientes
+- `src/components/operario/` - Componentes del dashboard de operarios
 - `src/styles/` - Estilos globales y configuración de CSS
 - `src/guidelines/` - Documentación y guidelines del proyecto
+- `backend/` - API REST con Express y PostgreSQL
+- `docs/` - Documentación técnica del proyecto
 
 ## Instalación y Ejecución
 
