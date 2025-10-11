@@ -21,7 +21,7 @@ import SocioEditar from './components/admin/SocioEditar';
 import SocioNuevo from './components/admin/SocioNuevo';
 import ReclamoDetalleAdmin from './components/admin/ReclamoDetalleAdmin';
 import OTsAdministrativas from './components/admin/OTsAdministrativas';
-import MisOTsOperario from './components/operario/MisOTsOperario';
+import OTTecnicaDetalleWrapper from './components/operario/OTTecnicaDetalleWrapper.jsx';
 import SupervisorOTsTecnicas from './components/supervisor/SupervisorOTsTecnicas';
 import ItinerarioCuadrillas from './components/admin/ItinerarioCuadrillas';
 import ItinerarioOperario from './components/operario/ItinerarioOperario';
@@ -165,10 +165,10 @@ function AppRoutes() {
       
       {/* Rutas Operario */}
       <Route
-        path="/dashboard/operario/mis-ots"
+        path="/dashboard/operario/ots-tecnicas/:id"
         element={
           <RutaProtegida>
-            <MisOTsOperario />
+            <OTTecnicaDetalleWrapper />
           </RutaProtegida>
         }
       />

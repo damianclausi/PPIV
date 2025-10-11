@@ -12,87 +12,69 @@ import { Skeleton } from '../ui/skeleton';
 import { Alert, AlertDescription } from '../ui/alert';
 
 /**
- * Componente para que operarios vean y tomen OTs de su itinerario
+ * Componente para que operarios vean las OTs asignadas por el administrador
+ * Las OTs son asignadas directamente por el administrador, no se pueden "tomar"
  */
 export default function ItinerarioOperario() {
   const navigate = useNavigate();
-  const [fechaSeleccionada, setFechaSeleccionada] = useState(
-    format(new Date(), 'yyyy-MM-dd')
-  );
+  const [fechaSeleccionada, setFechaSeleccionada] = useState(null);
+  const [vistaActual, setVistaActual] = useState('fechas'); // 'fechas' o 'itinerario'
   
   const {
     itinerario,
+    fechasDisponibles,
     loading,
     error,
     obtenerMiItinerario,
-    tomarOT
+    obtenerFechasDisponibles
   } = useItinerario();
 
-  // Cargar itinerario al montar y cuando cambia la fecha
+  // Cargar fechas disponibles al montar
+  useEffect(() => {
+    obtenerFechasDisponibles();
+  }, []);
+
+  // Cargar itinerario cuando se selecciona una fecha
   useEffect(() => {
     if (fechaSeleccionada) {
       obtenerMiItinerario(fechaSeleccionada);
+      setVistaActual('itinerario');
     }
   }, [fechaSeleccionada]);
 
-  const handleTomarOT = async (otId) => {
-    try {
-      await tomarOT(otId);
-      // Recargar el itinerario
-      obtenerMiItinerario(fechaSeleccionada);
-    } catch (error) {
-      console.error('Error al tomar OT:', error);
-    }
+  const handleSeleccionarFecha = (fecha) => {
+    setFechaSeleccionada(fecha);
   };
 
-  const handleIniciarTrabajo = (otId) => {
-    navigate(`/dashboard/operario/ots-tecnicas/${otId}`);
+  const handleVolverAFechas = () => {
+    setVistaActual('fechas');
+    setFechaSeleccionada(null);
   };
 
-  // Separar OTs disponibles y tomadas
-  const otsDisponibles = itinerario.filter(ot => !ot.empleado_id);
-  const otsTomadas = itinerario.filter(ot => ot.empleado_id);
+  // Filtrar solo las OTs asignadas a este operario (empleado_id no null)
+  const misOTs = itinerario.filter(ot => ot.empleado_id);
 
   return (
     <div className="container mx-auto p-6 space-y-6">
       {/* Header */}
-            {/* Header */}
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Mi Itinerario</h1>
           <p className="text-gray-600 mt-1">
-            Órdenes de trabajo asignadas a tu cuadrilla
+            {vistaActual === 'fechas' 
+              ? 'Consulta las fechas con trabajos asignados por tu supervisor'
+              : 'Vista de consulta - Para trabajar en una OT, ve al Dashboard principal'
+            }
           </p>
         </div>
-        <Button onClick={() => navigate('/dashboard/operario')} variant="outline" size="sm">
-          Volver
+        <Button 
+          onClick={vistaActual === 'fechas' ? () => navigate('/dashboard/operario') : handleVolverAFechas} 
+          variant="outline" 
+          size="sm"
+        >
+          {vistaActual === 'fechas' ? 'Volver al Dashboard' : 'Ver Otras Fechas'}
         </Button>
       </div>
-
-      {/* Selector de Fecha */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">Seleccionar Fecha</CardTitle>
-          <CardDescription>
-            Visualiza las OTs programadas para una fecha específica (formato dd/mm/aaaa)
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="max-w-md space-y-2">
-            <Input
-              type="date"
-              value={fechaSeleccionada}
-              onChange={(e) => setFechaSeleccionada(e.target.value)}
-              className="w-full"
-            />
-            <p className="text-sm text-gray-600">
-              Mostrando: <span className="font-semibold">
-                {format(new Date(fechaSeleccionada + 'T00:00:00'), 'dd/MM/yyyy', { locale: es })}
-              </span>
-            </p>
-          </div>
-        </CardContent>
-      </Card>
 
       {error && (
         <Alert variant="destructive">
@@ -101,119 +83,118 @@ export default function ItinerarioOperario() {
         </Alert>
       )}
 
-      {/* Resumen */}
-      {!loading && itinerario.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card>
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <p className="text-3xl font-bold text-purple-600">{itinerario.length}</p>
-                <p className="text-sm text-gray-600">Total de OTs</p>
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <p className="text-3xl font-bold text-yellow-600">{otsDisponibles.length}</p>
-                <p className="text-sm text-gray-600">Disponibles</p>
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <p className="text-3xl font-bold text-green-600">{otsTomadas.length}</p>
-                <p className="text-sm text-gray-600">Mis OTs</p>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* OTs Disponibles para Tomar */}
+      {/* Vista: Lista de Fechas Disponibles */}
+      {vistaActual === 'fechas' && (
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <AlertCircle className="h-5 w-5 text-yellow-600" />
-              OTs Disponibles
+              <Calendar className="h-5 w-5 text-purple-600" />
+              Fechas con Itinerarios
             </CardTitle>
             <CardDescription>
-              {otsDisponibles.length} órdenes que puedes tomar
+              Selecciona una fecha para ver las órdenes de trabajo disponibles
             </CardDescription>
           </CardHeader>
           <CardContent>
             {loading ? (
               <div className="space-y-3">
-                {[1, 2].map(i => <Skeleton key={i} className="h-32 w-full" />)}
+                {[1, 2, 3].map(i => <Skeleton key={i} className="h-24 w-full" />)}
               </div>
-            ) : otsDisponibles.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">
-                <Calendar className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                <p>No hay OTs disponibles para tomar</p>
-                <p className="text-sm mt-1">Verifica más tarde o en otra fecha</p>
+            ) : fechasDisponibles.length === 0 ? (
+              <div className="text-center py-12 text-gray-500">
+                <Calendar className="h-16 w-16 mx-auto mb-4 opacity-50" />
+                <p className="text-lg font-medium">No hay itinerarios programados</p>
+                <p className="text-sm mt-2">Consulta más tarde o contacta a tu supervisor</p>
               </div>
             ) : (
               <div className="space-y-3 max-h-[600px] overflow-y-auto">
-                {otsDisponibles.map((ot) => (
+                {fechasDisponibles.map((fechaInfo) => {
+                  // Parsear fecha correctamente
+                  const fechaStr = typeof fechaInfo.fecha === 'string' 
+                    ? fechaInfo.fecha.split('T')[0] 
+                    : fechaInfo.fecha;
+                  
+                  return (
                   <div
-                    key={ot.id}
-                    className="border-2 border-yellow-200 rounded-lg p-4 bg-yellow-50 hover:shadow-md transition-shadow"
+                    key={fechaInfo.fecha}
+                    onClick={() => handleSeleccionarFecha(fechaStr)}
+                    className="border-2 border-purple-200 rounded-lg p-4 bg-white hover:bg-purple-50 hover:shadow-lg transition-all cursor-pointer"
                   >
-                    <div className="flex justify-between items-start mb-2">
+                    <div className="flex justify-between items-start mb-3">
                       <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <Badge variant="outline">OT #{ot.id}</Badge>
-                          <Badge className="bg-orange-100 text-orange-800">
-                            {ot.prioridad}
-                          </Badge>
-                          <Badge className="bg-yellow-100 text-yellow-800">
-                            Disponible
-                          </Badge>
+                        <div className="flex items-center gap-3 mb-2">
+                          <Calendar className="h-5 w-5 text-purple-600" />
+                          <h3 className="text-lg font-bold text-gray-900">
+                            {format(new Date(fechaStr + 'T12:00:00'), 'EEEE, dd/MM/yyyy', { locale: es })}
+                          </h3>
                         </div>
-                        <p className="font-medium text-sm mb-2">{ot.descripcion}</p>
+                        <div className="flex gap-4 text-sm">
+                          <span className="flex items-center gap-1">
+                            <Badge className="bg-purple-100 text-purple-800 text-base font-semibold px-3 py-1">
+                              {fechaInfo.ots_tomadas} {fechaInfo.ots_tomadas === 1 ? 'Trabajo Asignado' : 'Trabajos Asignados'}
+                            </Badge>
+                          </span>
+                        </div>
                       </div>
+                      <Button size="sm" className="bg-purple-600 hover:bg-purple-700">
+                        Ver Mis Trabajos
+                      </Button>
                     </div>
-
-                    <div className="text-xs text-gray-700 space-y-1 mb-3">
-                      <p className="flex items-center gap-1">
-                        <MapPin className="h-3 w-3" />
-                        <strong>Dirección:</strong> {ot.domicilio}
-                      </p>
-                      <p><strong>Socio:</strong> {ot.socio_nombre} ({ot.nro_socio})</p>
-                      <p><strong>Cuenta:</strong> {ot.cuenta_nro}</p>
-                      <p className="flex items-center gap-1">
-                        <Clock className="h-3 w-3" />
-                        <strong>Creada:</strong> {format(new Date(ot.fecha_creacion), 'dd/MM/yyyy HH:mm', { locale: es })}
-                      </p>
-                    </div>
-
-                    <Button
-                      onClick={() => handleTomarOT(ot.id)}
-                      disabled={loading}
-                      size="sm"
-                      className="w-full bg-purple-600 hover:bg-purple-700"
-                    >
-                      <CheckCircle className="h-4 w-4 mr-2" />
-                      Tomar esta OT
-                    </Button>
                   </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </CardContent>
         </Card>
+      )}
 
-        {/* Mis OTs Tomadas */}
+      {/* Vista: Itinerario de Fecha Seleccionada */}
+      {vistaActual === 'itinerario' && fechaSeleccionada && (
+        <>
+          {/* Info de fecha seleccionada */}
+          <Card className="bg-purple-50 border-purple-200">
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Calendar className="h-6 w-6 text-purple-600" />
+                  <div>
+                    <p className="text-sm text-gray-600">Viendo itinerario de</p>
+                    <p className="text-xl font-bold text-gray-900">
+                      {format(new Date(fechaSeleccionada + 'T12:00:00'), 'EEEE, dd/MM/yyyy', { locale: es })}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Resumen */}
+          {!loading && misOTs.length > 0 && (
+        <div className="max-w-md mx-auto">
+          <Card className="border-purple-200 bg-purple-50">
+            <CardContent className="pt-6">
+              <div className="text-center">
+                <p className="text-4xl font-bold text-purple-600">{misOTs.length}</p>
+                <p className="text-sm text-gray-700 mt-1 font-medium">
+                  {misOTs.length === 1 ? 'Trabajo Asignado' : 'Trabajos Asignados'}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+          </div>
+        )}
+
+        {/* Mis OTs Asignadas */}
+        <div className="max-w-4xl mx-auto">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <CheckCircle className="h-5 w-5 text-green-600" />
-              Mis OTs
+              <CheckCircle className="h-5 w-5 text-purple-600" />
+              Mis Trabajos Asignados
             </CardTitle>
             <CardDescription>
-              {otsTomadas.length} órdenes que has tomado
+              {misOTs.length} {misOTs.length === 1 ? 'orden asignada' : 'órdenes asignadas'} para esta fecha
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -221,18 +202,18 @@ export default function ItinerarioOperario() {
               <div className="space-y-3">
                 {[1, 2].map(i => <Skeleton key={i} className="h-32 w-full" />)}
               </div>
-            ) : otsTomadas.length === 0 ? (
+            ) : misOTs.length === 0 ? (
               <div className="text-center py-8 text-gray-500">
-                <CheckCircle className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                <p>No has tomado ninguna OT</p>
-                <p className="text-sm mt-1">Selecciona una OT de las disponibles</p>
+                <AlertCircle className="h-12 w-12 mx-auto mb-2 opacity-50" />
+                <p className="font-medium">No tienes trabajos asignados para esta fecha</p>
+                <p className="text-sm mt-1">Esta es una vista de consulta. Ve al Dashboard para trabajar en tus OTs pendientes.</p>
               </div>
             ) : (
               <div className="space-y-3 max-h-[600px] overflow-y-auto">
-                {otsTomadas.map((ot) => (
+                {misOTs.map((ot) => (
                   <div
                     key={ot.id}
-                    className="border-2 border-green-200 rounded-lg p-4 bg-green-50 hover:shadow-md transition-shadow"
+                    className="border-2 border-purple-200 rounded-lg p-4 bg-purple-50 hover:shadow-md transition-shadow"
                   >
                     <div className="flex justify-between items-start mb-2">
                       <div className="flex-1">
@@ -241,12 +222,12 @@ export default function ItinerarioOperario() {
                           <Badge className={
                             ot.estado === 'PENDIENTE' 
                               ? "bg-blue-100 text-blue-800"
-                              : ot.estado === 'EN_PROGRESO'
+                              : ot.estado === 'EN_PROCESO'
                               ? "bg-yellow-100 text-yellow-800"
                               : "bg-green-100 text-green-800"
                           }>
                             {ot.estado === 'PENDIENTE' ? 'Pendiente' : 
-                             ot.estado === 'EN_PROGRESO' ? 'En Progreso' : 'Completada'}
+                             ot.estado === 'EN_PROCESO' ? 'En Progreso' : 'Completada'}
                           </Badge>
                           <Badge className="bg-orange-100 text-orange-800">
                             {ot.prioridad}
@@ -256,53 +237,29 @@ export default function ItinerarioOperario() {
                       </div>
                     </div>
 
-                    <div className="text-xs text-gray-700 space-y-1 mb-3">
+                    <div className="text-xs text-gray-700 space-y-1">
                       <p className="flex items-center gap-1">
                         <MapPin className="h-3 w-3" />
                         <strong>Dirección:</strong> {ot.domicilio}
                       </p>
-                      <p><strong>Socio:</strong> {ot.socio_nombre} ({ot.nro_socio})</p>
-                      <p><strong>Cuenta:</strong> {ot.cuenta_nro}</p>
-                      {ot.fecha_asignacion && (
-                        <p className="flex items-center gap-1 text-green-700">
+                      <p><strong>Socio:</strong> {ot.socio_nombre} {ot.socio_apellido}</p>
+                      <p><strong>Cuenta:</strong> {ot.numero_cuenta}</p>
+                      {ot.created_at && (
+                        <p className="flex items-center gap-1 text-purple-700">
                           <Clock className="h-3 w-3" />
-                          <strong>Tomada:</strong> {format(new Date(ot.fecha_asignacion), 'dd/MM/yyyy HH:mm', { locale: es })}
+                          <strong>Asignada:</strong> {format(new Date(ot.created_at), 'dd/MM/yyyy HH:mm', { locale: es })}
                         </p>
                       )}
                     </div>
-
-                    {ot.estado === 'PENDIENTE' && (
-                      <Button
-                        onClick={() => handleIniciarTrabajo(ot.id)}
-                        size="sm"
-                        className="w-full bg-green-600 hover:bg-green-700"
-                      >
-                        <CheckCircle className="h-4 w-4 mr-2" />
-                        Iniciar Trabajo
-                      </Button>
-                    )}
-                    {ot.estado === 'EN_PROGRESO' && (
-                      <Button
-                        onClick={() => handleIniciarTrabajo(ot.id)}
-                        size="sm"
-                        variant="outline"
-                        className="w-full"
-                      >
-                        Continuar Trabajo
-                      </Button>
-                    )}
-                    {ot.estado === 'COMPLETADA' && (
-                      <Badge className="w-full justify-center py-2 bg-gray-100 text-gray-600">
-                        Trabajo Completado
-                      </Badge>
-                    )}
                   </div>
                 ))}
               </div>
             )}
           </CardContent>
         </Card>
-      </div>
+        </div>
+        </>
+      )}
     </div>
   );
 }

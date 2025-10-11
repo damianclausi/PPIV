@@ -5,6 +5,7 @@
 
 import Empleado from '../models/Empleado.js';
 import Reclamo from '../models/Reclamo.js';
+import UsoMaterial from '../models/UsoMaterial.js';
 import { respuestaExitosa, respuestaError, respuestaNoEncontrado } from '../utils/respuestas.js';
 
 export default class OperarioController {
@@ -144,6 +145,111 @@ export default class OperarioController {
     } catch (error) {
       console.error('Error al actualizar estado de reclamo:', error);
       return respuestaError(res, 'Error al actualizar estado de reclamo');
+    }
+  }
+
+  /**
+   * Listar materiales disponibles
+   */
+  static async listarMateriales(req, res) {
+    try {
+      const materiales = await UsoMaterial.listarMateriales();
+      return respuestaExitosa(res, materiales, 'Materiales obtenidos exitosamente');
+    } catch (error) {
+      console.error('Error al listar materiales:', error);
+      return respuestaError(res, 'Error al listar materiales');
+    }
+  }
+
+  /**
+   * Registrar uso de materiales en una OT
+   */
+  static async registrarMateriales(req, res) {
+    try {
+      const { otId } = req.params;
+      const { materiales } = req.body;
+      const empleadoId = req.usuario.empleado_id;
+
+      if (!Array.isArray(materiales) || materiales.length === 0) {
+        return respuestaError(res, 'Debe proporcionar al menos un material', 400);
+      }
+
+      // Validar que cada material tenga los campos requeridos
+      for (const mat of materiales) {
+        if (!mat.material_id || !mat.cantidad) {
+          return respuestaError(res, 'Cada material debe tener material_id y cantidad', 400);
+        }
+      }
+
+      const resultado = await UsoMaterial.registrarMateriales(otId, empleadoId, materiales);
+      
+      return respuestaExitosa(
+        res,
+        resultado,
+        'Materiales registrados exitosamente'
+      );
+    } catch (error) {
+      console.error('Error al registrar materiales:', error);
+      return respuestaError(res, error.message || 'Error al registrar materiales');
+    }
+  }
+
+  /**
+   * Obtener materiales usados en una OT
+   */
+  static async obtenerMaterialesOT(req, res) {
+    try {
+      const { otId } = req.params;
+      const materiales = await UsoMaterial.obtenerPorOT(otId);
+      
+      return respuestaExitosa(
+        res,
+        materiales,
+        'Materiales de la OT obtenidos exitosamente'
+      );
+    } catch (error) {
+      console.error('Error al obtener materiales de OT:', error);
+      return respuestaError(res, 'Error al obtener materiales de OT');
+    }
+  }
+
+  /**
+   * Obtener materiales usados en un reclamo
+   */
+  static async obtenerMaterialesReclamo(req, res) {
+    try {
+      const { id } = req.params;
+      const materiales = await UsoMaterial.obtenerPorReclamo(id);
+      
+      return respuestaExitosa(
+        res,
+        materiales,
+        'Materiales del reclamo obtenidos exitosamente'
+      );
+    } catch (error) {
+      console.error('Error al obtener materiales de reclamo:', error);
+      return respuestaError(res, 'Error al obtener materiales de reclamo');
+    }
+  }
+
+  /**
+   * Eliminar un registro de uso de material
+   */
+  static async eliminarUsoMaterial(req, res) {
+    try {
+      const { id } = req.params;
+      const empleadoId = req.usuario.empleado_id;
+      
+      const resultado = await UsoMaterial.eliminar(id, empleadoId);
+      
+      return respuestaExitosa(
+        res,
+        resultado,
+        'Uso de material eliminado exitosamente'
+      );
+    } catch (error) {
+      console.error('Error al eliminar uso de material:', error);
+      return respuestaError(res, error.message || 'Error al eliminar uso de material');
     }
   }
 }

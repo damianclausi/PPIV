@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useOTsTecnicas } from '../../hooks/useOTsTecnicas';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
@@ -14,12 +15,14 @@ import {
   Clock,
   CheckCircle2,
   AlertCircle,
-  Loader2
+  Loader2,
+  Package
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
 const OTTecnicaDetalle = ({ ot, onVolver }) => {
+  const navigate = useNavigate();
   const { iniciarTrabajo, completarTrabajo, loading } = useOTsTecnicas();
   const [observaciones, setObservaciones] = useState('');
   const [showCompletarForm, setShowCompletarForm] = useState(false);
@@ -276,13 +279,51 @@ const OTTecnicaDetalle = ({ ot, onVolver }) => {
           <CardContent className="pt-6">
             <div className="flex items-center gap-3">
               <CheckCircle2 className="h-6 w-6 text-green-500" />
-              <div>
+              <div className="flex-1">
                 <h3 className="font-medium">Trabajo Completado</h3>
                 <p className="text-sm text-muted-foreground">
                   Este trabajo fue finalizado exitosamente
+                  {ot.fecha_cierre && (
+                    <span className="ml-1">
+                      el {format(new Date(ot.fecha_cierre), "dd/MM/yyyy 'a las' HH:mm", { locale: es })}
+                    </span>
+                  )}
+                </p>
+                <p className="text-xs text-gray-600 mt-1">
+                  ℹ️ Esta información es de solo lectura
                 </p>
               </div>
             </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Card para Gestión de Insumos */}
+      {(ot.estado === 'EN_PROCESO' || ot.estado === 'COMPLETADA') && (
+        <Card className="border-purple-200">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <Package className="h-5 w-5 text-purple-600" />
+              Gestión de Insumos
+            </CardTitle>
+            <CardDescription>
+              {ot.estado === 'EN_PROCESO' 
+                ? 'Registra los materiales e insumos utilizados en este trabajo'
+                : 'Consulta los insumos registrados para este trabajo'
+              }
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button 
+              variant="outline"
+              className="w-full border-purple-300 text-purple-700 hover:bg-purple-50"
+              onClick={() => navigate(`/dashboard/operario/reclamos/${ot.reclamo_id}/insumos`, {
+                state: { otId: ot.ot_id }
+              })}
+            >
+              <Package className="h-4 w-4 mr-2" />
+              {ot.estado === 'EN_PROCESO' ? 'Cargar Materiales' : 'Ver Materiales'}
+            </Button>
           </CardContent>
         </Card>
       )}

@@ -7,6 +7,7 @@ import { toast } from 'sonner';
  */
 export const useItinerario = () => {
   const [itinerario, setItinerario] = useState([]);
+  const [fechasDisponibles, setFechasDisponibles] = useState([]);
   const [otsPendientes, setOtsPendientes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -79,6 +80,31 @@ export const useItinerario = () => {
       setError(errorMsg);
       toast.error(errorMsg);
       setItinerario([]);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  /**
+   * Obtener fechas con itinerarios disponibles
+   */
+  const obtenerFechasDisponibles = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await itinerarioService.obtenerFechasDisponibles();
+      if (response.success) {
+        setFechasDisponibles(response.data);
+        return response.data;
+      } else {
+        throw new Error(response.message || 'Error al obtener fechas disponibles');
+      }
+    } catch (err) {
+      const errorMsg = err.response?.data?.message || err.message || 'Error al obtener fechas con itinerarios';
+      setError(errorMsg);
+      toast.error(errorMsg);
+      setFechasDisponibles([]);
       throw err;
     } finally {
       setLoading(false);
@@ -181,6 +207,7 @@ export const useItinerario = () => {
   return {
     // Estados
     itinerario,
+    fechasDisponibles,
     otsPendientes,
     loading,
     error,
@@ -189,6 +216,7 @@ export const useItinerario = () => {
     asignarOTaCuadrilla,
     obtenerItinerarioCuadrilla,
     obtenerMiItinerario,
+    obtenerFechasDisponibles,
     tomarOT,
     obtenerOTsPendientes,
     quitarDelItinerario,

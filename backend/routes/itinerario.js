@@ -16,6 +16,9 @@ router.get('/cuadrilla/:cuadrillaId', ItinerarioController.obtenerItinerarioCuad
 // GET /api/itinerario/mi-itinerario - Obtener mi itinerario (operario)
 router.get('/mi-itinerario', ItinerarioController.obtenerMiItinerario);
 
+// GET /api/itinerario/fechas-disponibles - Obtener fechas con itinerarios (operario)
+router.get('/fechas-disponibles', ItinerarioController.obtenerFechasDisponibles);
+
 // PUT /api/itinerario/tomar/:otId - Tomar OT del itinerario (operario)
 router.put('/tomar/:otId', ItinerarioController.tomarOT);
 

@@ -249,6 +249,49 @@ class ItinerarioController {
       });
     }
   }
+
+  /**
+   * GET /api/itinerario/fechas-disponibles
+   * Obtener lista de fechas con itinerarios disponibles para el operario
+   */
+  async obtenerFechasDisponibles(req, res) {
+    try {
+      const empleado_id = req.usuario.empleado_id;
+
+      console.log('📅 Obteniendo fechas con itinerarios:', { empleado_id });
+
+      // Obtener cuadrilla del operario
+      const cuadrilla = await Cuadrilla.obtenerCuadrillaPorOperario(empleado_id);
+      
+      if (!cuadrilla) {
+        return res.json({
+          success: true,
+          message: 'No perteneces a ninguna cuadrilla activa',
+          data: []
+        });
+      }
+
+      // Obtener fechas con itinerarios asignados a este operario específico
+      const fechas = await OrdenTrabajo.obtenerFechasConItinerario(
+        cuadrilla.cuadrilla_id,
+        empleado_id
+      );
+
+      res.json({
+        success: true,
+        data: fechas,
+        total: fechas.length,
+        cuadrilla: cuadrilla
+      });
+    } catch (error) {
+      console.error('❌ Error al obtener fechas con itinerarios:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Error al obtener fechas disponibles',
+        error: error.message
+      });
+    }
+  }
 }
 
 export default new ItinerarioController();

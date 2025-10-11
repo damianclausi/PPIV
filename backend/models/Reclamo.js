@@ -337,7 +337,13 @@ class Reclamo {
         s.nombre as socio_nombre,
         s.apellido as socio_apellido,
         s.telefono as socio_telefono,
+        ot.ot_id,
         ot.estado as estado_orden,
+        ot.fecha_programada,
+        CASE 
+          WHEN ot.observaciones LIKE '%[ITINERARIO]%' THEN true
+          ELSE false
+        END as es_itinerario,
         COUNT(*) OVER() as total
       FROM reclamo r
       INNER JOIN orden_trabajo ot ON r.reclamo_id = ot.reclamo_id
@@ -360,7 +366,11 @@ class Reclamo {
     }
 
     const offset = (pagina - 1) * limite;
-    query += ` ORDER BY r.fecha_alta DESC LIMIT $${paramCount} OFFSET $${paramCount + 1}`;
+    query += ` ORDER BY 
+      CASE WHEN ot.observaciones LIKE '%[ITINERARIO]%' THEN 0 ELSE 1 END,
+      ot.fecha_programada ASC NULLS LAST,
+      r.fecha_alta DESC 
+      LIMIT $${paramCount} OFFSET $${paramCount + 1}`;
     params.push(limite, offset);
 
     const resultado = await pool.query(query, params);
@@ -375,11 +385,12 @@ class Reclamo {
 
   /**
    * Obtener resumen de reclamos para un operario
+   * Incluye tanto reclamos regulares como OTs del itinerario
    */
   static async obtenerResumenPorOperario(operarioId) {
     const resultado = await pool.query(`
       SELECT 
-        COUNT(*) FILTER (WHERE r.estado = 'PENDIENTE') as pendientes,
+        COUNT(*) FILTER (WHERE r.estado IN ('PENDIENTE', 'ASIGNADA')) as pendientes,
         COUNT(*) FILTER (WHERE r.estado = 'EN_PROCESO') as en_proceso,
         COUNT(*) FILTER (WHERE r.estado = 'RESUELTO' AND DATE(r.fecha_cierre) = CURRENT_DATE) as resueltos_hoy,
         COUNT(*) as total

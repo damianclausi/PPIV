@@ -45,6 +45,7 @@ export default function DashboardOperario() {
     const estadoNormalizado = estado?.toLowerCase();
     const badges = {
       pendiente: <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">Pendiente</Badge>,
+      asignada: <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-100">Asignada</Badge>,
       en_curso: <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">En Curso</Badge>,
       en_proceso: <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">En Curso</Badge>,
       resuelto: <Badge className="bg-green-100 text-green-800 hover:bg-green-100">Resuelto</Badge>
@@ -130,7 +131,11 @@ export default function DashboardOperario() {
   };
 
   // Filtrar reclamos por estado (EN_PROCESO del backend se muestra como "En Curso")
-  const reclamosPendientes = reclamos.filter(r => r.estado === 'PENDIENTE' || r.estado === 'pendiente');
+  // ASIGNADA = OTs del itinerario asignadas por el admin
+  const reclamosPendientes = reclamos.filter(r => 
+    r.estado === 'PENDIENTE' || r.estado === 'pendiente' ||
+    r.estado === 'ASIGNADA' || r.estado === 'asignada'
+  );
   const reclamosEnCurso = reclamos.filter(r => 
     r.estado === 'EN_CURSO' || r.estado === 'en_curso' || 
     r.estado === 'EN_PROCESO' || r.estado === 'en_proceso'
@@ -138,19 +143,52 @@ export default function DashboardOperario() {
   const reclamosResueltos = reclamos.filter(r => r.estado === 'RESUELTO' || r.estado === 'resuelto');
 
   // Renderizar tarjeta de reclamo
-  const ReclamoCard = ({ reclamo }) => (
+  const ReclamoCard = ({ reclamo }) => {
+    const [isDragging, setIsDragging] = React.useState(false);
+    
+    const onDragStartLocal = (e) => {
+      setIsDragging(true);
+      handleDragStart(e, reclamo);
+    };
+    
+    const onDragEndLocal = () => {
+      setTimeout(() => setIsDragging(false), 100);
+      handleDragEnd();
+    };
+    
+    const onClickLocal = (e) => {
+      e.stopPropagation();
+      console.log('Click en tarjeta', { isDragging, ot_id: reclamo.ot_id });
+      
+      // Solo navegar si no estamos arrastrando
+      if (!isDragging && reclamo.ot_id) {
+        console.log('Navegando a:', `/dashboard/operario/ots-tecnicas/${reclamo.ot_id}`);
+        navigate(`/dashboard/operario/ots-tecnicas/${reclamo.ot_id}`);
+      } else if (!reclamo.ot_id) {
+        console.warn('No hay ot_id en el reclamo:', reclamo);
+      }
+    };
+    
+    return (
     <div
       draggable
-      onDragStart={(e) => handleDragStart(e, reclamo)}
-      onDragEnd={handleDragEnd}
-      onClick={() => navigate(`/dashboard/operario/reclamos/${reclamo.reclamo_id}`)}
-      className="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-all cursor-move border-2 border-transparent hover:border-blue-200"
+      onDragStart={onDragStartLocal}
+      onDragEnd={onDragEndLocal}
+      onClick={onClickLocal}
+      className="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-all cursor-pointer border-2 border-transparent hover:border-blue-200"
     >
       <div className="space-y-3">
         <div className="flex items-start justify-between gap-2">
-          <h4 className="font-semibold text-sm line-clamp-2">
-            {reclamo.detalle_reclamo || reclamo.tipo_reclamo || 'Reclamo Técnico'}
-          </h4>
+          <div className="flex-1">
+            <h4 className="font-semibold text-sm line-clamp-2">
+              {reclamo.detalle_reclamo || reclamo.tipo_reclamo || 'Reclamo Técnico'}
+            </h4>
+            {reclamo.es_itinerario && (
+              <Badge className="bg-purple-50 text-purple-700 text-xs mt-1 border border-purple-200">
+                📅 Itinerario
+              </Badge>
+            )}
+          </div>
           {getPriorityBadge(reclamo.prioridad)}
         </div>
         
@@ -169,13 +207,29 @@ export default function DashboardOperario() {
           {reclamo.descripcion || 'Sin descripción'}
         </p>
 
-        <div className="flex items-center gap-2 text-xs text-gray-500">
-          <Clock className="h-3 w-3" />
-          {formatearFecha(reclamo.fecha_alta)}
+        <div className="space-y-1">
+          {reclamo.fecha_programada && (
+            <div className="flex items-center gap-2 text-xs font-medium text-purple-700">
+              <Clock className="h-3 w-3" />
+              Programada: {formatearFecha(reclamo.fecha_programada)}
+            </div>
+          )}
+          {reclamo.fecha_cierre ? (
+            <div className="flex items-center gap-2 text-xs font-medium text-green-700">
+              <CheckCircle className="h-3 w-3" />
+              Cerrada: {formatearFecha(reclamo.fecha_cierre)}
+            </div>
+          ) : (
+            <div className="flex items-center gap-2 text-xs text-gray-500">
+              <Clock className="h-3 w-3" />
+              Creada: {formatearFecha(reclamo.fecha_alta)}
+            </div>
+          )}
         </div>
       </div>
     </div>
-  );
+    );
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
@@ -264,51 +318,21 @@ export default function DashboardOperario() {
           </Card>
 
           <Card 
-            className="cursor-pointer hover:shadow-lg transition-all border-2 border-purple-200 hover:border-purple-400"
-            onClick={() => navigate('/dashboard/operario/mis-ots')}
+            className="cursor-pointer hover:shadow-lg transition-shadow"
+            onClick={() => navigate('/dashboard/operario/itinerario')}
           >
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">OTs Técnicas</p>
-                  <p className="text-lg font-bold text-purple-600">
-                    Ver Mis OTs
-                  </p>
+                  <p className="text-sm text-gray-600">Mi Itinerario</p>
+                  <p className="text-xs text-gray-500 mt-1">Ver por fecha</p>
                 </div>
                 <div className="bg-purple-100 rounded-full p-3">
-                  <Wrench className="h-6 w-6 text-purple-600" />
+                  <Clock className="h-6 w-6 text-purple-600" />
                 </div>
               </div>
             </CardContent>
           </Card>
-        </div>
-
-        {/* Botones de Acciones */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Button 
-            className="h-auto py-6 flex items-center justify-start gap-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
-            onClick={() => navigate('/dashboard/operario/itinerario')}
-          >
-            <div className="bg-white/20 rounded-lg p-3">
-              <Clock className="h-6 w-6" />
-            </div>
-            <div className="text-left">
-              <p className="font-semibold text-base">Mi Itinerario</p>
-              <p className="text-xs text-blue-100">Ver órdenes asignadas a mi cuadrilla</p>
-            </div>
-          </Button>
-          <Button 
-            className="h-auto py-6 flex items-center justify-start gap-4 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800"
-            onClick={() => navigate('/dashboard/operario/mis-ots')}
-          >
-            <div className="bg-white/20 rounded-lg p-3">
-              <Wrench className="h-6 w-6" />
-            </div>
-            <div className="text-left">
-              <p className="font-semibold text-base">Mis OTs</p>
-              <p className="text-xs text-purple-100">Ver todas mis órdenes de trabajo</p>
-            </div>
-          </Button>
         </div>
 
         {/* Vista Kanban o Lista */}

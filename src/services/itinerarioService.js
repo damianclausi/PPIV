@@ -48,6 +48,19 @@ const itinerarioService = {
   },
 
   /**
+   * Obtener fechas con itinerarios disponibles (operario autenticado)
+   */
+  async obtenerFechasDisponibles() {
+    try {
+      const response = await api.get('/api/itinerario/fechas-disponibles');
+      return response;
+    } catch (error) {
+      console.error('Error al obtener fechas disponibles:', error);
+      throw error;
+    }
+  },
+
+  /**
    * Tomar una OT del itinerario (operario)
    */
   async tomarOT(otId) {

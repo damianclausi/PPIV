@@ -155,6 +155,7 @@ export const useOTsTecnicas = () => {
     error,
     listarOTs,
     obtenerDetalle,
+    obtenerOTPorId: obtenerDetalle, // Alias para claridad
     obtenerMisOTs,
     asignarOperario,
     iniciarTrabajo,

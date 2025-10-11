@@ -24,4 +24,19 @@ router.get('/reclamos', OperarioController.obtenerReclamos);
 router.get('/reclamos/:id', OperarioController.obtenerReclamo);
 router.patch('/reclamos/:id/estado', OperarioController.actualizarEstadoReclamo);
 
+// Materiales - Listar materiales disponibles
+router.get('/materiales', OperarioController.listarMateriales);
+
+// Materiales - Registrar uso de materiales en OT
+router.post('/ot/:otId/materiales', OperarioController.registrarMateriales);
+
+// Materiales - Obtener materiales usados en una OT
+router.get('/ot/:otId/materiales', OperarioController.obtenerMaterialesOT);
+
+// Materiales - Obtener materiales usados en un reclamo
+router.get('/reclamos/:id/materiales', OperarioController.obtenerMaterialesReclamo);
+
+// Materiales - Eliminar registro de uso de material
+router.delete('/materiales/:id', OperarioController.eliminarUsoMaterial);
+
 export default router;

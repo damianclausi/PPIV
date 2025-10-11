@@ -602,8 +602,8 @@ class OrdenTrabajo {
         ct.numero_cuenta,
         ct.direccion as cuenta_direccion,
         tr.nombre as tipo_reclamo,
-        dtr.descripcion as detalle_tipo,
-        p.descripcion as prioridad
+        dtr.nombre as detalle_tipo,
+        p.nombre as prioridad
       FROM orden_trabajo ot
       INNER JOIN reclamo r ON ot.reclamo_id = r.reclamo_id
       LEFT JOIN empleado e ON ot.empleado_id = e.empleado_id
@@ -912,6 +912,49 @@ class OrdenTrabajo {
     }
 
     return resultado.rows[0];
+  }
+
+  /**
+   * Obtener fechas con itinerarios disponibles para una cuadrilla
+   * Devuelve fechas futuras (incluyendo hoy) con al menos 1 OT
+   */
+  static async obtenerFechasConItinerario(cuadrilla_id, empleado_id = null) {
+    const query = `
+      SELECT 
+        DATE(ot.fecha_programada) as fecha,
+        COUNT(*) as total_ots,
+        COUNT(CASE WHEN ot.empleado_id IS NULL THEN 1 END) as ots_disponibles,
+        COUNT(CASE WHEN ot.empleado_id = $2 THEN 1 END) as ots_tomadas,
+        json_agg(
+          json_build_object(
+            'prioridad', p.nombre,
+            'descripcion', r.descripcion
+          ) ORDER BY 
+            CASE p.nombre
+              WHEN 'ALTA' THEN 1
+              WHEN 'MEDIA' THEN 2
+              WHEN 'BAJA' THEN 3
+              ELSE 4
+            END
+        ) FILTER (WHERE ot.empleado_id IS NULL) as resumen_disponibles
+      FROM orden_trabajo ot
+      INNER JOIN reclamo r ON ot.reclamo_id = r.reclamo_id
+      INNER JOIN detalle_tipo_reclamo dtr ON r.detalle_id = dtr.detalle_id
+      INNER JOIN tipo_reclamo tr ON dtr.tipo_id = tr.tipo_id
+      LEFT JOIN prioridad p ON r.prioridad_id = p.prioridad_id
+      WHERE DATE(ot.fecha_programada) >= CURRENT_DATE
+        AND tr.nombre = 'TECNICO'
+        AND ot.observaciones LIKE '%[ITINERARIO]%'
+        AND ot.observaciones LIKE '%cuadrilla: ' || (SELECT nombre FROM cuadrilla WHERE cuadrilla_id = $1) || '%'
+        AND ot.estado IN ('PENDIENTE', 'ASIGNADA', 'EN_PROCESO')
+      GROUP BY DATE(ot.fecha_programada)
+      HAVING COUNT(CASE WHEN ot.empleado_id = $2 THEN 1 END) > 0
+      ORDER BY DATE(ot.fecha_programada) ASC
+      LIMIT 30
+    `;
+
+    const resultado = await pool.query(query, [cuadrilla_id, empleado_id]);
+    return resultado.rows;
   }
 }
 
