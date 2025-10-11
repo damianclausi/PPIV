@@ -17,7 +17,9 @@ import {
   UserCog,
   ClipboardList,
   BarChart3,
-  TrendingUp
+  TrendingUp,
+  Wrench,
+  Calendar
 } from 'lucide-react';
 
 export default function DashboardAdministrador() {
@@ -151,6 +153,22 @@ export default function DashboardAdministrador() {
               >
                 <ClipboardList className="h-4 w-4 mr-2" />
                 OTs Administrativas
+              </Button>
+              <Button 
+                className="w-full justify-start" 
+                variant="default"
+                onClick={() => navigate('/dashboard/admin/ots-tecnicas')}
+              >
+                <Wrench className="h-4 w-4 mr-2" />
+                OTs Técnicas
+              </Button>
+              <Button 
+                className="w-full justify-start" 
+                variant="default"
+                onClick={() => navigate('/dashboard/admin/itinerario')}
+              >
+                <Calendar className="h-4 w-4 mr-2" />
+                Itinerario de Cuadrillas
               </Button>
               <Button 
                 className="w-full justify-start" 

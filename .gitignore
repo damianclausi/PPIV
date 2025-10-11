@@ -21,6 +21,9 @@ backend/.env.test
 # Documentación de Credenciales  (solo local)
 local-docs/
 
+# Documentación interna de desarrollo (debugging, fixes, análisis técnicos)
+.internal-docs/
+
 # IDE
 .vscode
 .idea

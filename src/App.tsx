@@ -21,6 +21,10 @@ import SocioEditar from './components/admin/SocioEditar';
 import SocioNuevo from './components/admin/SocioNuevo';
 import ReclamoDetalleAdmin from './components/admin/ReclamoDetalleAdmin';
 import OTsAdministrativas from './components/admin/OTsAdministrativas';
+import MisOTsOperario from './components/operario/MisOTsOperario';
+import SupervisorOTsTecnicas from './components/supervisor/SupervisorOTsTecnicas';
+import ItinerarioCuadrillas from './components/admin/ItinerarioCuadrillas';
+import ItinerarioOperario from './components/operario/ItinerarioOperario';
 
 // Componente para rutas protegidas
 function RutaProtegida({ children }: { children: React.ReactNode }) {
@@ -160,6 +164,14 @@ function AppRoutes() {
       
       {/* Rutas Operario */}
       <Route
+        path="/dashboard/operario/mis-ots"
+        element={
+          <RutaProtegida>
+            <MisOTsOperario />
+          </RutaProtegida>
+        }
+      />
+      <Route
         path="/dashboard/operario/reclamos/:id"
         element={
           <RutaProtegida>
@@ -172,6 +184,14 @@ function AppRoutes() {
         element={
           <RutaProtegida>
             <CargarInsumos />
+          </RutaProtegida>
+        }
+      />
+      <Route
+        path="/dashboard/operario/itinerario"
+        element={
+          <RutaProtegida>
+            <ItinerarioOperario />
           </RutaProtegida>
         }
       />
@@ -246,6 +266,22 @@ function AppRoutes() {
         element={
           <RutaProtegida>
             <OTsAdministrativas />
+          </RutaProtegida>
+        }
+      />
+      <Route
+        path="/dashboard/admin/ots-tecnicas"
+        element={
+          <RutaProtegida>
+            <SupervisorOTsTecnicas />
+          </RutaProtegida>
+        }
+      />
+      <Route
+        path="/dashboard/admin/itinerario"
+        element={
+          <RutaProtegida>
+            <ItinerarioCuadrillas />
           </RutaProtegida>
         }
       />

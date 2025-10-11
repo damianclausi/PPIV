@@ -10,7 +10,7 @@ import { useAuth } from '../contexts/AuthContext.jsx';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
-import { Clock, MapPin, AlertTriangle, CheckCircle, LayoutGrid, List } from 'lucide-react';
+import { Clock, MapPin, AlertTriangle, CheckCircle, LayoutGrid, List, Wrench } from 'lucide-react';
 import operarioService from '../services/operarioService.js';
 import { formatearFecha } from '../utils/formatters.js';
 
@@ -209,7 +209,7 @@ export default function DashboardOperario() {
         </div>
 
         {/* Estadísticas */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <Card>
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
@@ -257,6 +257,53 @@ export default function DashboardOperario() {
               </div>
             </CardContent>
           </Card>
+
+          <Card 
+            className="cursor-pointer hover:shadow-lg transition-all border-2 border-purple-200 hover:border-purple-400"
+            onClick={() => navigate('/dashboard/operario/mis-ots')}
+          >
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600">OTs Técnicas</p>
+                  <p className="text-lg font-bold text-purple-600">
+                    Ver Mis OTs
+                  </p>
+                </div>
+                <div className="bg-purple-100 rounded-full p-3">
+                  <Wrench className="h-6 w-6 text-purple-600" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Botones de Acciones */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Button 
+            className="h-auto py-6 flex items-center justify-start gap-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
+            onClick={() => navigate('/dashboard/operario/itinerario')}
+          >
+            <div className="bg-white/20 rounded-lg p-3">
+              <Clock className="h-6 w-6" />
+            </div>
+            <div className="text-left">
+              <p className="font-semibold text-base">Mi Itinerario</p>
+              <p className="text-xs text-blue-100">Ver órdenes asignadas a mi cuadrilla</p>
+            </div>
+          </Button>
+          <Button 
+            className="h-auto py-6 flex items-center justify-start gap-4 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800"
+            onClick={() => navigate('/dashboard/operario/mis-ots')}
+          >
+            <div className="bg-white/20 rounded-lg p-3">
+              <Wrench className="h-6 w-6" />
+            </div>
+            <div className="text-left">
+              <p className="font-semibold text-base">Mis OTs</p>
+              <p className="text-xs text-purple-100">Ver todas mis órdenes de trabajo</p>
+            </div>
+          </Button>
         </div>
 
         {/* Vista Kanban o Lista */}
