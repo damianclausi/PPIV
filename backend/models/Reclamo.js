@@ -136,29 +136,69 @@ class Reclamo {
 
   /**
    * Actualizar estado del reclamo
+   * SINCRONIZA automáticamente con la OT asociada:
+   * - EN_CURSO (reclamo) → EN_PROCESO (OT)
+   * - RESUELTO (reclamo) → Ya manejado en completarTrabajo de OT
    */
   static async actualizarEstado(reclamoId, estado, observaciones = null) {
-    const campos = ['estado = $1', 'updated_at = NOW()'];
-    const params = [estado];
+    const client = await pool.connect();
     
-    if (estado === 'RESUELTO' || estado === 'CERRADO') {
-      campos.push('fecha_cierre = NOW()');
-      if (observaciones) {
-        campos.push(`observaciones_cierre = $${params.length + 1}`);
-        params.push(observaciones);
+    try {
+      await client.query('BEGIN');
+      
+      const campos = ['estado = $1', 'updated_at = NOW()'];
+      const params = [estado];
+      
+      if (estado === 'RESUELTO' || estado === 'CERRADO') {
+        campos.push('fecha_cierre = NOW()');
+        if (observaciones) {
+          campos.push(`observaciones_cierre = $${params.length + 1}`);
+          params.push(observaciones);
+        }
       }
+
+      params.push(reclamoId);
+
+      const resultado = await client.query(`
+        UPDATE reclamo 
+        SET ${campos.join(', ')}
+        WHERE reclamo_id = $${params.length}
+        RETURNING *
+      `, params);
+
+      if (resultado.rowCount === 0) {
+        throw new Error('Reclamo no encontrado');
+      }
+
+      const reclamo = resultado.rows[0];
+
+      // SINCRONIZAR con OT si el reclamo pasa a EN_PROCESO o EN_CURSO
+      if (estado === 'EN_PROCESO' || estado === 'EN_CURSO') {
+        const otActualizada = await client.query(`
+          UPDATE orden_trabajo
+          SET estado = 'EN_PROCESO',
+              updated_at = NOW()
+          WHERE reclamo_id = $1
+            AND estado IN ('PENDIENTE', 'ASIGNADA')
+          RETURNING ot_id, estado
+        `, [reclamoId]);
+
+        if (otActualizada.rowCount > 0) {
+          console.log(`✅ OT #${otActualizada.rows[0].ot_id} sincronizada a EN_PROCESO (desde reclamo #${reclamoId})`);
+        } else {
+          console.log(`⚠️ No se encontró OT PENDIENTE/ASIGNADA para reclamo #${reclamoId} (puede ya estar EN_PROCESO o COMPLETADA)`);
+        }
+      }
+
+      await client.query('COMMIT');
+      return reclamo;
+    } catch (error) {
+      await client.query('ROLLBACK');
+      console.error('Error al actualizar estado del reclamo:', error);
+      throw error;
+    } finally {
+      client.release();
     }
-
-    params.push(reclamoId);
-
-    const resultado = await pool.query(`
-      UPDATE reclamo 
-      SET ${campos.join(', ')}
-      WHERE reclamo_id = $${params.length}
-      RETURNING *
-    `, params);
-
-    return resultado.rows[0];
   }
 
   /**

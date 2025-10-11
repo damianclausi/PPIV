@@ -42,9 +42,18 @@ class OperarioService {
 
   /**
    * Actualizar estado de un reclamo
+   * Normaliza EN_CURSO a EN_PROCESO para el backend
    */
   async actualizarEstadoReclamo(id, estado, observaciones = null) {
-    return apiClient.patch(`/api/operarios/reclamos/${id}/estado`, { estado, observaciones });
+    // Normalizar estado del frontend al backend
+    const estadoNormalizado = estado === 'en_curso' || estado === 'EN_CURSO' 
+      ? 'EN_PROCESO' 
+      : estado.toUpperCase();
+    
+    return apiClient.patch(`/api/operarios/reclamos/${id}/estado`, { 
+      estado: estadoNormalizado, 
+      observaciones 
+    });
   }
 }
 

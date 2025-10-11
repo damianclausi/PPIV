@@ -42,12 +42,14 @@ export default function DashboardOperario() {
   };
 
   const getStatusBadge = (estado) => {
+    const estadoNormalizado = estado?.toLowerCase();
     const badges = {
       pendiente: <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">Pendiente</Badge>,
       en_curso: <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">En Curso</Badge>,
+      en_proceso: <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">En Curso</Badge>,
       resuelto: <Badge className="bg-green-100 text-green-800 hover:bg-green-100">Resuelto</Badge>
     };
-    return badges[estado] || badges.pendiente;
+    return badges[estadoNormalizado] || badges.pendiente;
   };
 
   // Funciones de Drag & Drop
@@ -127,9 +129,12 @@ export default function DashboardOperario() {
     setDraggedItem(null);
   };
 
-  // Filtrar reclamos por estado
+  // Filtrar reclamos por estado (EN_PROCESO del backend se muestra como "En Curso")
   const reclamosPendientes = reclamos.filter(r => r.estado === 'PENDIENTE' || r.estado === 'pendiente');
-  const reclamosEnCurso = reclamos.filter(r => r.estado === 'EN_CURSO' || r.estado === 'en_curso');
+  const reclamosEnCurso = reclamos.filter(r => 
+    r.estado === 'EN_CURSO' || r.estado === 'en_curso' || 
+    r.estado === 'EN_PROCESO' || r.estado === 'en_proceso'
+  );
   const reclamosResueltos = reclamos.filter(r => r.estado === 'RESUELTO' || r.estado === 'resuelto');
 
   // Renderizar tarjeta de reclamo
