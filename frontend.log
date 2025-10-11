@@ -1,0 +1,116 @@
+
+> PPIV - El Quinto Elemento@0.1.0 dev
+> vite
+
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+  VITE v6.3.5  ready in 205 ms
+
+  ➜  Local:   http://localhost:3000/
+  ➜  Network: use --host to expose
+7:08:10 PM [vite] changed tsconfig file detected: /home/damian/projects/PPIV/tsconfig.json - Clearing cache and forcing full-reload to ensure TypeScript is compiled with updated config values.
+7:08:10 PM [vite] changed tsconfig file detected: /home/damian/projects/PPIV/tsconfig.json - Clearing cache and forcing full-reload to ensure TypeScript is compiled with updated config values.
+7:08:38 PM [vite] changed tsconfig file detected: /home/damian/projects/PPIV/tsconfig.json - Clearing cache and forcing full-reload to ensure TypeScript is compiled with updated config values.
+7:09:05 PM [vite] changed tsconfig file detected: /home/damian/projects/PPIV/tsconfig.json - Clearing cache and forcing full-reload to ensure TypeScript is compiled with updated config values.
+7:27:46 PM [vite] (client) hmr update /src/components/DashboardCliente.jsx, /src/app.css
+7:27:47 PM [vite] (client) ✨ new dependencies optimized: lucide-react
+7:27:47 PM [vite] (client) ✨ optimized dependencies changed. reloading
+7:28:15 PM [vite] (client) hmr update /src/components/DashboardCliente.jsx, /src/app.css
+7:32:03 PM [vite] (client) hmr update /src/App.tsx, /src/app.css
+7:32:14 PM [vite] (client) hmr update /src/App.tsx, /src/app.css
+7:32:15 PM [vite] (client) ✨ new dependencies optimized: @radix-ui/react-label, @radix-ui/react-select
+7:32:15 PM [vite] (client) ✨ optimized dependencies changed. reloading
+7:32:26 PM [vite] (client) hmr update /src/components/DashboardCliente.jsx, /src/app.css
+7:32:36 PM [vite] (client) hmr update /src/components/DashboardCliente.jsx, /src/app.css
+7:34:14 PM [vite] (client) hmr update /src/App.tsx, /src/app.css
+7:34:14 PM [vite] (client) hmr update /src/components/cliente/FacturasListado.jsx, /src/app.css
+7:34:14 PM [vite] (client) hmr update /src/components/DashboardCliente.jsx, /src/app.css
+7:34:14 PM [vite] (client) hmr update /src/components/cliente/ReclamoNuevo.jsx, /src/app.css
+7:34:14 PM [vite] (client) hmr update /src/components/cliente/ReclamosListado.jsx, /src/app.css
+7:34:14 PM [vite] (client) hmr update /src/components/cliente/PagoOnline.jsx, /src/app.css
+7:35:48 PM [vite] (client) hmr update /src/components/DashboardOperario.jsx, /src/app.css
+7:36:08 PM [vite] (client) hmr update /src/components/DashboardOperario.jsx, /src/app.css
+7:36:08 PM [vite] Internal server error:   x Expected '</', got 'jsx text (
+  |     )'
+     ,-[/home/damian/projects/PPIV/src/components/DashboardOperario.jsx:237:1]
+ 234 |                 </div>
+ 235 |               )}
+ 236 |             </div>
+ 237 | ,->       </main>
+ 238 | `->     </div>
+ 239 |       );
+ 240 |     }
+     `----
+
+
+Caused by:
+    Syntax Error
+  Plugin: vite:react-swc
+  File: /home/damian/projects/PPIV/src/components/DashboardOperario.jsx
+  
+7:36:08 PM [vite] Internal server error:   x Expected '</', got 'jsx text (
+  |     )'
+     ,-[/home/damian/projects/PPIV/src/components/DashboardOperario.jsx:237:1]
+ 234 |                 </div>
+ 235 |               )}
+ 236 |             </div>
+ 237 | ,->       </main>
+ 238 | `->     </div>
+ 239 |       );
+ 240 |     }
+     `----
+
+
+Caused by:
+    Syntax Error
+  Plugin: vite:react-swc
+  File: /home/damian/projects/PPIV/src/components/DashboardOperario.jsx
+  
+7:36:38 PM [vite] (client) hmr update /src/components/DashboardOperario.jsx, /src/app.css
+7:37:41 PM [vite] (client) hmr update /src/App.tsx, /src/app.css
+7:37:52 PM [vite] (client) hmr update /src/App.tsx, /src/app.css
+7:37:52 PM [vite] Internal server error: Failed to resolve import "./ui/button" from "src/components/operario/CargarInsumos.jsx". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /home/damian/projects/PPIV/src/components/operario/CargarInsumos.jsx:4:23
+  23 |  import { useParams, useNavigate } from 'react-router-dom';
+  24 |  import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+  25 |  import { Button } from './ui/button';
+     |                          ^
+  26 |  import { Label } from '../ui/label';
+  27 |  import { Input } from '../ui/input';
+      at TransformPluginContext._formatLog (file:///home/damian/projects/PPIV/node_modules/vite/dist/node/chunks/dep-DBxKXgDP.js:42499:41)
+      at TransformPluginContext.error (file:///home/damian/projects/PPIV/node_modules/vite/dist/node/chunks/dep-DBxKXgDP.js:42496:16)
+      at normalizeUrl (file:///home/damian/projects/PPIV/node_modules/vite/dist/node/chunks/dep-DBxKXgDP.js:40475:23)
+      at async file:///home/damian/projects/PPIV/node_modules/vite/dist/node/chunks/dep-DBxKXgDP.js:40594:37
+      at async Promise.all (index 6)
+      at async TransformPluginContext.transform (file:///home/damian/projects/PPIV/node_modules/vite/dist/node/chunks/dep-DBxKXgDP.js:40521:7)
+      at async EnvironmentPluginContainer.transform (file:///home/damian/projects/PPIV/node_modules/vite/dist/node/chunks/dep-DBxKXgDP.js:42294:18)
+      at async loadAndTransform (file:///home/damian/projects/PPIV/node_modules/vite/dist/node/chunks/dep-DBxKXgDP.js:35735:27)
+7:37:52 PM [vite] (client) Pre-transform error: Failed to resolve import "./ui/button" from "src/components/operario/CargarInsumos.jsx". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /home/damian/projects/PPIV/src/components/operario/CargarInsumos.jsx:4:23
+  23 |  import { useParams, useNavigate } from 'react-router-dom';
+  24 |  import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+  25 |  import { Button } from './ui/button';
+     |                          ^
+  26 |  import { Label } from '../ui/label';
+  27 |  import { Input } from '../ui/input';
+7:37:52 PM [vite] Internal server error: Failed to resolve import "./ui/button" from "src/components/operario/CargarInsumos.jsx". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /home/damian/projects/PPIV/src/components/operario/CargarInsumos.jsx:4:23
+  23 |  import { useParams, useNavigate } from 'react-router-dom';
+  24 |  import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+  25 |  import { Button } from './ui/button';
+     |                          ^
+  26 |  import { Label } from '../ui/label';
+  27 |  import { Input } from '../ui/input';
+      at TransformPluginContext._formatLog (file:///home/damian/projects/PPIV/node_modules/vite/dist/node/chunks/dep-DBxKXgDP.js:42499:41)
+      at TransformPluginContext.error (file:///home/damian/projects/PPIV/node_modules/vite/dist/node/chunks/dep-DBxKXgDP.js:42496:16)
+      at normalizeUrl (file:///home/damian/projects/PPIV/node_modules/vite/dist/node/chunks/dep-DBxKXgDP.js:40475:23)
+      at async file:///home/damian/projects/PPIV/node_modules/vite/dist/node/chunks/dep-DBxKXgDP.js:40594:37
+      at async Promise.all (index 6)
+      at async TransformPluginContext.transform (file:///home/damian/projects/PPIV/node_modules/vite/dist/node/chunks/dep-DBxKXgDP.js:40521:7)
+      at async EnvironmentPluginContainer.transform (file:///home/damian/projects/PPIV/node_modules/vite/dist/node/chunks/dep-DBxKXgDP.js:42294:18)
+      at async loadAndTransform (file:///home/damian/projects/PPIV/node_modules/vite/dist/node/chunks/dep-DBxKXgDP.js:35735:27)
+      at async viteTransformMiddleware (file:///home/damian/projects/PPIV/node_modules/vite/dist/node/chunks/dep-DBxKXgDP.js:37250:24)
+7:38:08 PM [vite] (client) hmr update /src/app.css, /src/App.tsx

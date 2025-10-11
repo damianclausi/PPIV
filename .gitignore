@@ -12,8 +12,17 @@ build
 .env
 .env.local
 .env.development.local
+.env.test
 .env.test.local
 .env.production.local
+backend/.env
+backend/.env.test
+
+# Documentación de Credenciales  (solo local)
+local-docs/
+
+# Documentación interna de desarrollo (debugging, fixes, análisis técnicos)
+.internal-docs/
 
 # IDE
 .vscode
@@ -49,3 +58,4 @@ coverage
 # Temporary folders
 tmp
 temp
+*.log
