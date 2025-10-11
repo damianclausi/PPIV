@@ -130,11 +130,11 @@ export default function FacturaDetalle() {
           </Alert>
           <Button 
             className="mt-4" 
-            variant="outline" 
+            variant="outline"
+            size="sm"
             onClick={() => navigate('/dashboard/facturas')}
           >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Volver a Facturas
+            Volver
           </Button>
         </div>
       </div>
@@ -145,20 +145,20 @@ export default function FacturaDetalle() {
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Button variant="outline" size="icon" onClick={() => navigate('/dashboard/facturas')}>
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">Detalle de Factura</h1>
-              <p className="text-sm text-gray-600 mt-1">{factura.numero}</p>
-            </div>
+        <div className="flex items-start justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">Detalle de Factura</h1>
+            <p className="text-gray-600 mt-1">{factura.numero}</p>
           </div>
-          <Button variant="outline" onClick={handleDescargarPDF}>
-            <Download className="h-4 w-4 mr-2" />
-            Descargar PDF
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={handleDescargarPDF}>
+              <Download className="h-4 w-4 mr-2" />
+              Descargar PDF
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => navigate('/dashboard/facturas')}>
+              Volver
+            </Button>
+          </div>
         </div>
 
         {/* Alerta de estado */}

@@ -398,16 +398,16 @@ export default function PagoOnline() {
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
-        <div className="flex items-center gap-4">
-          <Button variant="outline" size="icon" onClick={() => navigate('/dashboard')}>
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
+        <div className="flex items-start justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Pago Online</h1>
-            <p className="text-sm text-gray-600 mt-1">
+            <h1 className="text-2xl font-bold text-gray-900">Pago Online</h1>
+            <p className="text-gray-600 mt-1">
               Paga tus facturas de forma rápida y segura
             </p>
           </div>
+          <Button variant="outline" size="sm" onClick={() => navigate('/dashboard')}>
+            Volver
+          </Button>
         </div>
 
         {/* Facturas Pendientes */}

@@ -6,6 +6,7 @@ import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, UserCog, AlertCircle, Check, MapPin, Calendar } from 'lucide-react';
 import { formatearFecha } from '../../utils/formatters.js';
+import { Button } from '../ui/button';
 
 export default function AsignarReclamo() {
   const navigate = useNavigate();
@@ -87,22 +88,23 @@ export default function AsignarReclamo() {
       {/* Header */}
       <header className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => navigate('/dashboard/admin/reclamos')}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-            >
-              <ArrowLeft className="w-5 h-5 text-gray-600" />
-            </button>
+          <div className="flex items-start justify-between">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-blue-100 rounded-lg">
                 <UserCog className="w-6 h-6 text-blue-600" />
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">Asignar Reclamo</h1>
-                <p className="text-sm text-gray-600">Asignar reclamo #{id} a un operario</p>
+                <p className="text-gray-600 mt-1">Asignar reclamo #{id} a un operario</p>
               </div>
             </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => navigate('/dashboard/admin/reclamos')}
+            >
+              Volver
+            </Button>
           </div>
         </div>
       </header>

@@ -63,15 +63,15 @@ const MisOTsOperario = () => {
   return (
     <div className="container mx-auto p-6 space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Mis Órdenes de Trabajo</h1>
-          <p className="text-muted-foreground mt-1">
+          <h1 className="text-2xl font-bold text-gray-900">Mis Órdenes de Trabajo</h1>
+          <p className="text-gray-600 mt-1">
             Gestiona tus trabajos asignados
           </p>
         </div>
         <Button onClick={() => window.history.back()} variant="outline" size="sm">
-          ← Volver
+          Volver
         </Button>
       </div>
 

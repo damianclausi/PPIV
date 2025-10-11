@@ -73,20 +73,18 @@ export default function SocioNuevo() {
       {/* Header */}
       <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => navigate('/dashboard/admin/socios')}
-              >
-                <ArrowLeft className="h-4 w-4" />
-              </Button>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">Nuevo Socio</h1>
-                <p className="text-sm text-gray-600">Crear un nuevo socio en el sistema</p>
-              </div>
+          <div className="flex items-start justify-between">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">Nuevo Socio</h1>
+              <p className="text-gray-600 mt-1">Crear un nuevo socio en el sistema</p>
             </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => navigate('/dashboard/admin/socios')}
+            >
+              Volver
+            </Button>
           </div>
         </div>
       </header>

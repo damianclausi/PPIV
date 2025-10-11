@@ -81,28 +81,29 @@ export default function SocioDetalle() {
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
+        <div className="flex items-start justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">
+              {socio.nombre} {socio.apellido}
+            </h1>
+            <p className="text-gray-600 mt-1">Socio #{socio.socio_id}</p>
+          </div>
+          <div className="flex gap-2">
+            <Button
+              size="sm"
+              onClick={() => navigate(`/dashboard/admin/socios/${id}/editar`)}
+            >
+              <Edit className="h-4 w-4 mr-2" />
+              Editar
+            </Button>
             <Button
               variant="outline"
-              size="icon"
+              size="sm"
               onClick={() => navigate('/dashboard/admin/socios')}
             >
-              <ArrowLeft className="h-4 w-4" />
+              Volver
             </Button>
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">
-                {socio.nombre} {socio.apellido}
-              </h1>
-              <p className="text-sm text-gray-600">Socio #{socio.socio_id}</p>
-            </div>
           </div>
-          <Button
-            onClick={() => navigate(`/dashboard/admin/socios/${id}/editar`)}
-          >
-            <Edit className="h-4 w-4 mr-2" />
-            Editar
-          </Button>
         </div>
 
         {/* Grid de 2 columnas */}
@@ -252,23 +253,7 @@ export default function SocioDetalle() {
           </CardContent>
         </Card>
 
-        {/* Botones de acción */}
-        <div className="flex gap-3">
-          <Button
-            variant="outline"
-            className="flex-1"
-            onClick={() => navigate('/dashboard/admin/socios')}
-          >
-            Volver al listado
-          </Button>
-          <Button
-            className="flex-1"
-            onClick={() => navigate(`/dashboard/admin/socios/${id}/editar`)}
-          >
-            <Edit className="h-4 w-4 mr-2" />
-            Editar Socio
-          </Button>
-        </div>
+
       </div>
     </div>
   );

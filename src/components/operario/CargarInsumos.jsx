@@ -51,13 +51,16 @@ export default function CargarInsumos() {
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-2xl mx-auto space-y-8">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold text-gray-900">Cargar Insumos</h1>
+        <div className="flex items-start justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">Cargar Insumos</h1>
+            <p className="text-gray-600 mt-1">Registro de materiales utilizados</p>
+          </div>
           <Button 
-            variant="outline" 
+            variant="outline"
+            size="sm"
             onClick={() => navigate(`/dashboard/operario/reclamo/${id}`)}
           >
-            <ArrowLeft className="h-4 w-4 mr-2" />
             Volver
           </Button>
         </div>

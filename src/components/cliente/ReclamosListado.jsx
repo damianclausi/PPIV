@@ -89,32 +89,32 @@ export default function ReclamosListado() {
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-6xl mx-auto space-y-6">
         {/* Header */}
-        <div className="flex items-center gap-4 justify-between">
-          <div className="flex items-center gap-4">
-            <Button variant="outline" size="icon" onClick={() => navigate('/dashboard')}>
-              <ArrowLeft className="h-4 w-4" />
+        <div className="space-y-4">
+          <div className="flex justify-end">
+            <Button variant="outline" size="sm" onClick={() => navigate('/dashboard')}>
+              Volver
             </Button>
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">Mis Reclamos</h1>
-              <p className="text-sm text-gray-600 mt-1">
-                {reclamosFiltrados.length} de {reclamos?.length || 0} reclamo(s)
-              </p>
-            </div>
           </div>
-          <div className="flex gap-2">
+          <div className="flex justify-end gap-2">
             <Button 
               variant="outline" 
-              size="lg"
+              size="sm"
               onClick={handleRecargar}
               disabled={recargando}
             >
               <RefreshCw className={`h-4 w-4 mr-2 ${recargando ? 'animate-spin' : ''}`} />
               {recargando ? 'Actualizando...' : 'Actualizar'}
             </Button>
-            <Button onClick={() => navigate('/dashboard/reclamos/nuevo')} size="lg">
+            <Button onClick={() => navigate('/dashboard/reclamos/nuevo')} size="sm">
               <Plus className="h-4 w-4 mr-2" />
               Nuevo Reclamo
             </Button>
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">Mis Reclamos</h1>
+            <p className="text-gray-600 mt-1">
+              {reclamosFiltrados.length} de {reclamos?.length || 0} reclamo(s)
+            </p>
           </div>
         </div>
 

@@ -202,7 +202,7 @@ export default function DashboardOperario() {
               <List className="h-4 w-4 mr-2" />
               Lista
             </Button>
-            <Button variant="outline" onClick={logout}>
+            <Button variant="outline" size="sm" onClick={logout}>
               Cerrar Sesión
             </Button>
           </div>

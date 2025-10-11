@@ -52,19 +52,21 @@ const OTTecnicaDetalle = ({ ot, onVolver }) => {
   return (
     <div className="container mx-auto p-6 space-y-6 max-w-4xl">
       {/* Header */}
-      <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" onClick={onVolver}>
-          <ArrowLeft className="h-5 w-5" />
-        </Button>
+      <div className="flex items-start justify-between">
         <div className="flex-1">
-          <h1 className="text-3xl font-bold">Orden de Trabajo #{ot.ot_id}</h1>
-          <p className="text-muted-foreground">
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl font-bold">Orden de Trabajo #{ot.ot_id}</h1>
+            <Badge variant={config.variant} className="text-sm">
+              {config.label}
+            </Badge>
+          </div>
+          <p className="text-gray-600 mt-1">
             {ot.tipo_reclamo} - Reclamo #{ot.reclamo_id}
           </p>
         </div>
-        <Badge variant={config.variant} className="text-sm">
-          {config.label}
-        </Badge>
+        <Button variant="outline" size="sm" onClick={onVolver}>
+          Volver
+        </Button>
       </div>
 
       {/* Información del Cliente */}

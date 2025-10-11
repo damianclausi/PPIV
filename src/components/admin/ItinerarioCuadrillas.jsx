@@ -185,23 +185,21 @@ export default function ItinerarioCuadrillas() {
   return (
     <div className="container mx-auto p-6 space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+            {/* Header */}
+      <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <Calendar className="h-8 w-8 text-blue-600" />
-            Itinerario de Cuadrillas
-          </h1>
+          <h1 className="text-2xl font-bold text-gray-900">Itinerario de Cuadrillas</h1>
           <p className="text-gray-600 mt-1">
             Asigna órdenes de trabajo técnicas a las cuadrillas
           </p>
         </div>
         <div className="flex gap-2">
-          <Button onClick={() => navigate('/dashboard/administrador')} variant="outline" size="sm">
-            ← Volver
-          </Button>
           <Button onClick={handleRefresh} variant="outline" size="sm">
             <RefreshCw className="h-4 w-4 mr-2" />
             Actualizar
+          </Button>
+          <Button onClick={() => navigate('/dashboard/administrador')} variant="outline" size="sm">
+            Volver
           </Button>
         </div>
       </div>

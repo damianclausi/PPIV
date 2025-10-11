@@ -56,18 +56,16 @@ export default function ItinerarioOperario() {
   return (
     <div className="container mx-auto p-6 space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+            {/* Header */}
+      <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <Calendar className="h-8 w-8 text-purple-600" />
-            Mi Itinerario
-          </h1>
+          <h1 className="text-2xl font-bold text-gray-900">Mi Itinerario</h1>
           <p className="text-gray-600 mt-1">
             Órdenes de trabajo asignadas a tu cuadrilla
           </p>
         </div>
         <Button onClick={() => navigate('/dashboard/operario')} variant="outline" size="sm">
-          ← Volver al Dashboard
+          Volver
         </Button>
       </div>
 

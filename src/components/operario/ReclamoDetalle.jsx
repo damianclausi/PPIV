@@ -83,10 +83,12 @@ export default function ReclamoDetalle() {
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-2xl mx-auto space-y-8">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold text-gray-900">Detalle del Reclamo</h1>
-          <Button variant="outline" onClick={() => navigate('/dashboard/operario')}>
-            <ArrowLeft className="h-4 w-4 mr-2" />
+        <div className="flex items-start justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">Detalle del Reclamo</h1>
+            <p className="text-gray-600 mt-1">Información completa del reclamo</p>
+          </div>
+          <Button variant="outline" size="sm" onClick={() => navigate('/dashboard/operario')}>
             Volver
           </Button>
         </div>

@@ -134,38 +134,38 @@ export default function ReclamoDetalleAdmin() {
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => navigate('/dashboard/admin/reclamos')}
-            >
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">
-                Reclamo #{reclamo.reclamo_id}
-              </h1>
-              <p className="text-sm text-gray-600">{reclamo.tipo_reclamo}</p>
-            </div>
+        <div className="flex items-start justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">
+              Reclamo #{reclamo.reclamo_id}
+            </h1>
+            <p className="text-gray-600 mt-1">{reclamo.tipo_reclamo}</p>
           </div>
           <div className="flex gap-2">
             {reclamo.estado === 'PENDIENTE' && (
               <Button
                 variant="default"
+                size="sm"
                 onClick={() => navigate(`/dashboard/admin/reclamos/${id}/asignar`)}
               >
                 <UserCog className="h-4 w-4 mr-2" />
-                Asignar Operario
+                Asignar
               </Button>
             )}
             <Button
               variant="destructive"
+              size="sm"
               onClick={handleEliminar}
             >
               <Trash2 className="h-4 w-4 mr-2" />
               Eliminar
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => navigate('/dashboard/admin/reclamos')}
+            >
+              Volver
             </Button>
           </div>
         </div>
@@ -333,25 +333,7 @@ export default function ReclamoDetalleAdmin() {
           </CardContent>
         </Card>
 
-        {/* Botones de acción */}
-        <div className="flex gap-3">
-          <Button
-            variant="outline"
-            className="flex-1"
-            onClick={() => navigate('/dashboard/admin/reclamos')}
-          >
-            Volver al listado
-          </Button>
-          {reclamo.estado === 'PENDIENTE' && (
-            <Button
-              className="flex-1"
-              onClick={() => navigate(`/dashboard/admin/reclamos/${id}/asignar`)}
-            >
-              <UserCog className="h-4 w-4 mr-2" />
-              Asignar a Operario
-            </Button>
-          )}
-        </div>
+
       </div>
     </div>
   );

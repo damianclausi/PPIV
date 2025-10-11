@@ -82,19 +82,20 @@ const SupervisorOTsTecnicas = () => {
   return (
     <div className="container mx-auto p-6 space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Gestión de OTs Técnicas</h1>
-          <p className="text-muted-foreground mt-1">
+          <h1 className="text-2xl font-bold text-gray-900">Gestión de OTs Técnicas</h1>
+          <p className="text-gray-600 mt-1">
             Supervisa y asigna trabajos técnicos
           </p>
         </div>
         <div className="flex gap-2">
-          <Button onClick={() => window.history.back()} variant="outline" size="sm">
-            ← Volver
+          <Button onClick={cargarOTs} variant="outline" size="sm">
+            <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+            Actualizar
           </Button>
-          <Button onClick={cargarOTs} variant="outline" size="icon">
-            <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+          <Button onClick={() => window.history.back()} variant="outline" size="sm">
+            Volver
           </Button>
         </div>
       </div>

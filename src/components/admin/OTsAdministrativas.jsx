@@ -247,12 +247,12 @@ export default function OTsAdministrativas() {
       <div className="min-h-screen bg-gray-50 p-8">
         <div className="max-w-7xl mx-auto">
           <Button
-            variant="ghost"
+            variant="outline"
+            size="sm"
             onClick={() => navigate('/dashboard')}
             className="mb-6"
           >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Volver al Dashboard
+            Volver
           </Button>
 
           <Card className="border-red-200 bg-red-50">
@@ -283,26 +283,22 @@ export default function OTsAdministrativas() {
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              onClick={() => navigate('/dashboard')}
-            >
-              <ArrowLeft className="h-4 w-4 mr-2" />
+        <div className="flex items-start justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">OTs Administrativas</h1>
+            <p className="text-gray-600 mt-1">
+              Gestión de órdenes de trabajo administrativas sin operario asignado
+            </p>
+          </div>
+          <div className="flex gap-2">
+            <Button onClick={cargarOTs} variant="outline" size="sm">
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Actualizar
+            </Button>
+            <Button onClick={() => navigate('/dashboard')} variant="outline" size="sm">
               Volver
             </Button>
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">OTs Administrativas</h1>
-              <p className="text-sm text-gray-600 mt-1">
-                Gestión de órdenes de trabajo administrativas sin operario asignado
-              </p>
-            </div>
           </div>
-          <Button onClick={cargarOTs} variant="outline">
-            <RefreshCw className="h-4 w-4 mr-2" />
-            Actualizar
-          </Button>
         </div>
 
         {/* Contadores */}
