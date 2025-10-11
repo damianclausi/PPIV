@@ -157,10 +157,10 @@ export default function DashboardAdministrador() {
               <Button 
                 className="w-full justify-start" 
                 variant="default"
-                onClick={() => navigate('/dashboard/admin/ots-tecnicas')}
+                onClick={() => navigate('/dashboard/admin/historial-reclamos')}
               >
                 <Wrench className="h-4 w-4 mr-2" />
-                OTs Técnicas
+                Historial de Reclamos
               </Button>
               <Button 
                 className="w-full justify-start" 

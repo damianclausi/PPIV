@@ -271,7 +271,7 @@ function AppRoutes() {
         }
       />
       <Route
-        path="/dashboard/admin/ots-tecnicas"
+        path="/dashboard/admin/historial-reclamos"
         element={
           <RutaProtegida>
             <SupervisorOTsTecnicas />
