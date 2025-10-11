@@ -1,4 +1,5 @@
 import pool from '../db.js';
+import Cuadrilla from './Cuadrilla.js';
 
 class Reclamo {
   /**
@@ -75,7 +76,7 @@ class Reclamo {
 
   /**
    * Crear nuevo reclamo
-   * Si es administrativo, crea automáticamente la OT sin empleado asignado
+   * Crea automáticamente la OT sin empleado asignado para reclamos técnicos y administrativos
    */
   static async crear({ cuentaId, detalleId, descripcion, prioridadId = 2, canal = 'WEB' }) {
     const client = await pool.connect();
@@ -92,7 +93,7 @@ class Reclamo {
       
       const reclamo = resultadoReclamo.rows[0];
       
-      // 2. Verificar si es un reclamo administrativo
+      // 2. Obtener información del tipo de reclamo
       const tipoReclamo = await client.query(`
         SELECT t.nombre as tipo, d.nombre as detalle, c.direccion
         FROM detalle_tipo_reclamo d
@@ -101,8 +102,8 @@ class Reclamo {
         WHERE d.detalle_id = $1
       `, [detalleId, cuentaId]);
       
-      // 3. Si es administrativo, crear OT automáticamente
-      if (tipoReclamo.rows[0]?.tipo === 'ADMINISTRATIVO') {
+      // 3. Crear OT automáticamente para todos los reclamos
+      if (tipoReclamo.rows[0]) {
         await client.query(`
           INSERT INTO orden_trabajo (
             reclamo_id,
@@ -120,8 +121,11 @@ class Reclamo {
           `OT creada automáticamente para: ${tipoReclamo.rows[0].detalle}`
         ]);
         
-        console.log(`✅ OT administrativa creada automáticamente para reclamo #${reclamo.reclamo_id}`);
+        console.log(`✅ OT ${tipoReclamo.rows[0].tipo.toLowerCase()} creada automáticamente para reclamo #${reclamo.reclamo_id}`);
       }
+      
+      await client.query('COMMIT');
+      return reclamo;
       
       await client.query('COMMIT');
       return reclamo;
@@ -319,8 +323,13 @@ class Reclamo {
 
   /**
    * Obtener reclamos asignados a un operario
+   * Incluye tanto OTs asignadas directamente al operario como OTs del itinerario de su cuadrilla
    */
   static async obtenerPorOperario(operarioId, { estado = null, pagina = 1, limite = 10 } = {}) {
+    // Obtener la cuadrilla del operario
+    const cuadrilla = await Cuadrilla.obtenerCuadrillaPorOperario(operarioId);
+    const cuadrillaId = cuadrilla?.cuadrilla_id;
+
     let query = `
       SELECT 
         r.reclamo_id,
@@ -352,12 +361,19 @@ class Reclamo {
       INNER JOIN cuenta c ON r.cuenta_id = c.cuenta_id
       INNER JOIN socio s ON c.socio_id = s.socio_id
       LEFT JOIN itinerario_det id ON ot.ot_id = id.ot_id
-      WHERE ot.empleado_id = $1
-        AND t.tipo_id = 1
+      LEFT JOIN itinerario i ON id.itinerario_id = i.itinerario_id AND i.cuadrilla_id = ${cuadrillaId ? '$2' : 'NULL'}
+      WHERE t.tipo_id = 1
+        AND (
+          ot.empleado_id = $1
+          ${cuadrillaId ? 'OR i.cuadrilla_id = $2' : ''}
+        )
     `;
 
     const params = [operarioId];
-    let paramCount = 2;
+    if (cuadrillaId) {
+      params.push(cuadrillaId);
+    }
+    let paramCount = params.length + 1;
 
     if (estado) {
       query += ` AND r.estado = $${paramCount}`;
@@ -385,10 +401,14 @@ class Reclamo {
 
   /**
    * Obtener resumen de reclamos para un operario
-   * Incluye tanto reclamos regulares como OTs del itinerario
+   * Incluye tanto reclamos regulares como OTs del itinerario de su cuadrilla
    */
   static async obtenerResumenPorOperario(operarioId) {
-    const resultado = await pool.query(`
+    // Obtener la cuadrilla del operario
+    const cuadrilla = await Cuadrilla.obtenerCuadrillaPorOperario(operarioId);
+    const cuadrillaId = cuadrilla?.cuadrilla_id;
+
+    let query = `
       SELECT 
         COUNT(*) FILTER (WHERE r.estado IN ('PENDIENTE', 'ASIGNADA')) as pendientes,
         COUNT(*) FILTER (WHERE r.estado = 'EN_PROCESO') as en_proceso,
@@ -398,9 +418,21 @@ class Reclamo {
       INNER JOIN orden_trabajo ot ON r.reclamo_id = ot.reclamo_id
       INNER JOIN detalle_tipo_reclamo d ON r.detalle_id = d.detalle_id
       INNER JOIN tipo_reclamo t ON d.tipo_id = t.tipo_id
-      WHERE ot.empleado_id = $1
-        AND t.tipo_id = 1
-    `, [operarioId]);
+      LEFT JOIN itinerario_det id ON ot.ot_id = id.ot_id
+      LEFT JOIN itinerario i ON id.itinerario_id = i.itinerario_id ${cuadrillaId ? 'AND i.cuadrilla_id = $2' : ''}
+      WHERE t.tipo_id = 1
+        AND (
+          ot.empleado_id = $1
+          ${cuadrillaId ? 'OR i.cuadrilla_id = $2' : ''}
+        )
+    `;
+
+    const params = [operarioId];
+    if (cuadrillaId) {
+      params.push(cuadrillaId);
+    }
+
+    const resultado = await pool.query(query, params);
     return resultado.rows[0];
   }
 

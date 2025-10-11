@@ -484,16 +484,20 @@ class OrdenTrabajo {
           ot.ot_id,
           ot.empleado_id as operario_asignado,
           ot.observaciones,
-          ec1.cuadrilla_id as cuadrilla_asignada,
+          COALESCE(ec1.cuadrilla_id, i.cuadrilla_id) as cuadrilla_asignada,
           ec2.cuadrilla_id as cuadrilla_operario,
           e_asignado.nombre || ' ' || e_asignado.apellido as nombre_asignado,
           e_cierre.nombre || ' ' || e_cierre.apellido as nombre_cierre,
-          ot.estado
+          ot.estado,
+          CASE WHEN id.itinerario_id IS NOT NULL THEN true ELSE false END as es_itinerario
         FROM orden_trabajo ot
-        -- Cuadrilla del operario asignado originalmente
+        -- Cuadrilla del operario asignado originalmente (si existe)
         LEFT JOIN empleado_cuadrilla ec1 
           ON ot.empleado_id = ec1.empleado_id 
           AND ec1.activa = true
+        -- Información del itinerario (para obtener la cuadrilla si es OT de itinerario)
+        LEFT JOIN itinerario_det id ON ot.ot_id = id.ot_id
+        LEFT JOIN itinerario i ON id.itinerario_id = i.itinerario_id
         -- Cuadrilla del operario que quiere cerrar
         LEFT JOIN empleado_cuadrilla ec2 
           ON ec2.empleado_id = $2 
@@ -511,7 +515,7 @@ class OrdenTrabajo {
       const ot = validacion.rows[0];
 
       // Si la OT es de itinerario, validar que pertenezcan a la misma cuadrilla
-      const esItinerario = ot.observaciones && ot.observaciones.includes('[ITINERARIO]');
+      const esItinerario = ot.es_itinerario;
       
       if (esItinerario) {
         if (!ot.cuadrilla_asignada || !ot.cuadrilla_operario) {

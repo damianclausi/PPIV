@@ -47,10 +47,10 @@ const limiterGeneral = rateLimit({
   legacyHeaders: false, // Disable `X-RateLimit-*` headers
 });
 
-// Seguridad: Rate limiting estricto para login
+// Seguridad: Rate limiting MUY permisivo para login (desarrollo/proyecto académico)
 const limiterLogin = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 5, // máximo 5 intentos de login
+  max: 1000, // máximo 1000 intentos de login (muy permisivo para desarrollo)
   message: {
     exito: false,
     mensaje: 'Demasiados intentos de login. Por favor, intente nuevamente en 15 minutos'

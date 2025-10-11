@@ -5,13 +5,48 @@
 
 import Empleado from '../models/Empleado.js';
 import Reclamo from '../models/Reclamo.js';
+import Cuadrilla from '../models/Cuadrilla.js';
 import UsoMaterial from '../models/UsoMaterial.js';
 import { respuestaExitosa, respuestaError, respuestaNoEncontrado } from '../utils/respuestas.js';
 
 export default class OperarioController {
   /**
-   * Obtener perfil del operario autenticado
+   * Verificar si un operario tiene permisos para acceder a un reclamo
+   * Permite acceso si:
+   * 1. El reclamo está asignado directamente al operario
+   * 2. El reclamo está en el itinerario de la cuadrilla del operario
    */
+  static async verificarPermisosReclamo(empleadoId, reclamoId) {
+    // Verificar asignación directa
+    const reclamo = await Reclamo.obtenerPorId(reclamoId);
+    if (!reclamo) {
+      return false;
+    }
+
+    if (reclamo.operario_asignado_id === empleadoId) {
+      return true;
+    }
+
+    // Verificar si está en el itinerario de la cuadrilla del operario
+    const cuadrilla = await Cuadrilla.obtenerCuadrillaPorOperario(empleadoId);
+    if (!cuadrilla) {
+      return false;
+    }
+
+    // Verificar si la OT del reclamo está en el itinerario de la cuadrilla
+    const pool = (await import('../db.js')).default;
+    const result = await pool.query(`
+      SELECT 1
+      FROM orden_trabajo ot
+      INNER JOIN itinerario_det id ON ot.ot_id = id.ot_id
+      INNER JOIN itinerario i ON id.itinerario_id = i.itinerario_id
+      WHERE ot.reclamo_id = $1
+        AND i.cuadrilla_id = $2
+      LIMIT 1
+    `, [reclamoId, cuadrilla.cuadrilla_id]);
+
+    return result.rows.length > 0;
+  }
   static async obtenerPerfil(req, res) {
     try {
       const empleadoId = req.usuario.empleado_id;
@@ -97,8 +132,9 @@ export default class OperarioController {
         return respuestaNoEncontrado(res, 'Reclamo no encontrado');
       }
       
-      // Verificar que el reclamo está asignado a este operario
-      if (reclamo.operario_asignado_id !== empleadoId) {
+      // Verificar permisos (asignación directa o itinerario de cuadrilla)
+      const tienePermisos = await OperarioController.verificarPermisosReclamo(empleadoId, id);
+      if (!tienePermisos) {
         return respuestaError(res, 'No tienes permiso para ver este reclamo', 403);
       }
       
@@ -123,14 +159,16 @@ export default class OperarioController {
         return respuestaError(res, 'El estado es requerido', 400);
       }
       
-      // Verificar que el reclamo existe y está asignado al operario
+      // Verificar que el reclamo existe y el operario tiene permisos
       const reclamo = await Reclamo.obtenerPorId(id);
       
       if (!reclamo) {
         return respuestaNoEncontrado(res, 'Reclamo no encontrado');
       }
       
-      if (reclamo.operario_asignado_id !== empleadoId) {
+      // Verificar permisos (asignación directa o itinerario de cuadrilla)
+      const tienePermisos = await OperarioController.verificarPermisosReclamo(empleadoId, id);
+      if (!tienePermisos) {
         return respuestaError(res, 'No tienes permiso para actualizar este reclamo', 403);
       }
       
