@@ -13,7 +13,6 @@ import PagoOnline from './components/cliente/PagoOnline';
 import ReclamoDetalleOperario from './components/operario/ReclamoDetalle';
 import CargarInsumos from './components/operario/CargarInsumos';
 import GestionSocios from './components/admin/GestionSocios';
-import GestionReclamos from './components/admin/GestionReclamos';
 import GestionEmpleados from './components/admin/GestionEmpleados';
 import AsignarReclamo from './components/admin/AsignarReclamo';
 import SocioDetalle from './components/admin/SocioDetalle';
@@ -227,14 +226,6 @@ function AppRoutes() {
         element={
           <RutaProtegida>
             <SocioEditar />
-          </RutaProtegida>
-        }
-      />
-      <Route
-        path="/dashboard/admin/reclamos"
-        element={
-          <RutaProtegida>
-            <GestionReclamos />
           </RutaProtegida>
         }
       />

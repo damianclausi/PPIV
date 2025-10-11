@@ -28,6 +28,26 @@ export default function DashboardOperario() {
   // Actualizar reclamos cuando cambian los originales
   React.useEffect(() => {
     if (reclamosOriginales) {
+      console.log('📋 Reclamos recibidos:', reclamosOriginales.length);
+      const otsItinerario = reclamosOriginales.filter(r => r.es_itinerario);
+      console.log('🔍 OTs del itinerario:', otsItinerario.length);
+      console.log('📊 Primera OT itinerario:', otsItinerario[0]);
+      
+      // Ver estados únicos de OTs itinerario
+      const estadosOT = [...new Set(otsItinerario.map(r => r.estado_orden))];
+      const estadosReclamo = [...new Set(otsItinerario.map(r => r.estado))];
+      console.log('🎯 Estados de orden_trabajo en itinerarios:', estadosOT);
+      console.log('🎯 Estados de reclamo en itinerarios:', estadosReclamo);
+      
+      // Contar por estado
+      const asignadas = otsItinerario.filter(r => r.estado_orden === 'ASIGNADA').length;
+      const enCurso = otsItinerario.filter(r => r.estado_orden === 'EN CURSO').length;
+      console.log('📊 Distribución itinerarios - ASIGNADA:', asignadas, '| EN CURSO:', enCurso);
+      
+      // Contar reclamos NO itinerario
+      const noItinerario = reclamosOriginales.filter(r => !r.es_itinerario).length;
+      console.log('📋 Reclamos regulares (NO itinerario):', noItinerario);
+      
       setReclamos(reclamosOriginales);
     }
   }, [reclamosOriginales]);
@@ -130,17 +150,46 @@ export default function DashboardOperario() {
     setDraggedItem(null);
   };
 
-  // Filtrar reclamos por estado (EN_PROCESO del backend se muestra como "En Curso")
-  // ASIGNADA = OTs del itinerario asignadas por el admin
-  const reclamosPendientes = reclamos.filter(r => 
-    r.estado === 'PENDIENTE' || r.estado === 'pendiente' ||
-    r.estado === 'ASIGNADA' || r.estado === 'asignada'
-  );
-  const reclamosEnCurso = reclamos.filter(r => 
-    r.estado === 'EN_CURSO' || r.estado === 'en_curso' || 
-    r.estado === 'EN_PROCESO' || r.estado === 'en_proceso'
-  );
-  const reclamosResueltos = reclamos.filter(r => r.estado === 'RESUELTO' || r.estado === 'resuelto');
+  // Filtrar reclamos por estado
+  // Las OTs del itinerario (es_itinerario=true) con estado_orden ASIGNADA o PENDIENTE se consideran pendientes
+  // También incluimos reclamos con estado PENDIENTE o ASIGNADA
+  const reclamosPendientes = reclamos.filter(r => {
+    // Si es del itinerario, usar el estado de la orden de trabajo
+    if (r.es_itinerario) {
+      const isPendiente = r.estado_orden === 'PENDIENTE' || r.estado_orden === 'pendiente' ||
+                          r.estado_orden === 'ASIGNADA' || r.estado_orden === 'asignada';
+      if (isPendiente) {
+        console.log('✅ OT itinerario pendiente:', { ot_id: r.ot_id, estado_orden: r.estado_orden, descripcion: r.descripcion });
+      }
+      return isPendiente;
+    }
+    // Si no es del itinerario, usar el estado del reclamo
+    return r.estado === 'PENDIENTE' || r.estado === 'pendiente' ||
+           r.estado === 'ASIGNADA' || r.estado === 'asignada';
+  });
+  
+  console.log('📊 Total pendientes después de filtro:', reclamosPendientes.length);
+  
+  const reclamosEnCurso = reclamos.filter(r => {
+    // Si es del itinerario, usar el estado de la orden de trabajo
+    if (r.es_itinerario) {
+      return r.estado_orden === 'EN_CURSO' || r.estado_orden === 'en_curso' ||
+             r.estado_orden === 'EN_PROCESO' || r.estado_orden === 'en_proceso';
+    }
+    // Si no es del itinerario, usar el estado del reclamo
+    return r.estado === 'EN_CURSO' || r.estado === 'en_curso' || 
+           r.estado === 'EN_PROCESO' || r.estado === 'en_proceso';
+  });
+  
+  const reclamosResueltos = reclamos.filter(r => {
+    // Si es del itinerario, usar el estado de la orden de trabajo
+    if (r.es_itinerario) {
+      return r.estado_orden === 'RESUELTO' || r.estado_orden === 'resuelto' ||
+             r.estado_orden === 'COMPLETADA' || r.estado_orden === 'completada';
+    }
+    // Si no es del itinerario, usar el estado del reclamo
+    return r.estado === 'RESUELTO' || r.estado === 'resuelto';
+  });
 
   // Renderizar tarjeta de reclamo
   const ReclamoCard = ({ reclamo }) => {

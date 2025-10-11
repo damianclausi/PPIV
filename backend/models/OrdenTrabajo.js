@@ -675,33 +675,74 @@ class OrdenTrabajo {
     try {
       await client.query('BEGIN');
 
-      // Obtener nombre de la cuadrilla para las observaciones
+      // Verificar que la cuadrilla existe
       const cuadrillaInfo = await client.query(`
-        SELECT nombre FROM cuadrilla WHERE cuadrilla_id = $1
+        SELECT cuadrilla_id, nombre FROM cuadrilla WHERE cuadrilla_id = $1
       `, [cuadrilla_id]);
 
       if (cuadrillaInfo.rowCount === 0) {
         throw new Error('Cuadrilla no encontrada');
       }
 
-      const cuadrillaNombre = cuadrillaInfo.rows[0].nombre;
+      // Verificar que la OT existe y está PENDIENTE
+      const otInfo = await client.query(`
+        SELECT * FROM orden_trabajo WHERE ot_id = $1 AND estado = 'PENDIENTE'
+      `, [ot_id]);
 
-      // Actualizar OT: empleado_id = NULL indica que está asignada a cuadrilla
+      if (otInfo.rowCount === 0) {
+        throw new Error('Orden de trabajo no encontrada o no está en estado PENDIENTE');
+      }
+
+      // Buscar o crear el itinerario para esta cuadrilla y fecha
+      let itinerarioResult = await client.query(`
+        SELECT itinerario_id FROM itinerario
+        WHERE cuadrilla_id = $1 AND fecha = $2::DATE
+      `, [cuadrilla_id, fecha_programada]);
+
+      let itinerario_id;
+      if (itinerarioResult.rowCount === 0) {
+        // Crear nuevo itinerario
+        const nuevoItinerario = await client.query(`
+          INSERT INTO itinerario (cuadrilla_id, fecha, estado)
+          VALUES ($1, $2::DATE, 'PLANIFICADO')
+          RETURNING itinerario_id
+        `, [cuadrilla_id, fecha_programada]);
+        itinerario_id = nuevoItinerario.rows[0].itinerario_id;
+      } else {
+        itinerario_id = itinerarioResult.rows[0].itinerario_id;
+      }
+
+      // Verificar si la OT ya está en este itinerario
+      const yaExiste = await client.query(`
+        SELECT itdet_id FROM itinerario_det
+        WHERE itinerario_id = $1 AND ot_id = $2
+      `, [itinerario_id, ot_id]);
+
+      if (yaExiste.rowCount === 0) {
+        // Obtener el siguiente orden en este itinerario
+        const ordenResult = await client.query(`
+          SELECT COALESCE(MAX(orden), 0) + 1 as siguiente_orden
+          FROM itinerario_det
+          WHERE itinerario_id = $1
+        `, [itinerario_id]);
+        const orden = ordenResult.rows[0].siguiente_orden;
+
+        // Insertar en itinerario_det
+        await client.query(`
+          INSERT INTO itinerario_det (itinerario_id, ot_id, orden)
+          VALUES ($1, $2, $3)
+        `, [itinerario_id, ot_id, orden]);
+      }
+
+      // Actualizar la OT: mantener empleado_id = NULL (disponible para la cuadrilla)
       const updateOT = await client.query(`
         UPDATE orden_trabajo
-        SET empleado_id = NULL,
-            estado = 'PENDIENTE',
+        SET estado = 'ASIGNADA',
             fecha_programada = $1::DATE,
-            observaciones = COALESCE(observaciones, '') || 
-              E'\n[ITINERARIO] Asignada a cuadrilla: ' || $2 || ' - Fecha: ' || $1,
             updated_at = CURRENT_TIMESTAMP
-        WHERE ot_id = $3
+        WHERE ot_id = $2
         RETURNING *
-      `, [fecha_programada, cuadrillaNombre, ot_id]);
-
-      if (updateOT.rowCount === 0) {
-        throw new Error('Orden de trabajo no encontrada');
-      }
+      `, [fecha_programada, ot_id]);
 
       await client.query('COMMIT');
       return updateOT.rows[0];
@@ -743,11 +784,14 @@ class OrdenTrabajo {
         dtr.nombre as detalle_reclamo,
         e.nombre as operario_nombre,
         e.apellido as operario_apellido,
+        id.orden as orden_itinerario,
         CASE 
           WHEN ot.empleado_id IS NULL THEN 'disponible'
           ELSE 'tomada'
         END as estado_itinerario
-      FROM orden_trabajo ot
+      FROM itinerario i
+      INNER JOIN itinerario_det id ON i.itinerario_id = id.itinerario_id
+      INNER JOIN orden_trabajo ot ON id.ot_id = ot.ot_id
       INNER JOIN reclamo r ON ot.reclamo_id = r.reclamo_id
       INNER JOIN cuenta ct ON r.cuenta_id = ct.cuenta_id
       INNER JOIN socio s ON ct.socio_id = s.socio_id
@@ -755,23 +799,79 @@ class OrdenTrabajo {
       INNER JOIN tipo_reclamo tr ON dtr.tipo_id = tr.tipo_id
       LEFT JOIN prioridad p ON r.prioridad_id = p.prioridad_id
       LEFT JOIN empleado e ON ot.empleado_id = e.empleado_id
-      WHERE DATE(ot.fecha_programada) = $1
+      WHERE i.cuadrilla_id = $2
+        AND i.fecha = $1
         AND tr.nombre = 'TECNICO'
-        AND ot.observaciones LIKE '%[ITINERARIO]%'
-        AND ot.observaciones LIKE '%cuadrilla: ' || (SELECT nombre FROM cuadrilla WHERE cuadrilla_id = $2) || '%'
-        AND ot.estado IN ('PENDIENTE', 'ASIGNADA', 'EN_PROCESO')
+        AND ot.estado IN ('PENDIENTE', 'ASIGNADA', 'EN CURSO')
       ORDER BY 
+        id.orden ASC,
         CASE WHEN ot.empleado_id IS NULL THEN 0 ELSE 1 END,
         CASE p.nombre
-          WHEN 'ALTA' THEN 1
-          WHEN 'MEDIA' THEN 2
-          WHEN 'BAJA' THEN 3
+          WHEN 'Alta' THEN 1
+          WHEN 'Media' THEN 2
+          WHEN 'Baja' THEN 3
           ELSE 4
-        END,
-        ot.created_at ASC
+        END
     `;
 
     const resultado = await pool.query(query, [fecha, cuadrilla_id]);
+    return resultado.rows;
+  }
+
+  /**
+   * Listar TODOS los itinerarios de una cuadrilla (todas las fechas)
+   */
+  static async listarTodosItinerariosCuadrilla(cuadrilla_id) {
+    const query = `
+      SELECT 
+        ot.ot_id as id,
+        ot.estado,
+        ot.empleado_id,
+        ot.fecha_programada,
+        ot.observaciones,
+        ot.direccion_intervencion,
+        ot.created_at,
+        r.reclamo_id,
+        r.descripcion,
+        r.estado as estado_reclamo,
+        s.socio_id,
+        s.nombre as socio_nombre,
+        s.apellido as socio_apellido,
+        ct.direccion as domicilio,
+        s.telefono as socio_telefono,
+        s.email as socio_email,
+        ct.numero_cuenta,
+        tr.nombre as tipo_reclamo,
+        p.nombre as prioridad,
+        dtr.nombre as detalle_reclamo,
+        e.nombre as operario_nombre,
+        e.apellido as operario_apellido,
+        i.fecha as fecha_itinerario,
+        id.orden as orden_itinerario,
+        CASE 
+          WHEN ot.empleado_id IS NULL THEN 'disponible'
+          ELSE 'tomada'
+        END as estado_itinerario
+      FROM itinerario i
+      INNER JOIN itinerario_det id ON i.itinerario_id = id.itinerario_id
+      INNER JOIN orden_trabajo ot ON id.ot_id = ot.ot_id
+      INNER JOIN reclamo r ON ot.reclamo_id = r.reclamo_id
+      INNER JOIN cuenta ct ON r.cuenta_id = ct.cuenta_id
+      INNER JOIN socio s ON ct.socio_id = s.socio_id
+      INNER JOIN detalle_tipo_reclamo dtr ON r.detalle_id = dtr.detalle_id
+      INNER JOIN tipo_reclamo tr ON dtr.tipo_id = tr.tipo_id
+      LEFT JOIN prioridad p ON r.prioridad_id = p.prioridad_id
+      LEFT JOIN empleado e ON ot.empleado_id = e.empleado_id
+      WHERE i.cuadrilla_id = $1
+        AND tr.nombre = 'TECNICO'
+        AND ot.estado IN ('PENDIENTE', 'ASIGNADA', 'EN CURSO')
+      ORDER BY 
+        i.fecha ASC,
+        id.orden ASC,
+        CASE WHEN ot.empleado_id IS NULL THEN 0 ELSE 1 END
+    `;
+
+    const resultado = await pool.query(query, [cuadrilla_id]);
     return resultado.rows;
   }
 
@@ -784,17 +884,19 @@ class OrdenTrabajo {
     try {
       await client.query('BEGIN');
 
-      // Validar que la OT está disponible (empleado_id = NULL)
+      // Validar que la OT está disponible (empleado_id = NULL) y pertenece al itinerario de la cuadrilla
       const checkOT = await client.query(`
         SELECT ot.*, 
-               c.nombre as cuadrilla_nombre
+               c.nombre as cuadrilla_nombre,
+               i.fecha as fecha_itinerario
         FROM orden_trabajo ot
-        CROSS JOIN cuadrilla c
+        INNER JOIN itinerario_det id ON ot.ot_id = id.ot_id
+        INNER JOIN itinerario i ON id.itinerario_id = i.itinerario_id
+        INNER JOIN cuadrilla c ON i.cuadrilla_id = c.cuadrilla_id
         WHERE ot.ot_id = $1
           AND c.cuadrilla_id = $2
           AND ot.empleado_id IS NULL
           AND ot.estado = 'PENDIENTE'
-          AND ot.observaciones LIKE '%cuadrilla: ' || c.nombre || '%'
       `, [ot_id, cuadrilla_id]);
 
       if (checkOT.rowCount === 0) {
@@ -813,7 +915,7 @@ class OrdenTrabajo {
         UPDATE orden_trabajo
         SET empleado_id = $1,
             estado = 'ASIGNADA',
-            observaciones = observaciones || E'\n[ITINERARIO] Tomada por: ' || $2 || ' - ' || CURRENT_TIMESTAMP::TEXT,
+            observaciones = COALESCE(observaciones || E'\n', '') || 'Tomada por: ' || $2 || ' - ' || CURRENT_TIMESTAMP::TEXT,
             updated_at = CURRENT_TIMESTAMP
         WHERE ot_id = $3
         RETURNING *
@@ -887,31 +989,55 @@ class OrdenTrabajo {
    * Quitar OT del itinerario (vuelve a PENDIENTE sin cuadrilla)
    */
   static async quitarDeItinerario(ot_id) {
-    const query = `
-      UPDATE orden_trabajo
-      SET empleado_id = NULL,
-          estado = 'PENDIENTE',
-          fecha_programada = NULL,
-          observaciones = REGEXP_REPLACE(
-            COALESCE(observaciones, ''), 
-            '\\[ITINERARIO\\].*?\\n', 
-            '', 
-            'g'
-          ),
-          updated_at = CURRENT_TIMESTAMP
-      WHERE ot_id = $1
-        AND empleado_id IS NULL
-        AND estado = 'PENDIENTE'
-      RETURNING *
-    `;
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
 
-    const resultado = await pool.query(query, [ot_id]);
-    
-    if (resultado.rowCount === 0) {
-      throw new Error('No se puede quitar del itinerario. OT ya fue tomada por un operario.');
+      // Verificar si la OT está en un itinerario
+      const checkQuery = `
+        SELECT ot.*, id.itinerario_id, id.orden
+        FROM orden_trabajo ot
+        INNER JOIN itinerario_det id ON ot.ot_id = id.ot_id
+        WHERE ot.ot_id = $1
+      `;
+      const checkResult = await client.query(checkQuery, [ot_id]);
+
+      if (checkResult.rowCount === 0) {
+        throw new Error('La OT no está en ningún itinerario.');
+      }
+
+      const ot = checkResult.rows[0];
+
+      // No permitir quitar si ya fue tomada por un operario
+      if (ot.empleado_id !== null) {
+        throw new Error('No se puede quitar del itinerario. OT ya fue tomada por un operario.');
+      }
+
+      // Eliminar la OT del itinerario_det
+      await client.query(`
+        DELETE FROM itinerario_det
+        WHERE ot_id = $1
+      `, [ot_id]);
+
+      // Actualizar el estado de la OT a PENDIENTE
+      const updateQuery = `
+        UPDATE orden_trabajo
+        SET estado = 'PENDIENTE',
+            fecha_programada = NULL,
+            updated_at = CURRENT_TIMESTAMP
+        WHERE ot_id = $1
+        RETURNING *
+      `;
+      const resultado = await client.query(updateQuery, [ot_id]);
+
+      await client.query('COMMIT');
+      return resultado.rows[0];
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw error;
+    } finally {
+      client.release();
     }
-
-    return resultado.rows[0];
   }
 
   /**
@@ -921,35 +1047,35 @@ class OrdenTrabajo {
   static async obtenerFechasConItinerario(cuadrilla_id, empleado_id = null) {
     const query = `
       SELECT 
-        DATE(ot.fecha_programada) as fecha,
-        COUNT(*) as total_ots,
-        COUNT(CASE WHEN ot.empleado_id IS NULL THEN 1 END) as ots_disponibles,
-        COUNT(CASE WHEN ot.empleado_id = $2 THEN 1 END) as ots_tomadas,
+        i.fecha,
+        COUNT(DISTINCT id.ot_id) as total_ots,
+        COUNT(DISTINCT id.ot_id) FILTER (WHERE ot.empleado_id IS NULL) as ots_disponibles,
+        COUNT(DISTINCT id.ot_id) FILTER (WHERE ot.empleado_id = $2) as ots_tomadas,
         json_agg(
           json_build_object(
             'prioridad', p.nombre,
             'descripcion', r.descripcion
           ) ORDER BY 
             CASE p.nombre
-              WHEN 'ALTA' THEN 1
-              WHEN 'MEDIA' THEN 2
-              WHEN 'BAJA' THEN 3
+              WHEN 'Alta' THEN 1
+              WHEN 'Media' THEN 2
+              WHEN 'Baja' THEN 3
               ELSE 4
             END
-        ) FILTER (WHERE ot.empleado_id IS NULL) as resumen_disponibles
-      FROM orden_trabajo ot
+        ) FILTER (WHERE ot.empleado_id IS NULL OR ot.empleado_id = $2) as resumen_ots
+      FROM itinerario i
+      INNER JOIN itinerario_det id ON i.itinerario_id = id.itinerario_id
+      INNER JOIN orden_trabajo ot ON id.ot_id = ot.ot_id
       INNER JOIN reclamo r ON ot.reclamo_id = r.reclamo_id
       INNER JOIN detalle_tipo_reclamo dtr ON r.detalle_id = dtr.detalle_id
       INNER JOIN tipo_reclamo tr ON dtr.tipo_id = tr.tipo_id
       LEFT JOIN prioridad p ON r.prioridad_id = p.prioridad_id
-      WHERE DATE(ot.fecha_programada) >= CURRENT_DATE
+      WHERE i.cuadrilla_id = $1
+        AND i.fecha >= CURRENT_DATE
         AND tr.nombre = 'TECNICO'
-        AND ot.observaciones LIKE '%[ITINERARIO]%'
-        AND ot.observaciones LIKE '%cuadrilla: ' || (SELECT nombre FROM cuadrilla WHERE cuadrilla_id = $1) || '%'
-        AND ot.estado IN ('PENDIENTE', 'ASIGNADA', 'EN_PROCESO')
-      GROUP BY DATE(ot.fecha_programada)
-      HAVING COUNT(CASE WHEN ot.empleado_id = $2 THEN 1 END) > 0
-      ORDER BY DATE(ot.fecha_programada) ASC
+        AND ot.estado IN ('PENDIENTE', 'ASIGNADA', 'EN CURSO')
+      GROUP BY i.fecha, i.itinerario_id
+      ORDER BY i.fecha ASC
       LIMIT 30
     `;
 

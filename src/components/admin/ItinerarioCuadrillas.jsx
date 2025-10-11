@@ -26,7 +26,7 @@ export default function ItinerarioCuadrillas() {
   const [filtroOTs, setFiltroOTs] = useState('disponibles'); // 'disponibles' o 'todas'
   const [todasLasOTs, setTodasLasOTs] = useState([]);
   const [loadingTodas, setLoadingTodas] = useState(false);
-  const [filtroItinerario, setFiltroItinerario] = useState('fecha'); // 'fecha' o 'todos'
+  const [filtroItinerario, setFiltroItinerario] = useState('todos'); // 'fecha' o 'todos' - por defecto 'todos'
   const [todosLosItinerarios, setTodosLosItinerarios] = useState([]);
   const [loadingItinerarios, setLoadingItinerarios] = useState(false);
   
@@ -50,30 +50,23 @@ export default function ItinerarioCuadrillas() {
 
   // Cargar OTs y cuadrillas al montar
   useEffect(() => {
-    console.log('🔄 Componente montado - Cargando OTs...');
     obtenerOTsPendientes('TECNICO');
     cargarTodasLasOTs();
     listarCuadrillas(); // Cargar cuadrillas disponibles
   }, []);
 
-  // Cargar todos los itinerarios cuando se selecciona filtro "todos"
+  // Cargar todos los itinerarios cuando se selecciona una cuadrilla o cambia el filtro
   useEffect(() => {
-    if (filtroItinerario === 'todos' && cuadrillaSeleccionada) {
-      cargarTodosLosItinerarios();
+    if (cuadrillaSeleccionada) {
+      if (filtroItinerario === 'todos') {
+        cargarTodosLosItinerarios();
+      } else if (filtroItinerario === 'fecha' && fechaSeleccionada) {
+        obtenerItinerarioCuadrilla(cuadrillaSeleccionada, fechaSeleccionada);
+      }
     }
-  }, [filtroItinerario, cuadrillaSeleccionada]);
+  }, [filtroItinerario, cuadrillaSeleccionada, fechaSeleccionada]);
 
-  // Debug: ver cambios en los estados
-  useEffect(() => {
-    console.log('📋 OTs Pendientes:', otsPendientes?.length, otsPendientes);
-    if (otsPendientes?.length > 0) {
-      console.log('� Primera OT pendiente:', otsPendientes[0]);
-    }
-    console.log('�📊 Todas las OTs:', todasLasOTs?.length, todasLasOTs);
-    if (todasLasOTs?.length > 0) {
-      console.log('📊 Primera OT de todas:', todasLasOTs[0]);
-    }
-  }, [otsPendientes, todasLasOTs]);
+
 
   const cargarTodasLasOTs = async () => {
     setLoadingTodas(true);
@@ -85,13 +78,9 @@ export default function ItinerarioCuadrillas() {
       });
       if (response.ok) {
         const resultado = await response.json();
-        console.log('📊 Respuesta del backend:', resultado);
-        // El backend devuelve { success, data, total }
         const ots = resultado.data || resultado;
-        console.log('📊 Todas las OTs recibidas:', ots?.length, ots);
         setTodasLasOTs(Array.isArray(ots) ? ots : []);
       } else {
-        console.error('❌ Error al cargar OTs:', response.status);
         setTodasLasOTs([]);
       }
     } catch (error) {
@@ -107,9 +96,9 @@ export default function ItinerarioCuadrillas() {
     
     setLoadingItinerarios(true);
     try {
-      // Cargar OTs de la cuadrilla seleccionada (sin filtro de fecha)
+      // Cargar TODOS los itinerarios de la cuadrilla (sin filtro de fecha)
       const response = await fetch(
-        `http://localhost:3001/api/ot-tecnicas?cuadrilla_id=${cuadrillaSeleccionada}`,
+        `http://localhost:3001/api/itinerario/cuadrilla/${cuadrillaSeleccionada}`,
         {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -118,16 +107,9 @@ export default function ItinerarioCuadrillas() {
       );
       if (response.ok) {
         const resultado = await response.json();
-        console.log('🗓️ Todos los itinerarios recibidos:', resultado);
-        const ots = resultado.data || resultado;
-        // Filtrar solo las que tienen [ITINERARIO] en observaciones
-        const otsItinerario = Array.isArray(ots) 
-          ? ots.filter(ot => ot.observaciones?.includes('[ITINERARIO]'))
-          : [];
-        console.log('🗓️ OTs en itinerarios:', otsItinerario?.length, otsItinerario);
-        setTodosLosItinerarios(otsItinerario);
+        const ots = resultado.data || [];
+        setTodosLosItinerarios(Array.isArray(ots) ? ots : []);
       } else {
-        console.error('❌ Error al cargar itinerarios:', response.status);
         setTodosLosItinerarios([]);
       }
     } catch (error) {
@@ -137,15 +119,6 @@ export default function ItinerarioCuadrillas() {
       setLoadingItinerarios(false);
     }
   };
-
-  // Cargar itinerario cuando cambia la selección
-  useEffect(() => {
-    if (cuadrillaSeleccionada && fechaSeleccionada) {
-      obtenerItinerarioCuadrilla(cuadrillaSeleccionada, fechaSeleccionada);
-    } else {
-      limpiarItinerario();
-    }
-  }, [cuadrillaSeleccionada, fechaSeleccionada]);
 
   const handleAsignarOT = async (otId) => {
     if (!cuadrillaSeleccionada) {
@@ -185,12 +158,11 @@ export default function ItinerarioCuadrillas() {
   return (
     <div className="container mx-auto p-6 space-y-6">
       {/* Header */}
-            {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Itinerario de Cuadrillas</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Reclamos Técnicos</h1>
           <p className="text-gray-600 mt-1">
-            Asigna órdenes de trabajo técnicas a las cuadrillas
+            Gestiona y asigna órdenes de trabajo técnicas a las cuadrillas (Itinerario)
           </p>
         </div>
         <div className="flex gap-2">
@@ -251,16 +223,20 @@ export default function ItinerarioCuadrillas() {
             <div className="space-y-2">
               <label className="text-sm font-medium flex items-center gap-2">
                 <Calendar className="h-4 w-4" />
-                Fecha (dd/mm/aaaa)
+                Fecha
               </label>
               <Input
                 type="date"
                 value={fechaSeleccionada}
-                onChange={(e) => setFechaSeleccionada(e.target.value)}
+                onChange={(e) => {
+                  setFechaSeleccionada(e.target.value);
+                  // Cambiar automáticamente a vista de "Solo esta fecha"
+                  setFiltroItinerario('fecha');
+                }}
                 className="w-full"
               />
-              <p className="text-xs text-gray-500">
-                {fechaSeleccionada && format(new Date(fechaSeleccionada + 'T00:00:00'), 'dd/MM/yyyy', { locale: es })}
+              <p className="text-xs text-gray-500 font-medium">
+                📅 {fechaSeleccionada && format(new Date(fechaSeleccionada + 'T00:00:00'), 'dd/MM/yyyy', { locale: es })}
               </p>
             </div>
           </div>
@@ -279,54 +255,29 @@ export default function ItinerarioCuadrillas() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Wrench className="h-5 w-5" />
-              OTs Técnicas
+              OTs Técnicas Disponibles ({otsPendientes.length})
             </CardTitle>
             <CardDescription>
-              Filtro para ver disponibles o todas las OTs
+              OTs pendientes que pueden asignarse al itinerario
             </CardDescription>
-            <div className="flex gap-2 mt-4">
-              <Button
-                variant={filtroOTs === 'disponibles' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setFiltroOTs('disponibles')}
-                className="flex-1"
-              >
-                Solo Disponibles ({otsPendientes.length})
-              </Button>
-              <Button
-                variant={filtroOTs === 'todas' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setFiltroOTs('todas')}
-                className="flex-1"
-              >
-                Todas ({todasLasOTs.length})
-              </Button>
-            </div>
           </CardHeader>
           <CardContent>
-            {((loading && filtroOTs === 'disponibles') || (loadingTodas && filtroOTs === 'todas')) ? (
+            {loading ? (
               <div className="space-y-2">
                 {[1, 2, 3, 4, 5].map(i => <Skeleton key={i} className="h-12 w-full" />)}
               </div>
-            ) : filtroOTs === 'disponibles' && otsPendientes.length === 0 ? (
+            ) : otsPendientes.length === 0 ? (
               <div className="text-center py-12 text-gray-500">
                 <Wrench className="h-12 w-12 mx-auto mb-2 opacity-50" />
                 <p className="font-semibold mb-2">No hay OTs disponibles</p>
-                <p className="text-sm">Las OTs técnicas ya están asignadas a operarios</p>
-                <p className="text-xs mt-4 text-gray-400">
-                  Usa el filtro "Todas" para ver todas las OTs técnicas
-                </p>
+                <p className="text-sm">Todas las OTs técnicas ya están asignadas a itinerarios</p>
               </div>
             ) : (
               <div className="max-h-[600px] overflow-y-auto space-y-1">
-                {(filtroOTs === 'disponibles' ? otsPendientes : (todasLasOTs || [])).map((ot) => (
+                {otsPendientes.map((ot) => (
                   <div
                     key={ot.id || ot.ot_id}
-                    className={`flex items-center justify-between p-3 border rounded transition-colors ${
-                      filtroOTs === 'todas' && ot.empleado_id 
-                        ? 'bg-gray-100 opacity-70' 
-                        : 'hover:bg-gray-50'
-                    }`}
+                    className="flex items-center justify-between p-3 border rounded transition-colors hover:bg-gray-50"
                   >
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1 flex-wrap">
@@ -338,40 +289,23 @@ export default function ItinerarioCuadrillas() {
                         }>
                           {ot.prioridad}
                         </Badge>
-                        {filtroOTs === 'todas' && ot.empleado_id && (
-                          <Badge variant="secondary" className="text-xs bg-gray-300">
-                            Asignada a emp. #{ot.empleado_id}
-                          </Badge>
-                        )}
-                        {filtroOTs === 'todas' && !ot.empleado_id && (
-                          <Badge variant="default" className="text-xs bg-green-600">
-                            ✓ Disponible
-                          </Badge>
-                        )}
                       </div>
                       <p className="text-sm font-medium truncate">
-                        {ot.socio_nombre || ot.nombre} (Socio #{ot.nro_socio || ot.socio_id})
+                        {ot.socio_nombre} {ot.socio_apellido} (Socio #{ot.nro_socio || ot.socio_id})
                       </p>
                       <p className="text-xs text-gray-500 truncate">
                         📍 {ot.domicilio || 'Sin dirección'} • Cuenta: {ot.cuenta_nro || ot.numero_cuenta}
                       </p>
-                      {filtroOTs === 'todas' && ot.observaciones && ot.observaciones.includes('[ITINERARIO]') && (
-                        <p className="text-xs text-purple-600 mt-1">
-                          🗓️ Ya en itinerario
-                        </p>
-                      )}
                     </div>
-                    {(filtroOTs === 'disponibles' || !ot.empleado_id) && (
-                      <Button
-                        onClick={() => handleAsignarOT(ot.id || ot.ot_id)}
-                        disabled={!cuadrillaSeleccionada || loading}
-                        size="sm"
-                        className="ml-3 shrink-0"
-                      >
-                        <Plus className="h-4 w-4 mr-1" />
-                        Asignar
-                      </Button>
-                    )}
+                    <Button
+                      onClick={() => handleAsignarOT(ot.id || ot.ot_id)}
+                      disabled={!cuadrillaSeleccionada || loading}
+                      size="sm"
+                      className="ml-3 shrink-0"
+                    >
+                      <Plus className="h-4 w-4 mr-1" />
+                      Asignar
+                    </Button>
                   </div>
                 ))}
               </div>
@@ -452,22 +386,33 @@ export default function ItinerarioCuadrillas() {
                   </TableHeader>
                   <TableBody>
                     {(filtroItinerario === 'fecha' ? itinerario : todosLosItinerarios).map((ot, index) => (
-                      <TableRow key={ot.id || ot.ot_id} className={ot.empleado_id ? 'bg-green-50' : 'bg-yellow-50'}>
+                      <TableRow key={ot.id || ot.ot_id} className={
+                        ot.estado === 'EN CURSO' ? 'bg-blue-50' :
+                        ot.estado === 'ASIGNADA' ? 'bg-green-50' :
+                        'bg-yellow-50'
+                      }>
                         <TableCell className="font-bold text-blue-600">
                           {index + 1}
                         </TableCell>
                         <TableCell className="font-medium">#{ot.id || ot.ot_id}</TableCell>
                         <TableCell>
                           <div className="text-sm">
-                            <p className="font-medium">{ot.socio_nombre || ot.nombre}</p>
+                            <p className="font-medium">{ot.socio_nombre} {ot.socio_apellido}</p>
                             <p className="text-gray-500 text-xs">
-                              {ot.empleado_nombre ? `Tomada por: ${ot.empleado_nombre}` : 'Disponible'}
+                              Socio #{ot.socio_id}
                             </p>
-                            {filtroItinerario === 'todos' && ot.observaciones && (
-                              <p className="text-purple-600 text-xs mt-1">
-                                {ot.observaciones.match(/\[ITINERARIO: ([\d-]+)\]/)?.[1] 
-                                  ? `📅 ${format(new Date(ot.observaciones.match(/\[ITINERARIO: ([\d-]+)\]/)[1] + 'T00:00:00'), 'dd/MM/yyyy', { locale: es })}`
-                                  : '📅 Fecha no especificada'}
+                            {filtroItinerario === 'todos' && ot.fecha_itinerario && (
+                              <p className="text-purple-600 text-xs mt-1 font-medium">
+                                📅 {(() => {
+                                  try {
+                                    const fecha = new Date(ot.fecha_itinerario);
+                                    return isNaN(fecha.getTime()) 
+                                      ? 'Fecha inválida' 
+                                      : format(fecha, 'dd/MM/yyyy', { locale: es });
+                                  } catch (e) {
+                                    return 'Fecha inválida';
+                                  }
+                                })()}
                               </p>
                             )}
                           </div>
@@ -475,11 +420,11 @@ export default function ItinerarioCuadrillas() {
                         <TableCell className="text-sm">{ot.domicilio || 'Sin dirección'}</TableCell>
                         <TableCell>
                           <Badge className={
-                            ot.empleado_id 
-                              ? "bg-green-100 text-green-800" 
-                              : "bg-yellow-100 text-yellow-800"
+                            ot.estado === 'EN CURSO' ? "bg-blue-100 text-blue-800" :
+                            ot.estado === 'ASIGNADA' ? "bg-green-100 text-green-800" :
+                            "bg-yellow-100 text-yellow-800"
                           }>
-                            {ot.empleado_id ? 'Tomada' : 'Disponible'}
+                            {ot.estado}
                           </Badge>
                         </TableCell>
                         <TableCell>

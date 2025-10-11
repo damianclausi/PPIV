@@ -3,6 +3,7 @@ import { Calendar, MapPin, Clock, CheckCircle, AlertCircle } from 'lucide-react'
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 import { useItinerario } from '../../hooks/useItinerario';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
@@ -17,6 +18,7 @@ import { Alert, AlertDescription } from '../ui/alert';
  */
 export default function ItinerarioOperario() {
   const navigate = useNavigate();
+  const { usuario } = useAuth();
   const [fechaSeleccionada, setFechaSeleccionada] = useState(null);
   const [vistaActual, setVistaActual] = useState('fechas'); // 'fechas' o 'itinerario'
   
@@ -51,8 +53,8 @@ export default function ItinerarioOperario() {
     setFechaSeleccionada(null);
   };
 
-  // Filtrar solo las OTs asignadas a este operario (empleado_id no null)
-  const misOTs = itinerario.filter(ot => ot.empleado_id);
+  // Mostrar TODAS las OTs del itinerario de la cuadrilla (todos los operarios ven las mismas OTs)
+  const misOTs = itinerario;
 
   return (
     <div className="container mx-auto p-6 space-y-6">
@@ -107,7 +109,7 @@ export default function ItinerarioOperario() {
                 <p className="text-sm mt-2">Consulta más tarde o contacta a tu supervisor</p>
               </div>
             ) : (
-              <div className="space-y-3 max-h-[600px] overflow-y-auto">
+              <div className="space-y-3">
                 {fechasDisponibles.map((fechaInfo) => {
                   // Parsear fecha correctamente
                   const fechaStr = typeof fechaInfo.fecha === 'string' 

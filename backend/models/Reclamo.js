@@ -208,9 +208,8 @@ class Reclamo {
     const resultado = await pool.query(`
       SELECT 
         COUNT(*) FILTER (WHERE estado = 'PENDIENTE') as pendientes,
-        COUNT(*) FILTER (WHERE estado = 'EN_PROCESO') as en_proceso,
-        COUNT(*) FILTER (WHERE estado = 'RESUELTO') as resueltos,
-        COUNT(*) FILTER (WHERE estado = 'CERRADO') as cerrados
+        COUNT(*) FILTER (WHERE estado = 'EN CURSO') as en_proceso,
+        COUNT(*) FILTER (WHERE estado = 'RESUELTO') as resueltos
       FROM reclamo r
       INNER JOIN cuenta c ON r.cuenta_id = c.cuenta_id
       WHERE c.socio_id = $1
@@ -341,7 +340,7 @@ class Reclamo {
         ot.estado as estado_orden,
         ot.fecha_programada,
         CASE 
-          WHEN ot.observaciones LIKE '%[ITINERARIO]%' THEN true
+          WHEN id.itdet_id IS NOT NULL THEN true
           ELSE false
         END as es_itinerario,
         COUNT(*) OVER() as total
@@ -352,6 +351,7 @@ class Reclamo {
       INNER JOIN prioridad p ON r.prioridad_id = p.prioridad_id
       INNER JOIN cuenta c ON r.cuenta_id = c.cuenta_id
       INNER JOIN socio s ON c.socio_id = s.socio_id
+      LEFT JOIN itinerario_det id ON ot.ot_id = id.ot_id
       WHERE ot.empleado_id = $1
         AND t.tipo_id = 1
     `;
@@ -367,7 +367,7 @@ class Reclamo {
 
     const offset = (pagina - 1) * limite;
     query += ` ORDER BY 
-      CASE WHEN ot.observaciones LIKE '%[ITINERARIO]%' THEN 0 ELSE 1 END,
+      CASE WHEN id.itdet_id IS NOT NULL THEN 0 ELSE 1 END,
       ot.fecha_programada ASC NULLS LAST,
       r.fecha_alta DESC 
       LIMIT $${paramCount} OFFSET $${paramCount + 1}`;

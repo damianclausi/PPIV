@@ -125,26 +125,18 @@ export default function DashboardAdministrador() {
               <Button 
                 className="w-full justify-start" 
                 variant="default"
-                onClick={() => navigate('/dashboard/admin/socios')}
-              >
-                <Users className="h-4 w-4 mr-2" />
-                Gestionar Socios
-              </Button>
-              <Button 
-                className="w-full justify-start" 
-                variant="default"
-                onClick={() => navigate('/dashboard/admin/reclamos')}
-              >
-                <AlertCircle className="h-4 w-4 mr-2" />
-                Gestionar Reclamos
-              </Button>
-              <Button 
-                className="w-full justify-start" 
-                variant="default"
                 onClick={() => navigate('/dashboard/admin/empleados')}
               >
                 <UserCog className="h-4 w-4 mr-2" />
                 Gestionar Empleados
+              </Button>
+              <Button 
+                className="w-full justify-start" 
+                variant="default"
+                onClick={() => navigate('/dashboard/admin/socios')}
+              >
+                <Users className="h-4 w-4 mr-2" />
+                Gestionar Socios
               </Button>
               <Button 
                 className="w-full justify-start" 
@@ -157,18 +149,18 @@ export default function DashboardAdministrador() {
               <Button 
                 className="w-full justify-start" 
                 variant="default"
-                onClick={() => navigate('/dashboard/admin/historial-reclamos')}
+                onClick={() => navigate('/dashboard/admin/itinerario')}
               >
-                <Wrench className="h-4 w-4 mr-2" />
-                Historial de Reclamos
+                <Calendar className="h-4 w-4 mr-2" />
+                Reclamos Técnicos
               </Button>
               <Button 
                 className="w-full justify-start" 
                 variant="default"
-                onClick={() => navigate('/dashboard/admin/itinerario')}
+                onClick={() => navigate('/dashboard/admin/historial-reclamos')}
               >
-                <Calendar className="h-4 w-4 mr-2" />
-                Itinerario de Cuadrillas
+                <Wrench className="h-4 w-4 mr-2" />
+                Historial de Reclamos
               </Button>
               <Button 
                 className="w-full justify-start" 

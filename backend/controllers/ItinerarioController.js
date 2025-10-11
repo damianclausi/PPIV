@@ -61,34 +61,37 @@ class ItinerarioController {
 
   /**
    * GET /api/itinerario/cuadrilla/:cuadrillaId
-   * Obtener itinerario de una cuadrilla para una fecha
-   * Query params: fecha (YYYY-MM-DD)
+   * Obtener itinerario de una cuadrilla para una fecha (o todas si no se especifica)
+   * Query params: fecha (YYYY-MM-DD) - opcional
    */
   async obtenerItinerarioCuadrilla(req, res) {
     try {
       const { cuadrillaId } = req.params;
       const { fecha } = req.query;
 
-      if (!fecha) {
-        return res.status(400).json({
-          success: false,
-          message: 'Fecha requerida (formato: YYYY-MM-DD)'
-        });
+      console.log('📅 Obteniendo itinerario:', { cuadrillaId, fecha: fecha || 'TODOS' });
+
+      let itinerario;
+      
+      if (fecha) {
+        // Obtener itinerario para una fecha específica
+        itinerario = await OrdenTrabajo.listarItinerarioCuadrilla(
+          parseInt(cuadrillaId),
+          fecha
+        );
+      } else {
+        // Obtener TODOS los itinerarios de la cuadrilla
+        itinerario = await OrdenTrabajo.listarTodosItinerariosCuadrilla(
+          parseInt(cuadrillaId)
+        );
       }
-
-      console.log('📅 Obteniendo itinerario:', { cuadrillaId, fecha });
-
-      const itinerario = await OrdenTrabajo.listarItinerarioCuadrilla(
-        parseInt(cuadrillaId),
-        fecha
-      );
 
       res.json({
         success: true,
         data: itinerario,
         total: itinerario.length,
         cuadrilla_id: parseInt(cuadrillaId),
-        fecha: fecha
+        fecha: fecha || 'todas'
       });
     } catch (error) {
       console.error('❌ Error al obtener itinerario:', error);
