@@ -25,6 +25,10 @@ if (process.env.NODE_ENV !== 'production') {
 const app = express();
 const PUERTO = process.env.PORT || 3001;
 
+// IMPORTANTE: Confiar en proxies (necesario para Vercel)
+// Vercel actúa como proxy reverso y envía headers X-Forwarded-*
+app.set('trust proxy', 1);
+
 // Seguridad: Helmet - Headers HTTP seguros
 app.use(helmet());
 
