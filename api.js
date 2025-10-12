@@ -3,19 +3,19 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
-import pool from './_lib/db.js';
+import pool from './db.js';
 
 // Importar rutas
-import rutasAuth from './_lib/routes/auth.js';
-import rutasClientes from './_lib/routes/clientes.js';
-import rutasOperarios from './_lib/routes/operarios.js';
-import rutasAdministradores from './_lib/routes/administradores.js';
-import rutasTiposReclamo from './_lib/routes/tiposReclamo.js';
-import rutasDetallesTipoReclamo from './_lib/routes/detallesTipoReclamo.js';
-import rutasPrioridades from './_lib/routes/prioridades.js';
-import rutasOTTecnicas from './_lib/routes/otTecnicas.js';
-import rutasCuadrillas from './_lib/routes/cuadrillas.js';
-import rutasItinerario from './_lib/routes/itinerario.js';
+import rutasAuth from './routes/auth.js';
+import rutasClientes from './routes/clientes.js';
+import rutasOperarios from './routes/operarios.js';
+import rutasAdministradores from './routes/administradores.js';
+import rutasTiposReclamo from './routes/tiposReclamo.js';
+import rutasDetallesTipoReclamo from './routes/detallesTipoReclamo.js';
+import rutasPrioridades from './routes/prioridades.js';
+import rutasOTTecnicas from './routes/otTecnicas.js';
+import rutasCuadrillas from './routes/cuadrillas.js';
+import rutasItinerario from './routes/itinerario.js';
 
 // Cargar variables de entorno solo en desarrollo
 if (process.env.NODE_ENV !== 'production') {
