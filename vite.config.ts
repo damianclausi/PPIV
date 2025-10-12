@@ -51,7 +51,7 @@
     },
     build: {
       target: 'esnext',
-      outDir: 'build',
+      outDir: 'dist',
     },
     server: {
       port: Number(process.env.VITE_PORT) || 3002,
