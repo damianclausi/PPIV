@@ -72,7 +72,15 @@ app.use(express.urlencoded({ extended: true }));
 
 // Log de peticiones
 app.use((req, res, next) => {
-  console.log(`${req.method} ${req.path}`);
+  console.log(`📨 Express recibió: ${req.method} ${req.path} (URL completa: ${req.url})`);
+  console.log('📋 Headers:', JSON.stringify({
+    'content-type': req.headers['content-type'],
+    'origin': req.headers['origin'],
+    'authorization': req.headers['authorization'] ? 'presente' : 'ausente'
+  }));
+  if (req.body && Object.keys(req.body).length > 0) {
+    console.log('📦 Body keys:', Object.keys(req.body));
+  }
   next();
 });
 
@@ -153,15 +161,22 @@ app.get('/', (req, res) => {
 
 // Manejo de errores 404
 app.use((req, res) => {
-  res.status(404).json({ error: 'Ruta no encontrada' });
+  console.log(`❌ 404: Ruta no encontrada - ${req.method} ${req.url}`);
+  res.status(404).json({ 
+    error: 'Ruta no encontrada',
+    ruta: req.url,
+    metodo: req.method
+  });
 });
 
 // Manejo de errores global
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  console.error('💥 Error global capturado:', err);
+  console.error('Stack:', err.stack);
   res.status(500).json({
     error: 'Error del servidor',
-    mensaje: err.message
+    mensaje: err.message,
+    stack: process.env.NODE_ENV !== 'production' ? err.stack : undefined
   });
 });
 
@@ -177,24 +192,19 @@ if (process.env.NODE_ENV !== 'test' && process.env.NODE_ENV !== 'production') {
 // Vercel necesita un handler que procese req/res
 export default async function handler(req, res) {
   try {
-    console.log('📝 Vercel Function invoked:', req.method, req.url);
+    console.log('📝 Vercel Function invoked:', {
+      method: req.method,
+      url: req.url,
+      headers: Object.keys(req.headers)
+    });
     console.log('🔑 Environment:', {
       NODE_ENV: process.env.NODE_ENV,
-      hasDB: !!process.env.DATABASE_URL
+      hasDB: !!process.env.DATABASE_URL,
+      hasJWT: !!process.env.JWT_SECRET
     });
     
-    // Vercel maneja las rutas con /api/ prefix, pero Express no lo espera
-    // Necesitamos ajustar la URL para Express
-    const originalUrl = req.url;
-    
-    // Si la URL empieza con /api/, la removemos para que Express la maneje correctamente
-    if (req.url.startsWith('/api')) {
-      req.url = req.url.replace('/api', '') || '/';
-    }
-    
-    console.log('🔄 URL original:', originalUrl, '→ URL procesada:', req.url);
-    
-    // Express puede manejar la request directamente
+    // Express ya tiene las rutas definidas con /api/ prefix
+    // No necesitamos transformar la URL
     return app(req, res);
   } catch (error) {
     console.error('❌ Error en Vercel handler:', error);
