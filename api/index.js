@@ -174,4 +174,14 @@ if (process.env.NODE_ENV !== 'test' && process.env.NODE_ENV !== 'production') {
 }
 
 // Exportar para Vercel serverless functions
-export default app;
+// Vercel necesita un handler que procese req/res
+export default function handler(req, res) {
+  // Logging para debug
+  console.log('📝 Vercel Function invoked:', req.method, req.url);
+  
+  // Express puede manejar la request directamente
+  return app(req, res);
+}
+
+// También exportar la app para testing
+export { app };
