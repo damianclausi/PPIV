@@ -175,12 +175,35 @@ if (process.env.NODE_ENV !== 'test' && process.env.NODE_ENV !== 'production') {
 
 // Exportar para Vercel serverless functions
 // Vercel necesita un handler que procese req/res
-export default function handler(req, res) {
-  // Logging para debug
-  console.log('📝 Vercel Function invoked:', req.method, req.url);
-  
-  // Express puede manejar la request directamente
-  return app(req, res);
+export default async function handler(req, res) {
+  try {
+    console.log('📝 Vercel Function invoked:', req.method, req.url);
+    console.log('🔑 Environment:', {
+      NODE_ENV: process.env.NODE_ENV,
+      hasDB: !!process.env.DATABASE_URL
+    });
+    
+    // Vercel maneja las rutas con /api/ prefix, pero Express no lo espera
+    // Necesitamos ajustar la URL para Express
+    const originalUrl = req.url;
+    
+    // Si la URL empieza con /api/, la removemos para que Express la maneje correctamente
+    if (req.url.startsWith('/api')) {
+      req.url = req.url.replace('/api', '') || '/';
+    }
+    
+    console.log('🔄 URL original:', originalUrl, '→ URL procesada:', req.url);
+    
+    // Express puede manejar la request directamente
+    return app(req, res);
+  } catch (error) {
+    console.error('❌ Error en Vercel handler:', error);
+    res.status(500).json({
+      error: 'Internal Server Error',
+      message: error.message,
+      stack: process.env.NODE_ENV !== 'production' ? error.stack : undefined
+    });
+  }
 }
 
 // También exportar la app para testing
