@@ -5,11 +5,18 @@ class Usuario {
    * Buscar usuario por email
    */
   static async buscarPorEmail(email) {
-    const resultado = await pool.query(
-      'SELECT * FROM usuario WHERE email = $1',
-      [email]
-    );
-    return resultado.rows[0];
+    try {
+      console.log('🔍 Usuario.buscarPorEmail:', email);
+      const resultado = await pool.query(
+        'SELECT * FROM usuario WHERE email = $1',
+        [email]
+      );
+      console.log('✅ Query ejecutada, rows:', resultado.rows.length);
+      return resultado.rows[0];
+    } catch (error) {
+      console.error('❌ Error en buscarPorEmail:', error);
+      throw error;
+    }
   }
 
   /**
