@@ -35,9 +35,18 @@ interface ModalValoracionProps {
   numeroReclamo?: number;
   
   /**
-   * Callback después de crear valoración exitosa
+   * Callback después de crear/actualizar valoración exitosa
    */
   onSuccess?: () => void;
+  
+  /**
+   * Datos de valoración existente (para modo edición)
+   */
+  valoracionExistente?: {
+    valoracion_id: number;
+    calificacion: number;
+    comentario?: string;
+  } | null;
 }
 
 export const ModalValoracion: React.FC<ModalValoracionProps> = ({
@@ -45,11 +54,25 @@ export const ModalValoracion: React.FC<ModalValoracionProps> = ({
   onClose,
   reclamoId,
   numeroReclamo,
-  onSuccess
+  onSuccess,
+  valoracionExistente
 }) => {
-  const [calificacion, setCalificacion] = useState<number>(0);
-  const [comentario, setComentario] = useState<string>('');
+  const [calificacion, setCalificacion] = useState<number>(valoracionExistente?.calificacion || 0);
+  const [comentario, setComentario] = useState<string>(valoracionExistente?.comentario || '');
   const [loading, setLoading] = useState(false);
+
+  // Actualizar estado cuando cambie valoracionExistente
+  React.useEffect(() => {
+    if (valoracionExistente) {
+      setCalificacion(valoracionExistente.calificacion);
+      setComentario(valoracionExistente.comentario || '');
+    } else {
+      setCalificacion(0);
+      setComentario('');
+    }
+  }, [valoracionExistente, open]);
+
+  const modoEdicion = !!valoracionExistente;
 
   const handleSubmit = async () => {
     // Validación
@@ -61,13 +84,24 @@ export const ModalValoracion: React.FC<ModalValoracionProps> = ({
     setLoading(true);
 
     try {
-      await apiClient.post('/api/valoraciones', {
-        reclamoId,
-        calificacion,
-        comentario: comentario.trim() || null
-      });
-
-      toast.success('¡Valoración enviada exitosamente!');
+      if (modoEdicion && valoracionExistente) {
+        // Actualizar valoración existente
+        await apiClient.put(`/api/valoraciones/${valoracionExistente.valoracion_id}`, {
+          calificacion,
+          comentario: comentario.trim() || null
+        });
+        
+        toast.success('¡Valoración actualizada exitosamente!');
+      } else {
+        // Crear nueva valoración
+        await apiClient.post('/api/valoraciones', {
+          reclamoId,
+          calificacion,
+          comentario: comentario.trim() || null
+        });
+        
+        toast.success('¡Valoración enviada exitosamente!');
+      }
       
       // Resetear formulario
       setCalificacion(0);
@@ -105,10 +139,13 @@ export const ModalValoracion: React.FC<ModalValoracionProps> = ({
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>
-            Valorar Reclamo {numeroReclamo ? `#${numeroReclamo}` : ''}
+            {modoEdicion ? 'Editar' : 'Valorar'} Reclamo {numeroReclamo ? `#${numeroReclamo}` : ''}
           </DialogTitle>
           <DialogDescription>
-            ¿Cómo fue tu experiencia con la resolución de este reclamo?
+            {modoEdicion 
+              ? 'Modifica tu valoración del reclamo'
+              : '¿Cómo fue tu experiencia con la resolución de este reclamo?'
+            }
           </DialogDescription>
         </DialogHeader>
 
@@ -174,7 +211,7 @@ export const ModalValoracion: React.FC<ModalValoracionProps> = ({
             onClick={handleSubmit}
             disabled={loading || calificacion === 0}
           >
-            {loading ? 'Enviando...' : 'Enviar Valoración'}
+            {loading ? 'Enviando...' : modoEdicion ? 'Actualizar Valoración' : 'Enviar Valoración'}
           </Button>
         </DialogFooter>
       </DialogContent>
