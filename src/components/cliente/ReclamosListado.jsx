@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import CooperativaLayout from '../layout/CooperativaLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
@@ -88,8 +89,8 @@ export default function ReclamosListado() {
 
   if (cargando) {
     return (
-      <div className="min-h-screen bg-gray-50 p-8">
-        <div className="max-w-6xl mx-auto space-y-6">
+      <CooperativaLayout titulo="Mis Reclamos">
+        <div className="space-y-6">
           <Skeleton className="h-12 w-96" />
           <div className="grid gap-4">
             <Skeleton className="h-32" />
@@ -97,13 +98,13 @@ export default function ReclamosListado() {
             <Skeleton className="h-32" />
           </div>
         </div>
-      </div>
+      </CooperativaLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-6xl mx-auto space-y-6">
+    <CooperativaLayout titulo="Mis Reclamos">
+      <div className="space-y-6">
         {/* Header */}
         <div className="space-y-4">
           <div className="flex justify-end">
@@ -320,6 +321,6 @@ export default function ReclamosListado() {
           } : null}
         />
       )}
-    </div>
+    </CooperativaLayout>
   );
 }

@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import CooperativaLayout from '../layout/CooperativaLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
 import { Badge } from '../ui/badge';
-import { Home, X } from 'lucide-react';
+import { Home, X, FileText } from 'lucide-react';
 import { Skeleton } from '../ui/skeleton';
 import { Alert, AlertDescription } from '../ui/alert';
 import { useFacturas } from '../../hooks/useCliente';
@@ -168,39 +169,32 @@ export default function FacturasListado() {
 
   if (cargando) {
     return (
-      <div className="min-h-screen bg-gray-50 p-8">
-        <div className="max-w-6xl mx-auto space-y-6">
+      <CooperativaLayout titulo="Mis Facturas">
+        <div className="space-y-6">
           <Skeleton className="h-12 w-64" />
           <Skeleton className="h-96" />
         </div>
-      </div>
+      </CooperativaLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-6xl mx-auto space-y-8">
-        {/* Header */}
-        <div className="flex items-start justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">Mis Facturas</h1>
-            <p className="text-gray-600 mt-1">Consulta y gestiona tus facturas</p>
-          </div>
-          <Button variant="outline" size="sm" onClick={() => navigate('/dashboard')}>
-            Volver
-          </Button>
-        </div>
-
+    <CooperativaLayout titulo="Mis Facturas">
+      <div className="space-y-6">
         {/* Filtros */}
-        <Card>
-          <CardHeader>
+        <Card className="shadow-lg">
+          <CardHeader className="bg-gradient-to-r from-cooperativa-dark/5 to-cooperativa-blue/5">
             <div className="flex items-center justify-between">
-              <CardTitle>Filtros</CardTitle>
+              <CardTitle className="text-cooperativa-dark flex items-center gap-2">
+                <FileText className="h-5 w-5" />
+                Filtros
+              </CardTitle>
               {(filtros.estado !== 'todas' || inputPeriodo) && (
                 <Button 
                   variant="outline" 
                   size="sm" 
                   onClick={limpiarFiltros}
+                  className="border-cooperativa-blue text-cooperativa-blue hover:bg-cooperativa-blue hover:text-white"
                 >
                   <X className="h-4 w-4 mr-2" />
                   Limpiar filtros
@@ -327,6 +321,6 @@ export default function FacturasListado() {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </CooperativaLayout>
   );
 }

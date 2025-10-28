@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import CooperativaLayout from '../layout/CooperativaLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
@@ -127,34 +128,36 @@ export default function ReclamoNuevo() {
 
   if (exito) {
     return (
-      <div className="min-h-screen bg-gray-50 p-8 flex items-center justify-center">
-        <Card className="max-w-md w-full border-green-200 bg-green-50">
-          <CardContent className="pt-6">
-            <div className="text-center space-y-4">
-              <div className="flex justify-center">
-                <div className="bg-green-100 p-4 rounded-full">
-                  <CheckCircle className="h-12 w-12 text-green-600" />
+      <CooperativaLayout titulo="Reclamo Enviado">
+        <div className="flex items-center justify-center">
+          <Card className="max-w-md w-full border-green-200 bg-green-50 shadow-xl">
+            <CardContent className="pt-6">
+              <div className="text-center space-y-4">
+                <div className="flex justify-center">
+                  <div className="bg-green-100 p-4 rounded-full">
+                    <CheckCircle className="h-12 w-12 text-green-600" />
+                  </div>
                 </div>
+                <h2 className="text-2xl font-bold text-green-900">¡Reclamo Enviado!</h2>
+                <p className="text-green-700">
+                  Su reclamo ha sido registrado exitosamente. En breve un técnico se pondrá en contacto con usted.
+                </p>
+                <Button
+                  className="w-full bg-cooperativa-teal hover:bg-green-700"
+                  onClick={() => navigate('/dashboard/reclamos')}
+                >
+                  Ver Mis Reclamos
+                </Button>
               </div>
-              <h2 className="text-2xl font-bold text-green-900">¡Reclamo Enviado!</h2>
-              <p className="text-green-700">
-                Su reclamo ha sido registrado exitosamente. En breve un técnico se pondrá en contacto con usted.
-              </p>
-              <Button
-                className="w-full bg-green-600 hover:bg-green-700"
-                onClick={() => navigate('/dashboard/reclamos')}
-              >
-                Ver Mis Reclamos
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+            </CardContent>
+          </Card>
+        </div>
+      </CooperativaLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <CooperativaLayout titulo="Nuevo Reclamo">
       <div className="max-w-2xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-start justify-between">
@@ -308,6 +311,6 @@ export default function ReclamoNuevo() {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </CooperativaLayout>
   );
 }

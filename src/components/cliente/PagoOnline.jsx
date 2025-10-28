@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import CooperativaLayout from '../layout/CooperativaLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
@@ -278,7 +279,7 @@ export default function PagoOnline() {
 
   if (pagoExitoso) {
     return (
-      <div className="min-h-screen bg-gray-50 p-8">
+      <CooperativaLayout titulo="Pago Online - Confirmación">
         <div className="max-w-2xl mx-auto space-y-6">
           {/* Animación de éxito */}
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -378,40 +379,27 @@ export default function PagoOnline() {
             </CardContent>
           </Card>
         </div>
-      </div>
+      </CooperativaLayout>
     );
   }
 
   if (cargando) {
     return (
-      <div className="min-h-screen bg-gray-50 p-8">
+      <CooperativaLayout titulo="Pago Online">
         <div className="max-w-4xl mx-auto space-y-6">
           <Skeleton className="h-12 w-96" />
           <Skeleton className="h-48" />
           <Skeleton className="h-64" />
         </div>
-      </div>
+      </CooperativaLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <CooperativaLayout titulo="Pago Online">
       <div className="max-w-4xl mx-auto space-y-6">
-        {/* Header */}
-        <div className="flex items-start justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">Pago Online</h1>
-            <p className="text-gray-600 mt-1">
-              Paga tus facturas de forma rápida y segura
-            </p>
-          </div>
-          <Button variant="outline" size="sm" onClick={() => navigate('/dashboard')}>
-            Volver
-          </Button>
-        </div>
-
         {/* Facturas Pendientes */}
-        <Card>
+        <Card className="shadow-lg">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <FileText className="h-5 w-5" />
@@ -660,6 +648,6 @@ export default function PagoOnline() {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </CooperativaLayout>
   );
 }

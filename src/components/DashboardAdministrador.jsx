@@ -7,6 +7,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { usePerfil, useDashboard } from '../hooks/useAdministrador.js';
 import { useAuth } from '../contexts/AuthContext.jsx';
+import CooperativaLayout from './layout/CooperativaLayout';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Skeleton } from './ui/skeleton';
@@ -30,8 +31,8 @@ export default function DashboardAdministrador() {
 
   if (cargando) {
     return (
-      <div className="min-h-screen bg-gray-50 p-8">
-        <div className="max-w-4xl mx-auto space-y-6">
+      <CooperativaLayout titulo="Panel Administrativo">
+        <div className="space-y-6">
           <Skeleton className="h-12 w-64" />
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Skeleton className="h-32" />
@@ -39,27 +40,24 @@ export default function DashboardAdministrador() {
             <Skeleton className="h-32" />
           </div>
         </div>
-      </div>
+      </CooperativaLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-4xl mx-auto space-y-8">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Dashboard - Administrador</h1>
-            {perfil && (
-              <p className="text-sm text-gray-600 mt-1">
-                {perfil.nombre} {perfil.apellido} • {perfil.rol_interno || perfil.cargo || 'Administrador'}
-              </p>
-            )}
+    <CooperativaLayout titulo="Panel Administrativo">
+      <div className="space-y-8">
+        {/* Info del admin */}
+        {perfil && (
+          <div className="bg-white rounded-lg shadow-md p-4 border-l-4 border-l-cooperativa-cyan">
+            <p className="text-sm text-gray-600">
+              <span className="font-semibold text-cooperativa-dark">Administrador:</span> {perfil.nombre} {perfil.apellido}
+            </p>
+            <p className="text-xs text-gray-500 mt-1">
+              {perfil.rol_interno || perfil.cargo || 'Administrador'}
+            </p>
           </div>
-          <Button variant="outline" onClick={logout}>
-            Cerrar Sesión
-          </Button>
-        </div>
+        )}
 
         {/* Cards de Resumen - 3 columnas */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -225,6 +223,6 @@ export default function DashboardAdministrador() {
           </Card>
         </div>
       </div>
-    </div>
+    </CooperativaLayout>
   );
 }

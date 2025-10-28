@@ -1,4 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom';
+import CooperativaLayout from '../layout/CooperativaLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
@@ -119,19 +120,19 @@ export default function ReclamoDetalle() {
 
   if (cargando) {
     return (
-      <div className="min-h-screen bg-gray-50 p-8">
-        <div className="max-w-4xl mx-auto space-y-6">
+      <CooperativaLayout titulo="Detalle del Reclamo">
+        <div className="space-y-6">
           <Skeleton className="h-12 w-96" />
           <Skeleton className="h-64" />
           <Skeleton className="h-48" />
         </div>
-      </div>
+      </CooperativaLayout>
     );
   }
 
   if (error || !reclamo) {
     return (
-      <div className="min-h-screen bg-gray-50 p-8">
+      <CooperativaLayout titulo="Detalle del Reclamo">
         <div className="max-w-4xl mx-auto">
           <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
@@ -146,13 +147,13 @@ export default function ReclamoDetalle() {
             Volver
           </Button>
         </div>
-      </div>
+      </CooperativaLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-4xl mx-auto space-y-6">
+    <CooperativaLayout titulo="Detalle del Reclamo">
+      <div className="space-y-6">
         {/* Header */}
         <div className="flex items-start justify-between">
           <div>
@@ -309,6 +310,6 @@ export default function ReclamoDetalle() {
           </Alert>
         )}
       </div>
-    </div>
+    </CooperativaLayout>
   );
 }
