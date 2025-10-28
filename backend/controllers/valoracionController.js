@@ -6,7 +6,7 @@ import Valoracion from '../models/Valoracion.js';
 export const crearValoracion = async (req, res) => {
   try {
     const { reclamoId, calificacion, comentario } = req.body;
-    const socioId = req.user.socioId; // Viene del middleware de autenticación
+    const socioId = req.usuario.socio_id; // Viene del middleware de autenticación
 
     // Validaciones básicas
     if (!reclamoId || !calificacion) {
@@ -97,7 +97,7 @@ export const obtenerValoracionPorReclamo = async (req, res) => {
  */
 export const obtenerMisValoraciones = async (req, res) => {
   try {
-    const socioId = req.user.socioId;
+    const socioId = req.usuario.socio_id;
 
     const valoraciones = await Valoracion.obtenerPorSocio(socioId);
 
@@ -123,7 +123,7 @@ export const actualizarValoracion = async (req, res) => {
   try {
     const { valoracionId } = req.params;
     const { calificacion, comentario } = req.body;
-    const socioId = req.user.socioId;
+    const socioId = req.usuario.socio_id;
 
     // Validaciones básicas
     if (!calificacion) {
@@ -176,7 +176,7 @@ export const actualizarValoracion = async (req, res) => {
 export const eliminarValoracion = async (req, res) => {
   try {
     const { valoracionId } = req.params;
-    const socioId = req.user.socioId;
+    const socioId = req.usuario.socio_id;
 
     await Valoracion.eliminar(valoracionId, socioId);
 
