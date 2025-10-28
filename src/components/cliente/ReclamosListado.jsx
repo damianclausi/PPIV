@@ -5,15 +5,19 @@ import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { Skeleton } from '../ui/skeleton';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { ArrowLeft, AlertCircle, MapPin, Calendar, Clock, Plus, AlertTriangle, Info, CheckCircle, Filter, RefreshCw } from 'lucide-react';
+import { ArrowLeft, AlertCircle, MapPin, Calendar, Clock, Plus, AlertTriangle, Info, CheckCircle, Filter, RefreshCw, Star } from 'lucide-react';
 import { useReclamos } from '../../hooks/useCliente';
 import { formatearFecha } from '../../utils/formatters.js';
+import { RatingStars } from '../ui/RatingStars';
+import { ModalValoracion } from '../ModalValoracion';
 
 export default function ReclamosListado() {
   const navigate = useNavigate();
   const { reclamos, cargando, error, recargar } = useReclamos();
   const [estadoFiltro, setEstadoFiltro] = useState('TODOS');
   const [recargando, setRecargando] = useState(false);
+  const [modalValoracionAbierto, setModalValoracionAbierto] = useState(false);
+  const [reclamoAValorar, setReclamoAValorar] = useState(null);
 
   // Auto-recargar cada 30 segundos para mantener datos actualizados
   useEffect(() => {
@@ -45,11 +49,23 @@ export default function ReclamosListado() {
     }
   };
 
+  // Abrir modal de valoración (crear o editar)
+  const handleAbrirValoracion = (reclamo, e) => {
+    e.stopPropagation(); // Evitar que se abra el detalle del reclamo
+    setReclamoAValorar(reclamo);
+    setModalValoracionAbierto(true);
+  };
+
+  // Después de valorar/editar exitosamente
+  const handleValoracionExitosa = () => {
+    recargar(); // Recargar la lista para mostrar la valoración actualizada
+  };
+
   const getBadgeColor = (estado) => {
     switch (estado) {
       case 'PENDIENTE':
         return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'EN_PROCESO':
+      case 'EN CURSO':
         return 'bg-blue-100 text-blue-800 border-blue-200';
       case 'RESUELTO':
         return 'bg-green-100 text-green-800 border-green-200';
@@ -133,7 +149,7 @@ export default function ReclamosListado() {
                     <SelectContent>
                       <SelectItem value="TODOS">Todos los estados</SelectItem>
                       <SelectItem value="PENDIENTE">Pendiente</SelectItem>
-                      <SelectItem value="EN_PROCESO">En Proceso</SelectItem>
+                      <SelectItem value="EN CURSO">En Curso</SelectItem>
                       <SelectItem value="RESUELTO">Resuelto</SelectItem>
                     </SelectContent>
                   </Select>
@@ -235,9 +251,48 @@ export default function ReclamosListado() {
 
                   {reclamo.estado === 'RESUELTO' && (
                     <div className="bg-green-50 border border-green-200 rounded-lg p-3 mt-3">
-                      <p className="text-sm text-green-800 font-medium">
-                        ✓ Reclamo resuelto el {formatearFecha(reclamo.fecha_cierre)}
-                      </p>
+                      <div className="flex items-center justify-between">
+                        <p className="text-sm text-green-800 font-medium">
+                          ✓ Reclamo resuelto el {formatearFecha(reclamo.fecha_cierre)}
+                        </p>
+                        
+                        {reclamo.valoracion_id ? (
+                          // Mostrar valoración existente con botón editar
+                          <div className="flex items-center gap-3">
+                            <RatingStars 
+                              rating={reclamo.calificacion} 
+                              mode="readonly" 
+                              size="sm"
+                            />
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              className="text-green-700 hover:bg-green-100 h-8 px-2"
+                              onClick={(e) => handleAbrirValoracion(reclamo, e)}
+                            >
+                              <Star className="h-3 w-3 mr-1" />
+                              Editar
+                            </Button>
+                          </div>
+                        ) : (
+                          // Botón para valorar por primera vez
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="border-green-600 text-green-700 hover:bg-green-100"
+                            onClick={(e) => handleAbrirValoracion(reclamo, e)}
+                          >
+                            <Star className="h-4 w-4 mr-1" />
+                            Valorar
+                          </Button>
+                        )}
+                      </div>
+                      
+                      {reclamo.comentario_valoracion && (
+                        <p className="text-xs text-green-700 mt-2 italic">
+                          "{reclamo.comentario_valoracion}"
+                        </p>
+                      )}
                     </div>
                   )}
                 </CardContent>
@@ -246,6 +301,25 @@ export default function ReclamosListado() {
           </div>
         )}
       </div>
+
+      {/* Modal de Valoración */}
+      {reclamoAValorar && (
+        <ModalValoracion
+          open={modalValoracionAbierto}
+          onClose={() => {
+            setModalValoracionAbierto(false);
+            setReclamoAValorar(null);
+          }}
+          reclamoId={reclamoAValorar.reclamo_id}
+          numeroReclamo={reclamoAValorar.reclamo_id}
+          onSuccess={handleValoracionExitosa}
+          valoracionExistente={reclamoAValorar.valoracion_id ? {
+            valoracion_id: reclamoAValorar.valoracion_id,
+            calificacion: reclamoAValorar.calificacion,
+            comentario: reclamoAValorar.comentario_valoracion
+          } : null}
+        />
+      )}
     </div>
   );
 }

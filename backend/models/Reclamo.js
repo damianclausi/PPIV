@@ -21,12 +21,17 @@ class Reclamo {
         t.nombre as tipo_reclamo,
         p.nombre as prioridad,
         c.numero_cuenta,
-        c.direccion
+        c.direccion,
+        v.valoracion_id,
+        v.calificacion,
+        v.comentario as comentario_valoracion,
+        v.fecha_valoracion
       FROM reclamo r
       INNER JOIN detalle_tipo_reclamo d ON r.detalle_id = d.detalle_id
       INNER JOIN tipo_reclamo t ON d.tipo_id = t.tipo_id
       INNER JOIN prioridad p ON r.prioridad_id = p.prioridad_id
       INNER JOIN cuenta c ON r.cuenta_id = c.cuenta_id
+      LEFT JOIN valoracion v ON r.reclamo_id = v.reclamo_id
       WHERE c.socio_id = $1
     `;
 
@@ -61,7 +66,11 @@ class Reclamo {
         s.nombre as socio_nombre,
         s.apellido as socio_apellido,
         s.telefono as socio_telefono,
-        ot.empleado_id as operario_asignado_id
+        ot.empleado_id as operario_asignado_id,
+        v.valoracion_id,
+        v.calificacion,
+        v.comentario as comentario_valoracion,
+        v.fecha_valoracion
       FROM reclamo r
       INNER JOIN detalle_tipo_reclamo d ON r.detalle_id = d.detalle_id
       INNER JOIN tipo_reclamo t ON d.tipo_id = t.tipo_id
@@ -69,6 +78,7 @@ class Reclamo {
       INNER JOIN cuenta c ON r.cuenta_id = c.cuenta_id
       LEFT JOIN socio s ON c.socio_id = s.socio_id
       LEFT JOIN orden_trabajo ot ON r.reclamo_id = ot.reclamo_id
+      LEFT JOIN valoracion v ON r.reclamo_id = v.reclamo_id
       WHERE r.reclamo_id = $1
     `, [reclamoId]);
   return resultado.rows[0];
@@ -238,13 +248,18 @@ class Reclamo {
         c.numero_cuenta,
         c.direccion,
         s.nombre as socio_nombre,
-        s.apellido as socio_apellido
+        s.apellido as socio_apellido,
+        v.valoracion_id,
+        v.calificacion,
+        v.comentario as comentario_valoracion,
+        v.fecha_valoracion
       FROM reclamo r
       INNER JOIN detalle_tipo_reclamo d ON r.detalle_id = d.detalle_id
       INNER JOIN tipo_reclamo t ON d.tipo_id = t.tipo_id
       INNER JOIN prioridad p ON r.prioridad_id = p.prioridad_id
       INNER JOIN cuenta c ON r.cuenta_id = c.cuenta_id
       INNER JOIN socio s ON c.socio_id = s.socio_id
+      LEFT JOIN valoracion v ON r.reclamo_id = v.reclamo_id
       WHERE 1=1
     `;
 

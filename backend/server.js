@@ -16,6 +16,7 @@ import rutasPrioridades from './routes/prioridades.js';
 import rutasOTTecnicas from './routes/otTecnicas.js';
 import rutasCuadrillas from './routes/cuadrillas.js';
 import rutasItinerario from './routes/itinerario.js';
+import rutasValoracion from './routes/valoracion.js';
 
 dotenv.config({ path: '../.env' });
 
@@ -86,6 +87,7 @@ app.use('/api/prioridades', rutasPrioridades);
 app.use('/api/ot-tecnicas', rutasOTTecnicas);
 app.use('/api/cuadrillas', rutasCuadrillas);
 app.use('/api/itinerario', rutasItinerario);
+app.use('/api/valoraciones', rutasValoracion);
 
 // Ruta de verificación de salud
 app.get('/api/salud', async (req, res) => {
