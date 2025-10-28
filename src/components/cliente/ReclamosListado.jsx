@@ -5,15 +5,19 @@ import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { Skeleton } from '../ui/skeleton';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { ArrowLeft, AlertCircle, MapPin, Calendar, Clock, Plus, AlertTriangle, Info, CheckCircle, Filter, RefreshCw } from 'lucide-react';
+import { ArrowLeft, AlertCircle, MapPin, Calendar, Clock, Plus, AlertTriangle, Info, CheckCircle, Filter, RefreshCw, Star } from 'lucide-react';
 import { useReclamos } from '../../hooks/useCliente';
 import { formatearFecha } from '../../utils/formatters.js';
+import { RatingStars } from '../ui/RatingStars';
+import { ModalValoracion } from '../ModalValoracion';
 
 export default function ReclamosListado() {
   const navigate = useNavigate();
   const { reclamos, cargando, error, recargar } = useReclamos();
   const [estadoFiltro, setEstadoFiltro] = useState('TODOS');
   const [recargando, setRecargando] = useState(false);
+  const [modalValoracionAbierto, setModalValoracionAbierto] = useState(false);
+  const [reclamoAValorar, setReclamoAValorar] = useState(null);
 
   // Auto-recargar cada 30 segundos para mantener datos actualizados
   useEffect(() => {
@@ -43,6 +47,18 @@ export default function ReclamosListado() {
     } finally {
       setRecargando(false);
     }
+  };
+
+  // Abrir modal de valoración
+  const handleAbrirValoracion = (reclamo, e) => {
+    e.stopPropagation(); // Evitar que se abra el detalle del reclamo
+    setReclamoAValorar(reclamo);
+    setModalValoracionAbierto(true);
+  };
+
+  // Después de valorar exitosamente
+  const handleValoracionExitosa = () => {
+    recargar(); // Recargar la lista para mostrar la valoración
   };
 
   const getBadgeColor = (estado) => {
@@ -235,9 +251,39 @@ export default function ReclamosListado() {
 
                   {reclamo.estado === 'RESUELTO' && (
                     <div className="bg-green-50 border border-green-200 rounded-lg p-3 mt-3">
-                      <p className="text-sm text-green-800 font-medium">
-                        ✓ Reclamo resuelto el {formatearFecha(reclamo.fecha_cierre)}
-                      </p>
+                      <div className="flex items-center justify-between">
+                        <p className="text-sm text-green-800 font-medium">
+                          ✓ Reclamo resuelto el {formatearFecha(reclamo.fecha_cierre)}
+                        </p>
+                        
+                        {reclamo.valoracion_id ? (
+                          // Mostrar valoración existente
+                          <div className="flex items-center gap-2">
+                            <RatingStars 
+                              rating={reclamo.calificacion} 
+                              mode="readonly" 
+                              size="sm"
+                            />
+                          </div>
+                        ) : (
+                          // Botón para valorar
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="border-green-600 text-green-700 hover:bg-green-100"
+                            onClick={(e) => handleAbrirValoracion(reclamo, e)}
+                          >
+                            <Star className="h-4 w-4 mr-1" />
+                            Valorar
+                          </Button>
+                        )}
+                      </div>
+                      
+                      {reclamo.comentario_valoracion && (
+                        <p className="text-xs text-green-700 mt-2 italic">
+                          "{reclamo.comentario_valoracion}"
+                        </p>
+                      )}
                     </div>
                   )}
                 </CardContent>
@@ -246,6 +292,20 @@ export default function ReclamosListado() {
           </div>
         )}
       </div>
+
+      {/* Modal de Valoración */}
+      {reclamoAValorar && (
+        <ModalValoracion
+          open={modalValoracionAbierto}
+          onClose={() => {
+            setModalValoracionAbierto(false);
+            setReclamoAValorar(null);
+          }}
+          reclamoId={reclamoAValorar.reclamo_id}
+          numeroReclamo={reclamoAValorar.reclamo_id}
+          onSuccess={handleValoracionExitosa}
+        />
+      )}
     </div>
   );
 }
