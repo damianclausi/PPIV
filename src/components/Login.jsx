@@ -5,7 +5,8 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Alert, AlertDescription } from './ui/alert';
-import { Zap, Mail, Lock } from 'lucide-react';
+import { Mail, Lock } from 'lucide-react';
+import logoImage from '../assets/brand/logo.jpeg';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -37,7 +38,11 @@ export default function Login() {
       <div className="absolute top-8 left-0 right-0 text-center">
         <div className="flex justify-center mb-4">
           <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4 shadow-xl">
-            <Zap className="h-16 w-16 text-white" />
+            <img
+              src={logoImage}
+              alt="Logo Cooperativa"
+              className="h-16 w-16 object-contain"
+            />
           </div>
         </div>
         <h1 className="text-4xl font-bold text-white mb-2">

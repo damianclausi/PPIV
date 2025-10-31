@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useDashboard, usePerfil } from '../hooks/useCliente';
+import fondoImage from '../assets/dashboard/fondo.jpg';
 import CooperativaLayout from './layout/CooperativaLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
@@ -41,7 +42,20 @@ export default function DashboardCliente() {
 
   return (
     <CooperativaLayout titulo="Panel de Control">
-      <div className="space-y-8">
+      <div 
+        className="relative"
+        style={{
+          backgroundImage: `url(${fondoImage})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        }}
+      >
+        {/* Overlay para dar transparencia */}
+        <div className="absolute inset-0 bg-white/75"></div>
+        
+        {/* Contenido */}
+        <div className="relative space-y-8">
         {/* Cards de Resumen con estilo Edenor */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Estado del Servicio */}
@@ -185,6 +199,7 @@ export default function DashboardCliente() {
               </div>
             </CardContent>
           </Card>
+        </div>
         </div>
       </div>
     </CooperativaLayout>

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { Button } from '../ui/button';
+import logoImage from '../../assets/brand/logo.jpeg';
 import { 
   Home, 
   FileText, 
@@ -75,9 +76,11 @@ export default function CooperativaLayout({ children, titulo }) {
               </button>
               <div className="flex items-center space-x-3">
                 <div className="bg-white/20 backdrop-blur-sm rounded-lg p-2">
-                  <svg className="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
+                  <img
+                    src={logoImage}
+                    alt="Logo Cooperativa"
+                    className="h-8 w-8 object-contain"
+                  />
                 </div>
                 <div className="text-white">
                   <h1 className="text-lg font-bold leading-tight">Cooperativa Eléctrica</h1>

@@ -87,6 +87,9 @@ export default function ReclamosListado() {
     return reclamo.estado === estadoFiltro;
   }) || [];
 
+  // Debug: log para confirmar montaje y valores
+  console.log('ReclamosListado render - reclamos count:', reclamos?.length, 'filtrados:', reclamosFiltrados.length);
+
   if (cargando) {
     return (
       <CooperativaLayout titulo="Mis Reclamos">
