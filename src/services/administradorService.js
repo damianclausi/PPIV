@@ -128,9 +128,21 @@ class AdministradorService {
   /**
    * Obtener métricas avanzadas del sistema
    */
-  async obtenerMetricasAvanzadas() {
-    return apiClient.get('/api/administradores/metricas-avanzadas');
+  async obtenerMetricasAvanzadas(periodo = 'mes_actual') {
+    return apiClient.get(`/api/administradores/metricas-avanzadas?periodo=${periodo}`);
+  }
+
+  /**
+   * Obtener estado de operarios con OTs asignadas
+   */
+  async obtenerEstadoOperarios() {
+    return apiClient.get('/api/administradores/operarios-estado');
   }
 }
 
-export default new AdministradorService();
+const administradorServiceInstance = new AdministradorService();
+
+export default administradorServiceInstance;
+
+// Exportar funciones individuales para usar con destructuring
+export const obtenerEstadoOperarios = () => administradorServiceInstance.obtenerEstadoOperarios();
