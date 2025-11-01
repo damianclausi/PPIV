@@ -6,6 +6,7 @@ import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { Textarea } from '../ui/textarea';
 import { Alert, AlertDescription } from '../ui/alert';
+import MapaOpenStreet from '../ui/MapaOpenStreet';
 import {
   ArrowLeft,
   MapPin,
@@ -112,16 +113,22 @@ const OTTecnicaDetalle = ({ ot, onVolver }) => {
           <CardTitle>Detalles del Trabajo</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {/* Dirección */}
+          {/* Dirección con Mapa */}
           {ot.direccion_intervencion && (
             <div>
-              <div className="flex items-start gap-2 mb-1">
-                <MapPin className="h-4 w-4 text-muted-foreground mt-0.5" />
+              <div className="flex items-start gap-2 mb-3">
+                <MapPin className="h-4 w-4 text-cooperativa-blue mt-0.5" />
                 <span className="font-medium text-sm">Dirección de Intervención</span>
               </div>
-              <p className="text-sm text-muted-foreground ml-6">
-                {ot.direccion_intervencion}
-              </p>
+              <div className="ml-6 space-y-3">
+                <p className="text-sm font-semibold text-cooperativa-dark">
+                  {ot.direccion_intervencion}
+                </p>
+                <MapaOpenStreet 
+                  direccion={ot.direccion_intervencion} 
+                  altura="350px"
+                />
+              </div>
             </div>
           )}
 
