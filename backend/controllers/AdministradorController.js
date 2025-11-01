@@ -336,4 +336,12 @@ export default class AdministradorController {
     const MetricasController = (await import('./MetricasController.js')).default;
     return MetricasController.obtenerMetricasAvanzadas(req, res);
   }
+
+  /**
+   * Obtener estado de operarios con sus OTs asignadas
+   */
+  static async obtenerEstadoOperarios(req, res) {
+    const MetricasController = (await import('./MetricasController.js')).default;
+    return MetricasController.obtenerEstadoOperarios(req, res);
+  }
 }

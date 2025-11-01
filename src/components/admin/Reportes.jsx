@@ -27,13 +27,36 @@ import {
 export default function Reportes() {
   const navigate = useNavigate();
   const { dashboard, cargando } = useDashboard();
-  const { metricas: metricasAvanzadas, cargando: cargandoMetricas } = useMetricasAvanzadas();
-  const [periodoSeleccionado, setPeriodoSeleccionado] = useState('30dias');
+  const [periodoSeleccionado, setPeriodoSeleccionado] = useState('mes_actual');
+  const { metricas: metricasAvanzadas, cargando: cargandoMetricas } = useMetricasAvanzadas(periodoSeleccionado);
 
   // Calcular métricas y porcentajes
   const calcularCambio = (actual, anterior) => {
     if (!anterior || anterior === 0) return 0;
     return ((actual - anterior) / anterior * 100).toFixed(1);
+  };
+
+  // Obtener texto descriptivo del período
+  const obtenerTextoPeriodo = () => {
+    switch(periodoSeleccionado) {
+      case 'mes_actual': return 'mes actual';
+      case '7dias': return 'últimos 7 días';
+      case '30dias': return 'últimos 30 días';
+      case '90dias': return 'últimos 90 días';
+      case 'año': return 'este año';
+      default: return periodoSeleccionado;
+    }
+  };
+
+  const obtenerTextoPeriodoAnterior = () => {
+    switch(periodoSeleccionado) {
+      case 'mes_actual': return 'mes anterior';
+      case '7dias': return '7 días anteriores';
+      case '30dias': return '30 días anteriores';
+      case '90dias': return '90 días anteriores';
+      case 'año': return 'año anterior';
+      default: return 'período anterior';
+    }
   };
 
   if (cargando || cargandoMetricas) {
@@ -56,6 +79,7 @@ export default function Reportes() {
   const tiempoResolucion = metricasAvanzadas?.tiempo_resolucion || {};
   const eficiencia = metricasAvanzadas?.eficiencia_operativa || {};
   const satisfaccion = metricasAvanzadas?.satisfaccion_socio || {};
+  const operariosActivos = metricasAvanzadas?.operarios_activos || {};
 
   // Datos de ejemplo para las métricas (integrar con API real)
   const metricas = {
@@ -83,7 +107,9 @@ export default function Reportes() {
       total: dashboard?.empleados?.total || 0,
       operarios: dashboard?.empleados?.operarios || 0,
       supervisores: dashboard?.empleados?.supervisores || 0,
-      activos: dashboard?.empleados?.activos || 0
+      inactivos: operariosActivos?.inactivos || 0, // Operarios sin OTs asignadas
+      conOrdenes: operariosActivos?.con_ordenes || 0,
+      totalOtsActivas: operariosActivos?.total_ots_activas || 0
     }
   };
 
@@ -94,7 +120,12 @@ export default function Reportes() {
         <div className="flex items-start justify-between">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Panel de Métricas</h1>
-            <p className="text-gray-600 mt-1">Estadísticas y reportes del sistema</p>
+            <p className="text-gray-600 mt-1">
+              Estadísticas y reportes del sistema - 
+              <span className="font-semibold text-blue-600 ml-1">
+                {obtenerTextoPeriodo()}
+              </span>
+            </p>
           </div>
           <div className="flex gap-2">
             <Button variant="outline" size="sm">
@@ -108,7 +139,15 @@ export default function Reportes() {
         </div>
 
         {/* Selector de Período */}
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
+          <span className="text-sm font-medium text-gray-700 mr-2">Período:</span>
+          <Button 
+            variant={periodoSeleccionado === 'mes_actual' ? 'default' : 'outline'} 
+            size="sm"
+            onClick={() => setPeriodoSeleccionado('mes_actual')}
+          >
+            Mes actual
+          </Button>
           <Button 
             variant={periodoSeleccionado === '7dias' ? 'default' : 'outline'} 
             size="sm"
@@ -224,11 +263,14 @@ export default function Reportes() {
           </Card>
 
           {/* Empleados */}
-          <Card className="relative overflow-hidden border-l-4 border-l-purple-500">
+          <Card 
+            className="relative overflow-hidden border-l-4 border-l-purple-500 cursor-pointer transition-all hover:shadow-lg hover:scale-[1.02]"
+            onClick={() => navigate('/dashboard/admin/operarios-estado')}
+          >
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-sm font-medium text-gray-500">
-                  Personal Activo
+                  Operarios Inactivos
                 </CardTitle>
                 <div className="p-2 bg-purple-50 rounded-lg">
                   <Activity className="h-5 w-5 text-purple-600" />
@@ -236,18 +278,17 @@ export default function Reportes() {
               </div>
             </CardHeader>
             <CardContent className="pt-0">
-              <div className="text-3xl font-bold text-gray-900 mb-2">{metricas.empleados.activos}</div>
+              <div className="text-3xl font-bold text-gray-900 mb-2">{metricas.empleados.inactivos}</div>
               <div className="flex items-center gap-1 text-sm">
                 <Clock className="h-4 w-4 text-gray-600" />
-                <span className="text-gray-600 font-medium">{metricas.empleados.total}</span>
-                <span className="text-gray-500">total empleados</span>
+                <span className="text-gray-600 font-medium">sin órdenes asignadas</span>
               </div>
               <div className="mt-3 flex gap-4 text-xs text-gray-600">
                 <div>
-                  <span className="font-semibold text-purple-600">{metricas.empleados.operarios}</span> operarios
+                  <span className="font-semibold text-purple-600">{metricas.empleados.conOrdenes}</span> con OTs
                 </div>
                 <div>
-                  <span className="font-semibold text-purple-600">{metricas.empleados.supervisores}</span> supervisores
+                  <span className="font-semibold text-gray-500">{metricas.empleados.totalOtsActivas}</span> OTs activas
                 </div>
               </div>
             </CardContent>
@@ -405,10 +446,11 @@ export default function Reportes() {
         {/* Indicadores Adicionales - 3 columnas */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Promedio de Resolución */}
-          <Card className="border-t-4 border-t-blue-500">
+          <Card className={`border-t-4 border-t-blue-500 transition-opacity duration-200 ${cargandoMetricas ? 'opacity-50' : 'opacity-100'}`}>
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-500">
+              <CardTitle className="text-sm font-medium text-gray-500 flex items-center justify-between">
                 Tiempo Promedio de Resolución
+                {cargandoMetricas && <Clock className="h-4 w-4 animate-spin text-blue-500" />}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -422,7 +464,7 @@ export default function Reportes() {
                     <span className="text-green-600 font-medium">
                       {Math.abs(tiempoResolucion.cambio_porcentual || 0)}%
                     </span>
-                    <span className="text-gray-500">mejor que mes anterior</span>
+                    <span className="text-gray-500">mejor que {obtenerTextoPeriodoAnterior()}</span>
                   </>
                 ) : (
                   <>
@@ -430,18 +472,22 @@ export default function Reportes() {
                     <span className="text-red-600 font-medium">
                       +{Math.abs(tiempoResolucion.cambio_porcentual || 0)}%
                     </span>
-                    <span className="text-gray-500">vs mes anterior</span>
+                    <span className="text-gray-500">vs {obtenerTextoPeriodoAnterior()}</span>
                   </>
                 )}
+              </div>
+              <div className="mt-2 text-xs text-gray-500">
+                {tiempoResolucion.total_resueltos || 0} reclamos resueltos
               </div>
             </CardContent>
           </Card>
 
           {/* Satisfacción */}
-          <Card className="border-t-4 border-t-yellow-500">
+          <Card className={`border-t-4 border-t-yellow-500 transition-opacity duration-200 ${cargandoMetricas ? 'opacity-50' : 'opacity-100'}`}>
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-500">
+              <CardTitle className="text-sm font-medium text-gray-500 flex items-center justify-between">
                 Satisfacción del Socio
+                {cargandoMetricas && <Clock className="h-4 w-4 animate-spin text-yellow-500" />}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -464,16 +510,20 @@ export default function Reportes() {
                     </span>
                   </>
                 )}
-                <span className="text-gray-500">vs trimestre anterior</span>
+                <span className="text-gray-500">vs {obtenerTextoPeriodoAnterior()}</span>
+              </div>
+              <div className="mt-2 text-xs text-gray-500">
+                {satisfaccion.total_valoraciones || 0} valoraciones
               </div>
             </CardContent>
           </Card>
 
           {/* Eficiencia Operativa */}
-          <Card className="border-t-4 border-t-purple-500">
+          <Card className={`border-t-4 border-t-purple-500 transition-opacity duration-200 ${cargandoMetricas ? 'opacity-50' : 'opacity-100'}`}>
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-500">
+              <CardTitle className="text-sm font-medium text-gray-500 flex items-center justify-between">
                 Eficiencia Operativa
+                {cargandoMetricas && <Clock className="h-4 w-4 animate-spin text-purple-500" />}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -496,7 +546,10 @@ export default function Reportes() {
                     </span>
                   </>
                 )}
-                <span className="text-gray-500">este mes</span>
+                <span className="text-gray-500">vs {obtenerTextoPeriodoAnterior()}</span>
+              </div>
+              <div className="mt-2 text-xs text-gray-500">
+                {eficiencia.reclamos_resueltos || 0} de {eficiencia.total_reclamos || 0} reclamos
               </div>
             </CardContent>
           </Card>

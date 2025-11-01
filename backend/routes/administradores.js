@@ -23,6 +23,9 @@ router.get('/dashboard', AdministradorController.obtenerDashboard);
 // Métricas avanzadas para reportes
 router.get('/metricas-avanzadas', AdministradorController.obtenerMetricasAvanzadas);
 
+// Estado de operarios con OTs
+router.get('/operarios-estado', AdministradorController.obtenerEstadoOperarios);
+
 // Gestión de socios
 router.get('/socios', AdministradorController.listarSocios);
 router.post('/socios', AdministradorController.crearSocio);
