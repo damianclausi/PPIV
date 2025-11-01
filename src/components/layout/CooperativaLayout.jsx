@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { Button } from '../ui/button';
 import logoImage from '../../assets/brand/logo.jpeg';
+import fondoImage from '../../assets/dashboard/fondo.jpg';
 import { 
   Home, 
   FileText, 
@@ -183,18 +184,35 @@ export default function CooperativaLayout({ children, titulo }) {
           </>
         )}
 
-        {/* Contenido principal */}
-        <main className="flex-1 p-6 lg:p-8">
-          <div className="max-w-7xl mx-auto">
-            {titulo && (
-              <div className="mb-6">
-                <h2 className="text-3xl font-bold text-gray-900 bg-gradient-to-r from-cooperativa-dark to-cooperativa-cyan bg-clip-text text-transparent">
-                  {titulo}
-                </h2>
-                <div className="mt-2 h-1 w-24 bg-gradient-to-r from-cooperativa-dark via-cooperativa-blue to-cooperativa-teal rounded-full"></div>
-              </div>
-            )}
-            {children}
+        {/* Contenido principal con fondo */}
+        <main className="flex-1 relative">
+          {/* Fondo con overlay */}
+          <div 
+            className="absolute inset-0 z-0"
+            style={{
+              backgroundImage: `url(${fondoImage})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
+              backgroundAttachment: 'fixed'
+            }}
+          >
+            <div className="absolute inset-0 bg-white/75"></div>
+          </div>
+
+          {/* Contenido sobre el fondo */}
+          <div className="relative z-10 p-6 lg:p-8">
+            <div className="max-w-7xl mx-auto">
+              {titulo && (
+                <div className="mb-6">
+                  <h2 className="text-3xl font-bold text-gray-900 bg-gradient-to-r from-cooperativa-dark to-cooperativa-cyan bg-clip-text text-transparent">
+                    {titulo}
+                  </h2>
+                  <div className="mt-2 h-1 w-24 bg-gradient-to-r from-cooperativa-dark via-cooperativa-blue to-cooperativa-teal rounded-full"></div>
+                </div>
+              )}
+              {children}
+            </div>
           </div>
         </main>
       </div>

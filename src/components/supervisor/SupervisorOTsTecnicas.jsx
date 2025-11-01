@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import CooperativaLayout from '../layout/CooperativaLayout';
 import { useOTsTecnicas } from '../../hooks/useOTsTecnicas';
 import { useCuadrillas } from '../../hooks/useCuadrillas';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
@@ -163,7 +164,8 @@ const SupervisorOTsTecnicas = () => {
   };
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <CooperativaLayout titulo="Historial de Reclamos">
+      <div className="min-h-screen p-6 space-y-6">
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
@@ -432,7 +434,8 @@ const SupervisorOTsTecnicas = () => {
           })}
         </div>
       )}
-    </div>
+      </div>
+    </CooperativaLayout>
   );
 };
 

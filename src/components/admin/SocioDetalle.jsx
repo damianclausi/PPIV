@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Skeleton } from '../ui/skeleton';
 import { formatearFecha } from '../../utils/formatters.js';
+import CooperativaLayout from '../layout/CooperativaLayout';
 
 export default function SocioDetalle() {
   const navigate = useNavigate();
@@ -55,31 +56,36 @@ export default function SocioDetalle() {
 
   if (cargando) {
     return (
-      <div className="min-h-screen bg-gray-50 p-8">
-        <div className="max-w-4xl mx-auto space-y-6">
-          <Skeleton className="h-12 w-64" />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Skeleton className="h-64" />
-            <Skeleton className="h-64" />
+      <CooperativaLayout titulo="Detalle de Socio">
+        <div className="min-h-screen p-8">
+          <div className="max-w-4xl mx-auto space-y-6">
+            <Skeleton className="h-12 w-64" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Skeleton className="h-64" />
+              <Skeleton className="h-64" />
+            </div>
           </div>
         </div>
-      </div>
+      </CooperativaLayout>
     );
   }
 
   if (!socio) {
     return (
-      <div className="min-h-screen bg-gray-50 p-8">
-        <div className="max-w-4xl mx-auto">
-          <p className="text-center text-gray-600">Socio no encontrado</p>
+      <CooperativaLayout titulo="Detalle de Socio">
+        <div className="min-h-screen p-8">
+          <div className="max-w-4xl mx-auto">
+            <p className="text-center text-gray-600">Socio no encontrado</p>
+          </div>
         </div>
-      </div>
+      </CooperativaLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-4xl mx-auto space-y-6">
+    <CooperativaLayout titulo="Detalle de Socio">
+      <div className="min-h-screen p-8">
+        <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-start justify-between">
           <div>
@@ -254,7 +260,8 @@ export default function SocioDetalle() {
         </Card>
 
 
+        </div>
       </div>
-    </div>
+    </CooperativaLayout>
   );
 }

@@ -6,6 +6,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDashboard, useMetricasAvanzadas } from '../../hooks/useAdministrador.js';
+import CooperativaLayout from '../layout/CooperativaLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Skeleton } from '../ui/skeleton';
@@ -38,17 +39,19 @@ export default function Reportes() {
 
   if (cargando || cargandoMetricas) {
     return (
-      <div className="min-h-screen bg-gray-50 p-8">
-        <div className="max-w-7xl mx-auto space-y-6">
-          <Skeleton className="h-12 w-64" />
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <Skeleton className="h-40" />
-            <Skeleton className="h-40" />
-            <Skeleton className="h-40" />
-            <Skeleton className="h-40" />
+      <CooperativaLayout titulo="Panel de Métricas">
+        <div className="min-h-screen p-8">
+          <div className="max-w-7xl mx-auto space-y-6">
+            <Skeleton className="h-12 w-64" />
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              <Skeleton className="h-40" />
+              <Skeleton className="h-40" />
+              <Skeleton className="h-40" />
+              <Skeleton className="h-40" />
+            </div>
           </div>
         </div>
-      </div>
+      </CooperativaLayout>
     );
   }
 
@@ -88,8 +91,9 @@ export default function Reportes() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-7xl mx-auto space-y-8">
+    <CooperativaLayout titulo="Panel de Métricas">
+      <div className="min-h-screen p-8">
+        <div className="max-w-7xl mx-auto space-y-8">
         {/* Header */}
         <div className="flex items-start justify-between">
           <div>
@@ -503,5 +507,6 @@ export default function Reportes() {
         </div>
       </div>
     </div>
+    </CooperativaLayout>
   );
 }

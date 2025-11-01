@@ -8,6 +8,7 @@ import { ArrowLeft, Save, X } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Skeleton } from '../ui/skeleton';
+import CooperativaLayout from '../layout/CooperativaLayout';
 
 export default function SocioEditar() {
   const navigate = useNavigate();
@@ -89,18 +90,21 @@ export default function SocioEditar() {
 
   if (cargando) {
     return (
-      <div className="min-h-screen bg-gray-50 p-8">
-        <div className="max-w-2xl mx-auto space-y-6">
-          <Skeleton className="h-12 w-64" />
-          <Skeleton className="h-96" />
+      <CooperativaLayout titulo="Editar Socio">
+        <div className="min-h-screen p-8">
+          <div className="max-w-2xl mx-auto space-y-6">
+            <Skeleton className="h-12 w-64" />
+            <Skeleton className="h-96" />
+          </div>
         </div>
-      </div>
+      </CooperativaLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-2xl mx-auto space-y-6">
+    <CooperativaLayout titulo="Editar Socio">
+      <div className="min-h-screen p-8">
+        <div className="max-w-2xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-start justify-between">
           <div>
@@ -247,7 +251,8 @@ export default function SocioEditar() {
             </CardContent>
           </Card>
         </form>
+        </div>
       </div>
-    </div>
+    </CooperativaLayout>
   );
 }

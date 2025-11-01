@@ -7,6 +7,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, UserCog, AlertCircle, Check, MapPin, Calendar } from 'lucide-react';
 import { formatearFecha } from '../../utils/formatters.js';
 import { Button } from '../ui/button';
+import CooperativaLayout from '../layout/CooperativaLayout';
 
 export default function AsignarReclamo() {
   const navigate = useNavigate();
@@ -84,7 +85,8 @@ export default function AsignarReclamo() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <CooperativaLayout titulo="Asignar Reclamo">
+      <div className="min-h-screen">
       {/* Header */}
       <header className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -246,6 +248,7 @@ export default function AsignarReclamo() {
           </div>
         </div>
       </main>
-    </div>
+      </div>
+    </CooperativaLayout>
   );
 }
