@@ -7,6 +7,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { usePerfil, useDashboard, useReclamos } from '../hooks/useOperario.js';
 import { useAuth } from '../contexts/AuthContext.jsx';
+import CooperativaLayout from './layout/CooperativaLayout';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
@@ -281,39 +282,40 @@ export default function DashboardOperario() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-7xl mx-auto space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Reclamos Asignados</h1>
-            {perfil && (
-              <p className="text-sm text-gray-600 mt-1">
-                {perfil.nombre} {perfil.apellido} - {perfil.rol_interno || perfil.cargo || 'Operario'}
-              </p>
-            )}
+    <CooperativaLayout titulo="Reclamos Asignados">
+      <div className="space-y-6">
+        {/* Info del operario */}
+        {perfil && (
+          <div className="bg-white rounded-lg shadow-md p-4 border-l-4 border-l-cooperativa-blue">
+            <p className="text-sm text-gray-600">
+              <span className="font-semibold text-cooperativa-dark">Operario:</span> {perfil.nombre} {perfil.apellido}
+            </p>
+            <p className="text-xs text-gray-500 mt-1">
+              {perfil.rol_interno || perfil.cargo || 'Operario'}
+            </p>
           </div>
-          <div className="flex gap-3">
-            <Button 
-              variant={vistaKanban ? "default" : "outline"}
-              size="sm"
-              onClick={() => setVistaKanban(true)}
-            >
-              <LayoutGrid className="h-4 w-4 mr-2" />
-              Kanban
-            </Button>
-            <Button 
-              variant={!vistaKanban ? "default" : "outline"}
-              size="sm"
-              onClick={() => setVistaKanban(false)}
-            >
-              <List className="h-4 w-4 mr-2" />
-              Lista
-            </Button>
-            <Button variant="outline" size="sm" onClick={logout}>
-              Cerrar Sesión
-            </Button>
-          </div>
+        )}
+
+        {/* Controles de vista */}
+        <div className="flex justify-end gap-3">
+          <Button 
+            variant={vistaKanban ? "default" : "outline"}
+            size="sm"
+            onClick={() => setVistaKanban(true)}
+            className={vistaKanban ? "bg-cooperativa-blue hover:bg-cooperativa-light" : ""}
+          >
+            <LayoutGrid className="h-4 w-4 mr-2" />
+            Kanban
+          </Button>
+          <Button 
+            variant={!vistaKanban ? "default" : "outline"}
+            size="sm"
+            onClick={() => setVistaKanban(false)}
+            className={!vistaKanban ? "bg-cooperativa-blue hover:bg-cooperativa-light" : ""}
+          >
+            <List className="h-4 w-4 mr-2" />
+            Lista
+          </Button>
         </div>
 
         {/* Estadísticas */}
@@ -521,6 +523,6 @@ export default function DashboardOperario() {
           </Card>
         )}
       </div>
-    </div>
+    </CooperativaLayout>
   );
 }

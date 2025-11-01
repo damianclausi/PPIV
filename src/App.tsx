@@ -1,5 +1,8 @@
+import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import SplashScreen from './components/ui/SplashScreen';
+import ErrorBoundary from './components/ErrorBoundary';
 import Login from './components/Login';
 import DashboardCliente from './components/DashboardCliente';
 import DashboardOperario from './components/DashboardOperario';
@@ -134,7 +137,9 @@ function AppRoutes() {
         path="/dashboard/reclamos"
         element={
           <RutaProtegida>
-            <ReclamosListado />
+            <ErrorBoundary>
+              <ReclamosListado />
+            </ErrorBoundary>
           </RutaProtegida>
         }
       />
@@ -303,10 +308,20 @@ function AppRoutes() {
 
 // Componente principal de la aplicación
 function App() {
+  const [showSplash, setShowSplash] = useState(true);
+
+  const handleSplashComplete = () => {
+    setShowSplash(false);
+  };
+
   return (
     <Router>
       <AuthProvider>
-        <AppRoutes />
+        {showSplash ? (
+          <SplashScreen onComplete={handleSplashComplete} />
+        ) : (
+          <AppRoutes />
+        )}
       </AuthProvider>
     </Router>
   );

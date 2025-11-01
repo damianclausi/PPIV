@@ -9,6 +9,7 @@ import { ArrowLeft, Search, UserPlus, Edit, Eye, Trash2, Users, ChevronUp, Chevr
 import { formatearFecha } from '../../utils/formatters.js';
 import administradorService from '../../services/administradorService.js';
 import { Button } from '../ui/button';
+import CooperativaLayout from '../layout/CooperativaLayout';
 
 export default function GestionSocios() {
   const navigate = useNavigate();
@@ -77,7 +78,8 @@ export default function GestionSocios() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <CooperativaLayout titulo="Gestión de Socios">
+      <div className="min-h-screen">
       {/* Header */}
       <header className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -327,6 +329,7 @@ export default function GestionSocios() {
           )}
         </div>
       </main>
-    </div>
+      </div>
+    </CooperativaLayout>
   );
 }

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import CooperativaLayout from '../layout/CooperativaLayout';
 import { Calendar, MapPin, Clock, CheckCircle, AlertCircle } from 'lucide-react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
@@ -57,7 +58,8 @@ export default function ItinerarioOperario() {
   const misOTs = itinerario;
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <CooperativaLayout titulo="Mi Itinerario">
+      <div className="container mx-auto p-6 space-y-6">
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
@@ -262,6 +264,7 @@ export default function ItinerarioOperario() {
         </div>
         </>
       )}
-    </div>
+      </div>
+    </CooperativaLayout>
   );
 }

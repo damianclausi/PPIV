@@ -4,6 +4,7 @@ import { Calendar, Users, Wrench, Plus, Trash2, RefreshCw } from 'lucide-react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { useItinerario } from '../../hooks/useItinerario';
+import CooperativaLayout from '../layout/CooperativaLayout';
 import { useCuadrillas } from '../../hooks/useCuadrillas';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
@@ -156,7 +157,8 @@ export default function ItinerarioCuadrillas() {
   };
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <CooperativaLayout titulo="Itinerario de Cuadrillas">
+      <div className="min-h-screen p-6 space-y-6">
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
@@ -454,6 +456,7 @@ export default function ItinerarioCuadrillas() {
           </CardContent>
         </Card>
       </div>
-    </div>
+      </div>
+    </CooperativaLayout>
   );
 }
