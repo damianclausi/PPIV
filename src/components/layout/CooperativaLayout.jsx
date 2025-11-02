@@ -94,7 +94,9 @@ export default function CooperativaLayout({ children, titulo }) {
             <div className="flex items-center space-x-4">
               <div className="hidden sm:block text-right">
                 <p className="text-white text-sm font-medium">
-                  {usuario?.nombre || 'Usuario'}
+                  {usuario?.nombre && usuario?.apellido 
+                    ? `${usuario.nombre} ${usuario.apellido}` 
+                    : usuario?.email || 'Usuario'}
                 </p>
                 <p className="text-white/80 text-xs">
                   {esAdmin ? 'Administrador' : esOperario ? 'Operario' : 'Cliente'}

@@ -52,16 +52,31 @@ class AuthController {
         roles: nombresRoles
       });
 
+      // Preparar datos del usuario
+      const datosUsuario = {
+        usuario_id: usuario.usuario_id,
+        email: usuario.email,
+        socio_id: usuario.socio_id,
+        empleado_id: usuario.empleado_id,
+        roles: nombresRoles
+      };
+
+      // Si es socio, agregar nombre y apellido del socio
+      if (usuario.socio_id && usuario.socio_nombre) {
+        datosUsuario.nombre = usuario.socio_nombre;
+        datosUsuario.apellido = usuario.socio_apellido;
+      }
+
+      // Si es empleado, agregar nombre y apellido del empleado
+      if (usuario.empleado_id && usuario.empleado_nombre) {
+        datosUsuario.nombre = usuario.empleado_nombre;
+        datosUsuario.apellido = usuario.empleado_apellido;
+      }
+
       // Preparar respuesta
       const respuesta = {
         token,
-        usuario: {
-          usuario_id: usuario.usuario_id,
-          email: usuario.email,
-          socio_id: usuario.socio_id,
-          empleado_id: usuario.empleado_id,
-          roles: nombresRoles
-        }
+        usuario: datosUsuario
       };
 
       return respuestaExitosa(res, respuesta, 'Login exitoso');
@@ -127,11 +142,43 @@ class AuthController {
 
   /**
    * POST /api/auth/verificar
-   * Verificar si el token es válido
+   * Verificar si el token es válido y obtener datos completos del usuario
    */
   static async verificarToken(req, res) {
-    // Si llegamos aquí, el token es válido (pasó por el middleware)
-    return respuestaExitosa(res, { valido: true, usuario: req.usuario }, 'Token válido');
+    try {
+      // Si llegamos aquí, el token es válido (pasó por el middleware)
+      const usuario = await Usuario.buscarPorId(req.usuario.usuario_id);
+      
+      if (!usuario) {
+        return respuestaError(res, 'Usuario no encontrado', 404);
+      }
+
+      // Preparar datos del usuario
+      const datosUsuario = {
+        usuario_id: usuario.usuario_id,
+        email: usuario.email,
+        socio_id: usuario.socio_id,
+        empleado_id: usuario.empleado_id,
+        roles: req.usuario.roles
+      };
+
+      // Si es socio, agregar nombre y apellido del socio
+      if (usuario.socio_id && usuario.socio_nombre) {
+        datosUsuario.nombre = usuario.socio_nombre;
+        datosUsuario.apellido = usuario.socio_apellido;
+      }
+
+      // Si es empleado, agregar nombre y apellido del empleado
+      if (usuario.empleado_id && usuario.empleado_nombre) {
+        datosUsuario.nombre = usuario.empleado_nombre;
+        datosUsuario.apellido = usuario.empleado_apellido;
+      }
+
+      return respuestaExitosa(res, { valido: true, usuario: datosUsuario }, 'Token válido');
+    } catch (error) {
+      console.error('Error al verificar token:', error);
+      return respuestaError(res, 'Error al verificar token', 500, error.message);
+    }
   }
 }
 

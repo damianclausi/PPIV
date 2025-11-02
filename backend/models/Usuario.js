@@ -2,13 +2,29 @@ import pool from '../db.js';
 
 class Usuario {
   /**
-   * Buscar usuario por email
+   * Buscar usuario por email con información completa
    */
   static async buscarPorEmail(email) {
-    const resultado = await pool.query(
-      'SELECT * FROM usuario WHERE email = $1',
-      [email]
-    );
+    const resultado = await pool.query(`
+      SELECT 
+        u.usuario_id,
+        u.email,
+        u.hash_pass,
+        u.socio_id,
+        u.empleado_id,
+        u.activo,
+        u.ultimo_login,
+        s.nombre as socio_nombre,
+        s.apellido as socio_apellido,
+        s.dni as socio_dni,
+        e.nombre as empleado_nombre,
+        e.apellido as empleado_apellido,
+        e.legajo as empleado_legajo
+      FROM usuario u
+      LEFT JOIN socio s ON u.socio_id = s.socio_id
+      LEFT JOIN empleado e ON u.empleado_id = e.empleado_id
+      WHERE u.email = $1
+    `, [email]);
     return resultado.rows[0];
   }
 
