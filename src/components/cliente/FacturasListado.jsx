@@ -91,16 +91,6 @@ export default function FacturasListado() {
       vencimientoFormateado: '15/10/2024',
       monto: 7890.00,
       estado: 'pagada'
-    },
-    {
-      id: 4,
-      numero: 'F001-0231',
-      periodo: '2024-08-01',
-      periodoFormateado: 'Ago 2024',
-      vencimiento: '2024-09-15',
-      vencimientoFormateado: '15/09/2024',
-      monto: 12340.00,
-      estado: 'vencida'
     }
   ];
 
@@ -123,9 +113,18 @@ export default function FacturasListado() {
   const facturasFiltradas = facturasParaMostrar.filter(factura => {
     if (!factura) return false;
     
-    // Filtro por estado
-    if (filtros.estado !== 'todas' && factura.estado !== filtros.estado) {
+    // Excluir facturas vencidas (solo mostrar PAGADA y PENDIENTE)
+    const estadoNormalizado = (factura.estado || '').toUpperCase();
+    if (estadoNormalizado === 'VENCIDA') {
       return false;
+    }
+    
+    // Filtro por estado
+    if (filtros.estado !== 'todas') {
+      const estadoFiltro = filtros.estado.toUpperCase();
+      if (estadoNormalizado !== estadoFiltro) {
+        return false;
+      }
     }
     
     // Filtro por período (busca en ambos formatos)
@@ -162,8 +161,7 @@ export default function FacturasListado() {
     const estadoNormalizado = estado?.toLowerCase();
     const badges = {
       pagada: <Badge className="bg-green-100 text-green-800 hover:bg-green-100">Pagada</Badge>,
-      pendiente: <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">Pendiente</Badge>,
-      vencida: <Badge className="bg-red-100 text-red-800 hover:bg-red-100">Vencida</Badge>
+      pendiente: <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">Pendiente</Badge>
     };
     return badges[estadoNormalizado] || badges.pendiente;
   };
@@ -217,7 +215,6 @@ export default function FacturasListado() {
                     <SelectItem value="todas">Todas</SelectItem>
                     <SelectItem value="pagada">Pagadas</SelectItem>
                     <SelectItem value="pendiente">Pendientes</SelectItem>
-                    <SelectItem value="vencida">Vencidas</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
