@@ -50,9 +50,9 @@ export default function CooperativaLayout({ children, titulo }) {
     { nombre: 'Inicio', icono: Home, ruta: '/dashboard/administrador' },
     { nombre: 'Socios', icono: Users, ruta: '/dashboard/admin/socios' },
     { nombre: 'Empleados', icono: UserPlus, ruta: '/dashboard/admin/empleados' },
-    { nombre: 'OTs Comerciales', icono: ClipboardList, ruta: '/dashboard/admin/reclamos-comerciales' },
+    { nombre: 'Comercial', icono: ClipboardList, ruta: '/dashboard/admin/reclamos-comerciales' },
+    { nombre: 'Técnico', icono: Calendar, ruta: '/dashboard/admin/itinerario' },
     { nombre: 'Historial Reclamos', icono: Briefcase, ruta: '/dashboard/admin/historial-reclamos' },
-    { nombre: 'Itinerario', icono: Calendar, ruta: '/dashboard/admin/itinerario' },
     { nombre: 'Reportes', icono: BarChart3, ruta: '/dashboard/admin/reportes' },
   ];
 

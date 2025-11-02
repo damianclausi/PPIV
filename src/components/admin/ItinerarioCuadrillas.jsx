@@ -279,11 +279,12 @@ export default function ItinerarioCuadrillas() {
                 {otsPendientes.map((ot) => (
                   <div
                     key={ot.id || ot.ot_id}
-                    className="flex items-center justify-between p-3 border rounded transition-colors hover:bg-gray-50"
+                    className="flex items-center justify-between p-3 border rounded transition-colors hover:bg-blue-50 hover:border-blue-300 cursor-pointer group"
+                    onClick={() => navigate(`/dashboard/operario/ots-tecnicas/${ot.id || ot.ot_id}`)}
                   >
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1 flex-wrap">
-                        <span className="font-bold text-blue-600">#{ot.id || ot.ot_id}</span>
+                        <span className="font-bold text-blue-600 group-hover:text-blue-700">#{ot.id || ot.ot_id}</span>
                         <Badge className={
                           (ot.prioridad || '').toUpperCase() === 'ALTA' ? 'bg-red-100 text-red-800 text-xs' :
                           (ot.prioridad || '').toUpperCase() === 'MEDIA' ? 'bg-yellow-100 text-yellow-800 text-xs' :
@@ -300,7 +301,10 @@ export default function ItinerarioCuadrillas() {
                       </p>
                     </div>
                     <Button
-                      onClick={() => handleAsignarOT(ot.id || ot.ot_id)}
+                      onClick={(e) => {
+                        e.stopPropagation(); // Evitar que se dispare el click del div padre
+                        handleAsignarOT(ot.id || ot.ot_id);
+                      }}
                       disabled={!cuadrillaSeleccionada || loading}
                       size="sm"
                       className="ml-3 shrink-0"

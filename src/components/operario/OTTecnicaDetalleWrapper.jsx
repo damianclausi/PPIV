@@ -35,7 +35,13 @@ const OTTecnicaDetalleWrapper = () => {
   };
 
   const handleVolver = () => {
-    navigate('/dashboard/operario');
+    // Intentar volver a la página anterior
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      // Si no hay historial, ir al dashboard del operario
+      navigate('/dashboard/operario');
+    }
   };
 
   if (loading) {
