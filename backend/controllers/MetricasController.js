@@ -180,7 +180,38 @@ export default class MetricasController {
         total: parseInt(estadosReclamosQuery.rows[0]?.total) || 0
       };
 
-      // 5. OPERARIOS ACTIVOS E INACTIVOS (con/sin órdenes de trabajo)
+      // 5. ANÁLISIS DE FACTURACIÓN (por período)
+      // Filtrar facturas pagadas por updated_at (fecha de pago) y pendientes por vencimiento o creación
+      const facturacionQuery = await pool.query(`
+        SELECT 
+          COUNT(*) FILTER (WHERE estado IN ('PAGADA', 'PENDIENTE'))::int as total_facturas,
+          COUNT(*) FILTER (WHERE estado = 'PENDIENTE')::int as facturas_pendientes,
+          COUNT(*) FILTER (WHERE estado = 'PAGADA')::int as facturas_pagadas,
+          COALESCE(SUM(importe) FILTER (WHERE estado = 'PAGADA' AND updated_at >= ${intervaloActual}), 0)::numeric as recaudado,
+          COALESCE(SUM(importe) FILTER (WHERE estado = 'PENDIENTE'), 0)::numeric as pendiente_cobro
+        FROM factura
+      `);
+
+      const totalFacturas = parseInt(facturacionQuery.rows[0]?.total_facturas) || 0;
+      const facturasPendientes = parseInt(facturacionQuery.rows[0]?.facturas_pendientes) || 0;
+      const facturasPagadas = parseInt(facturacionQuery.rows[0]?.facturas_pagadas) || 0;
+      const recaudado = parseFloat(facturacionQuery.rows[0]?.recaudado) || 0;
+      const pendienteCobro = parseFloat(facturacionQuery.rows[0]?.pendiente_cobro) || 0;
+      
+      const tasaCobro = totalFacturas > 0 
+        ? Math.round((facturasPagadas / totalFacturas) * 100)
+        : 0;
+
+      const facturacion = {
+        total_facturas: totalFacturas,
+        facturas_pendientes: facturasPendientes,
+        facturas_pagadas: facturasPagadas,
+        recaudado: recaudado,
+        pendiente_cobro: pendienteCobro,
+        tasa_cobro: tasaCobro
+      };
+
+      // 6. OPERARIOS ACTIVOS E INACTIVOS (con/sin órdenes de trabajo)
       // Contar total de operarios y cuántos tienen OTs asignadas
       const operariosQuery = await pool.query(`
         SELECT 
@@ -234,6 +265,7 @@ export default class MetricasController {
           cambio_porcentual: isNaN(cambioSatisfaccion) ? 0 : Math.round(cambioSatisfaccion * 10) / 10
         },
         estados_reclamos: estadosReclamos,
+        facturacion: facturacion,
         operarios_activos: {
           inactivos: operariosInactivos,
           con_ordenes: operariosConOt,

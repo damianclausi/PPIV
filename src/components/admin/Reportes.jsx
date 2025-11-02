@@ -84,6 +84,7 @@ export default function Reportes() {
   const satisfaccion = metricasAvanzadas?.satisfaccion_socio || {};
   const operariosActivos = metricasAvanzadas?.operarios_activos || {};
   const estadosReclamos = metricasAvanzadas?.estados_reclamos || {};
+  const facturacionData = metricasAvanzadas?.facturacion || {};
 
   // Consolidar datos de métricas (combinando dashboard general y métricas por período)
   const metricas = {
@@ -114,10 +115,23 @@ export default function Reportes() {
       )
     },
     facturacion: {
-      totalMes: dashboard?.facturacion?.recaudado_ultimo_mes || 0,
-      pendiente: dashboard?.facturacion?.monto_pendiente || 0,
-      facturasPendientes: dashboard?.facturacion?.pendientes || 0,
-      totalFacturas: dashboard?.facturacion?.total || 0,
+      // Si hay datos de facturacionData, usar SOLO esos (por período)
+      // Si no, usar los del dashboard (datos generales sin filtro de período)
+      totalMes: (facturacionData?.total_facturas !== undefined) 
+        ? facturacionData.recaudado 
+        : (dashboard?.facturacion?.recaudado_ultimo_mes || 0),
+      pendiente: (facturacionData?.total_facturas !== undefined) 
+        ? facturacionData.pendiente_cobro 
+        : (dashboard?.facturacion?.monto_pendiente || 0),
+      facturasPendientes: (facturacionData?.total_facturas !== undefined) 
+        ? facturacionData.facturas_pendientes 
+        : (dashboard?.facturacion?.pendientes || 0),
+      totalFacturas: (facturacionData?.total_facturas !== undefined) 
+        ? facturacionData.total_facturas 
+        : (dashboard?.facturacion?.total || 0),
+      tasaCobro: (facturacionData?.total_facturas !== undefined) 
+        ? facturacionData.tasa_cobro 
+        : null,
       cambio: 12.5 // Calcular con datos reales
     },
     empleados: {
@@ -452,7 +466,10 @@ export default function Reportes() {
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-gray-500">Tasa de cobro</span>
                     <span className="font-bold text-green-600">
-                      {(((metricas.facturacion.totalFacturas - metricas.facturacion.facturasPendientes) / metricas.facturacion.totalFacturas * 100) || 0).toFixed(1)}%
+                      {metricas.facturacion.tasaCobro !== null && metricas.facturacion.tasaCobro !== undefined 
+                        ? `${metricas.facturacion.tasaCobro.toFixed(1)}%`
+                        : `${(((metricas.facturacion.totalFacturas - metricas.facturacion.facturasPendientes) / metricas.facturacion.totalFacturas * 100) || 0).toFixed(1)}%`
+                      }
                     </span>
                   </div>
                 </div>
