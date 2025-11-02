@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useOTsTecnicas } from '../../hooks/useOTsTecnicas';
 import OTTecnicaDetalle from './OTTecnicaDetalle';
+import CooperativaLayout from '../layout/CooperativaLayout';
 import { Loader2, ArrowLeft } from 'lucide-react';
 import { Button } from '../ui/button';
 
@@ -40,44 +41,54 @@ const OTTecnicaDetalleWrapper = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="h-12 w-12 animate-spin text-blue-600 mx-auto" />
-          <p className="mt-4 text-gray-600">Cargando orden de trabajo...</p>
+      <CooperativaLayout>
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <Loader2 className="h-12 w-12 animate-spin text-blue-600 mx-auto" />
+            <p className="mt-4 text-gray-600">Cargando orden de trabajo...</p>
+          </div>
         </div>
-      </div>
+      </CooperativaLayout>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-6">
-        <div className="max-w-md w-full bg-red-50 border border-red-200 rounded-lg p-6 text-center">
-          <p className="text-red-800 mb-4">{error}</p>
-          <Button onClick={handleVolver} variant="outline">
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Volver al Dashboard
-          </Button>
+      <CooperativaLayout>
+        <div className="min-h-screen flex items-center justify-center p-6">
+          <div className="max-w-md w-full bg-red-50 border border-red-200 rounded-lg p-6 text-center">
+            <p className="text-red-800 mb-4">{error}</p>
+            <Button onClick={handleVolver} variant="outline">
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Volver al Dashboard
+            </Button>
+          </div>
         </div>
-      </div>
+      </CooperativaLayout>
     );
   }
 
   if (!ot) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-6">
-        <div className="max-w-md w-full bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
-          <p className="text-yellow-800 mb-4">Orden de trabajo no encontrada</p>
-          <Button onClick={handleVolver} variant="outline">
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Volver al Dashboard
-          </Button>
+      <CooperativaLayout>
+        <div className="min-h-screen flex items-center justify-center p-6">
+          <div className="max-w-md w-full bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
+            <p className="text-yellow-800 mb-4">Orden de trabajo no encontrada</p>
+            <Button onClick={handleVolver} variant="outline">
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Volver al Dashboard
+            </Button>
+          </div>
         </div>
-      </div>
+      </CooperativaLayout>
     );
   }
 
-  return <OTTecnicaDetalle ot={ot} onVolver={handleVolver} />;
+  return (
+    <CooperativaLayout>
+      <OTTecnicaDetalle ot={ot} onVolver={handleVolver} />
+    </CooperativaLayout>
+  );
 };
 
 export default OTTecnicaDetalleWrapper;
