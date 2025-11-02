@@ -78,13 +78,14 @@ export default function Reportes() {
     );
   }
 
-  // Usar métricas reales calculadas en el backend
+  // Extraer métricas calculadas en el backend
   const tiempoResolucion = metricasAvanzadas?.tiempo_resolucion || {};
   const eficiencia = metricasAvanzadas?.eficiencia_operativa || {};
   const satisfaccion = metricasAvanzadas?.satisfaccion_socio || {};
   const operariosActivos = metricasAvanzadas?.operarios_activos || {};
+  const estadosReclamos = metricasAvanzadas?.estados_reclamos || {};
 
-  // Datos de ejemplo para las métricas (integrar con API real)
+  // Consolidar datos de métricas (combinando dashboard general y métricas por período)
   const metricas = {
     socios: {
       total: dashboard?.socios?.total || 0,
@@ -93,11 +94,24 @@ export default function Reportes() {
       cambio: calcularCambio(dashboard?.socios?.nuevos_ultimo_mes || 0, 5) // Comparar con mes anterior
     },
     reclamos: {
-      total: dashboard?.reclamos?.total || 0,
-      pendientes: dashboard?.reclamos?.pendientes || 0,
-      enProceso: dashboard?.reclamos?.en_proceso || 0,
-      resueltos: dashboard?.reclamos?.resueltos || 0,
-      cambio: calcularCambio(dashboard?.reclamos?.resueltos || 0, dashboard?.reclamos?.total || 1)
+      // Si hay datos de estadosReclamos, usar SOLO esos (por período)
+      // Si no, usar los del dashboard (datos generales sin filtro de período)
+      total: (estadosReclamos?.total !== undefined && estadosReclamos?.total > 0) 
+        ? estadosReclamos.total 
+        : (dashboard?.reclamos?.total || 0),
+      pendientes: (estadosReclamos?.total !== undefined && estadosReclamos?.total > 0) 
+        ? estadosReclamos.pendientes 
+        : (dashboard?.reclamos?.pendientes || 0),
+      enProceso: (estadosReclamos?.total !== undefined && estadosReclamos?.total > 0) 
+        ? estadosReclamos.en_proceso 
+        : (dashboard?.reclamos?.en_proceso || 0),
+      resueltos: (estadosReclamos?.total !== undefined && estadosReclamos?.total > 0) 
+        ? estadosReclamos.resueltos 
+        : (dashboard?.reclamos?.resueltos || 0),
+      cambio: calcularCambio(
+        (estadosReclamos?.total !== undefined && estadosReclamos?.total > 0) ? estadosReclamos.resueltos : (dashboard?.reclamos?.resueltos || 0),
+        (estadosReclamos?.total !== undefined && estadosReclamos?.total > 0) ? estadosReclamos.total : (dashboard?.reclamos?.total || 1)
+      )
     },
     facturacion: {
       totalMes: dashboard?.facturacion?.recaudado_ultimo_mes || 0,
@@ -326,7 +340,7 @@ export default function Reportes() {
                     <div 
                       className="bg-red-500 h-2.5 rounded-full transition-all duration-500"
                       style={{ 
-                        width: `${(metricas.reclamos.pendientes / metricas.reclamos.total * 100) || 0}%` 
+                        width: `${Math.min(100, metricas.reclamos.total > 0 ? (metricas.reclamos.pendientes / metricas.reclamos.total * 100) : 0)}%` 
                       }}
                     ></div>
                   </div>
@@ -345,7 +359,7 @@ export default function Reportes() {
                     <div 
                       className="bg-yellow-500 h-2.5 rounded-full transition-all duration-500"
                       style={{ 
-                        width: `${(metricas.reclamos.enProceso / metricas.reclamos.total * 100) || 0}%` 
+                        width: `${Math.min(100, metricas.reclamos.total > 0 ? (metricas.reclamos.enProceso / metricas.reclamos.total * 100) : 0)}%` 
                       }}
                     ></div>
                   </div>
@@ -364,7 +378,7 @@ export default function Reportes() {
                     <div 
                       className="bg-green-500 h-2.5 rounded-full transition-all duration-500"
                       style={{ 
-                        width: `${(metricas.reclamos.resueltos / metricas.reclamos.total * 100) || 0}%` 
+                        width: `${Math.min(100, metricas.reclamos.total > 0 ? (metricas.reclamos.resueltos / metricas.reclamos.total * 100) : 0)}%` 
                       }}
                     ></div>
                   </div>
@@ -379,7 +393,7 @@ export default function Reportes() {
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-gray-500">Tasa de resolución</span>
                     <span className="font-bold text-green-600">
-                      {((metricas.reclamos.resueltos / metricas.reclamos.total * 100) || 0).toFixed(1)}%
+                      {metricas.reclamos.total > 0 ? ((metricas.reclamos.resueltos / metricas.reclamos.total * 100).toFixed(1)) : '0.0'}%
                     </span>
                   </div>
                 </div>

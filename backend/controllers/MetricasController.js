@@ -162,7 +162,25 @@ export default class MetricasController {
         cambioSatisfaccion = 0;
       }
 
-      // 4. OPERARIOS ACTIVOS E INACTIVOS (con/sin órdenes de trabajo)
+      // 4. ESTADOS DE RECLAMOS (por período)
+      const estadosReclamosQuery = await pool.query(`
+        SELECT 
+          COUNT(*) FILTER (WHERE UPPER(estado) = 'PENDIENTE') as pendientes,
+          COUNT(*) FILTER (WHERE UPPER(estado) = 'EN_PROCESO') as en_proceso,
+          COUNT(*) FILTER (WHERE UPPER(estado) IN ('RESUELTO', 'CERRADO')) as resueltos,
+          COUNT(*) as total
+        FROM reclamo
+        WHERE fecha_alta >= ${intervaloActual}
+      `);
+
+      const estadosReclamos = {
+        pendientes: parseInt(estadosReclamosQuery.rows[0]?.pendientes) || 0,
+        en_proceso: parseInt(estadosReclamosQuery.rows[0]?.en_proceso) || 0,
+        resueltos: parseInt(estadosReclamosQuery.rows[0]?.resueltos) || 0,
+        total: parseInt(estadosReclamosQuery.rows[0]?.total) || 0
+      };
+
+      // 5. OPERARIOS ACTIVOS E INACTIVOS (con/sin órdenes de trabajo)
       // Contar total de operarios y cuántos tienen OTs asignadas
       const operariosQuery = await pool.query(`
         SELECT 
@@ -215,6 +233,7 @@ export default class MetricasController {
           total_valoraciones: totalValoraciones,
           cambio_porcentual: isNaN(cambioSatisfaccion) ? 0 : Math.round(cambioSatisfaccion * 10) / 10
         },
+        estados_reclamos: estadosReclamos,
         operarios_activos: {
           inactivos: operariosInactivos,
           con_ordenes: operariosConOt,
@@ -222,7 +241,7 @@ export default class MetricasController {
           total_operarios: totalOperarios
         },
         fecha_calculo: new Date(),
-        periodo_evaluado: '30 días'
+        periodo_evaluado: periodoTexto
       };
 
       return respuestaExitosa(res, metricas, 'Métricas avanzadas calculadas exitosamente');
