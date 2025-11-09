@@ -483,6 +483,35 @@ class Reclamo {
     `, [operarioId, reclamoId]);
     return resultado.rows[0];
   }
+
+  /**
+   * Listar reclamos por cuenta
+   */
+  static async listarPorCuenta(cuentaId) {
+    const resultado = await pool.query(`
+      SELECT 
+        r.reclamo_id,
+        r.descripcion,
+        r.estado,
+        r.fecha_alta,
+        r.fecha_cierre,
+        r.prioridad_id,
+        p.nombre as prioridad,
+        tr.nombre as tipo_reclamo,
+        dtr.nombre as detalle_tipo,
+        e.nombre || ' ' || e.apellido as operario_asignado
+      FROM reclamo r
+      LEFT JOIN prioridad p ON r.prioridad_id = p.prioridad_id
+      INNER JOIN detalle_tipo_reclamo dtr ON r.detalle_id = dtr.detalle_id
+      INNER JOIN tipo_reclamo tr ON dtr.tipo_id = tr.tipo_id
+      LEFT JOIN orden_trabajo ot ON r.reclamo_id = ot.reclamo_id
+      LEFT JOIN empleado e ON ot.empleado_id = e.empleado_id
+      WHERE r.cuenta_id = $1
+      ORDER BY r.fecha_alta DESC
+      LIMIT 50
+    `, [cuentaId]);
+    return resultado.rows;
+  }
 }
 
 export default Reclamo;

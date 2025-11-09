@@ -163,7 +163,7 @@ export default function ReclamoDetalleAdmin() {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => navigate('/dashboard/admin/reclamos')}
+              onClick={() => navigate(-1)}
             >
               Volver
             </Button>

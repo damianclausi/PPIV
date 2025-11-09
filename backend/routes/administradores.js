@@ -42,6 +42,10 @@ router.patch('/reclamos/:id/asignar', AdministradorController.asignarOperarioRec
 // Gestión de empleados
 router.get('/empleados', AdministradorController.listarEmpleados);
 
+// Historial de cuentas
+router.get('/cuentas/:id/facturas', AdministradorController.obtenerFacturasCuenta);
+router.get('/cuentas/:id/reclamos', AdministradorController.obtenerReclamosCuenta);
+
 // Gestión de OTs Administrativas (sin empleado asignado)
 router.get('/ots/administrativas/resumen', OTAdministrativasController.obtenerResumen);
 router.get('/ots/administrativas', OTAdministrativasController.listar);

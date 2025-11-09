@@ -138,6 +138,20 @@ class AdministradorService {
   async obtenerEstadoOperarios() {
     return apiClient.get('/api/administradores/operarios-estado');
   }
+
+  /**
+   * Obtener facturas de una cuenta específica
+   */
+  async obtenerFacturasCuenta(cuentaId) {
+    return apiClient.get(`/api/administradores/cuentas/${cuentaId}/facturas`);
+  }
+
+  /**
+   * Obtener reclamos de una cuenta específica
+   */
+  async obtenerReclamosCuenta(cuentaId) {
+    return apiClient.get(`/api/administradores/cuentas/${cuentaId}/reclamos`);
+  }
 }
 
 const administradorServiceInstance = new AdministradorService();
