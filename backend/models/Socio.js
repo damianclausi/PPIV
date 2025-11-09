@@ -130,7 +130,8 @@ class Socio {
         s.telefono,
         s.activo,
         s.fecha_alta,
-        COUNT(c.cuenta_id) as cantidad_cuentas
+        COUNT(c.cuenta_id) as cantidad_cuentas,
+        STRING_AGG(DISTINCT c.direccion, ', ') as direcciones
       FROM socio s
       LEFT JOIN cuenta c ON s.socio_id = c.socio_id
       WHERE 1=1
@@ -150,7 +151,8 @@ class Socio {
         s.nombre ILIKE $${paramCount} OR 
         s.apellido ILIKE $${paramCount} OR 
         s.dni ILIKE $${paramCount} OR
-        s.email ILIKE $${paramCount}
+        s.email ILIKE $${paramCount} OR
+        c.direccion ILIKE $${paramCount}
       )`;
       params.push(`%${busqueda}%`);
       paramCount++;
