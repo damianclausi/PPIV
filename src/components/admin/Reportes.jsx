@@ -10,6 +10,7 @@ import CooperativaLayout from '../layout/CooperativaLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Skeleton } from '../ui/skeleton';
+import { generarPDFMetricas } from '../../utils/generadorPDFMetricas';
 import { 
   Users, 
   AlertCircle, 
@@ -35,6 +36,16 @@ export default function Reportes() {
   const calcularCambio = (actual, anterior) => {
     if (!anterior || anterior === 0) return 0;
     return ((actual - anterior) / anterior * 100).toFixed(1);
+  };
+
+  // Función para descargar el PDF
+  const handleDescargarPDF = () => {
+    try {
+      generarPDFMetricas(dashboard, metricasAvanzadas, periodoSeleccionado);
+    } catch (error) {
+      console.error('Error al generar PDF:', error);
+      alert('Error al generar el PDF. Por favor, intente nuevamente.');
+    }
   };
 
   // Obtener texto descriptivo del período
@@ -160,8 +171,8 @@ export default function Reportes() {
             </p>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" size="sm">
-              <Calendar className="h-4 w-4 mr-2" />
+            <Button variant="outline" size="sm" onClick={handleDescargarPDF}>
+              <FileText className="h-4 w-4 mr-2" />
               Exportar PDF
             </Button>
             <Button variant="outline" size="sm" onClick={() => navigate('/dashboard/administrador')}>

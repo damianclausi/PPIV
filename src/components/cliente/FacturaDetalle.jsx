@@ -20,6 +20,7 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { formatearFecha, formatearMesAnio } from '../../utils/formatters.js';
+import { descargarPDFFactura } from '../../utils/generadorPDFFactura.js';
 
 export default function FacturaDetalle() {
   const navigate = useNavigate();
@@ -102,8 +103,16 @@ export default function FacturaDetalle() {
   };
 
   const handleDescargarPDF = () => {
-    // TODO: Implementar descarga de PDF
-    alert('Descarga de PDF no implementada aún');
+    if (!factura) {
+      alert('No hay datos de factura disponibles');
+      return;
+    }
+    
+    const resultado = descargarPDFFactura(factura);
+    
+    if (!resultado.exito) {
+      alert('Error al generar el PDF: ' + (resultado.error || 'Error desconocido'));
+    }
   };
 
   const handlePagar = () => {

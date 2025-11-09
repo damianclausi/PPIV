@@ -5,6 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import CooperativaLayout from '../layout/CooperativaLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
@@ -66,20 +67,23 @@ export default function OperariosEstado() {
 
   if (cargando) {
     return (
-      <div className="min-h-screen bg-gray-50 p-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="animate-pulse space-y-4">
-            <div className="h-8 bg-gray-200 rounded w-1/4"></div>
-            <div className="h-64 bg-gray-200 rounded"></div>
+      <CooperativaLayout>
+        <div className="min-h-screen p-8">
+          <div className="max-w-7xl mx-auto">
+            <div className="animate-pulse space-y-4">
+              <div className="h-8 bg-gray-200 rounded w-1/4"></div>
+              <div className="h-64 bg-gray-200 rounded"></div>
+            </div>
           </div>
         </div>
-      </div>
+      </CooperativaLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-7xl mx-auto space-y-6">
+    <CooperativaLayout>
+      <div className="min-h-screen p-8">
+        <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -268,7 +272,9 @@ export default function OperariosEstado() {
             </div>
           </CardContent>
         </Card>
+        </div>
       </div>
-    </div>
+    </CooperativaLayout>
   );
 }
+
