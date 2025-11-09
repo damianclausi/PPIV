@@ -25,6 +25,7 @@ export default function DashboardOperario() {
   const [vistaKanban, setVistaKanban] = useState(true);
   const [reclamos, setReclamos] = useState([]);
   const [draggedItem, setDraggedItem] = useState(null);
+  const [filtroPrioridad, setFiltroPrioridad] = useState('todas'); // 'todas', 'alta', 'media', 'baja'
 
   // Actualizar reclamos cuando cambian los originales
   React.useEffect(() => {
@@ -151,10 +152,19 @@ export default function DashboardOperario() {
     setDraggedItem(null);
   };
 
+  // Función auxiliar para filtrar por prioridad
+  const filtrarPorPrioridad = (reclamosList) => {
+    if (filtroPrioridad === 'todas') return reclamosList;
+    return reclamosList.filter(r => {
+      const prioridad = r.prioridad?.toLowerCase();
+      return prioridad === filtroPrioridad;
+    });
+  };
+
   // Filtrar reclamos por estado
   // Las OTs del itinerario (es_itinerario=true) con estado_orden ASIGNADA o PENDIENTE se consideran pendientes
   // También incluimos reclamos con estado PENDIENTE o ASIGNADA
-  const reclamosPendientes = reclamos.filter(r => {
+  const reclamosPendientesSinFiltro = reclamos.filter(r => {
     // Si es del itinerario, usar el estado de la orden de trabajo
     if (r.es_itinerario) {
       const isPendiente = r.estado_orden === 'PENDIENTE' || r.estado_orden === 'pendiente' ||
@@ -169,9 +179,9 @@ export default function DashboardOperario() {
            r.estado === 'ASIGNADA' || r.estado === 'asignada';
   });
   
-  console.log('📊 Total pendientes después de filtro:', reclamosPendientes.length);
+  console.log('📊 Total pendientes después de filtro:', reclamosPendientesSinFiltro.length);
   
-  const reclamosEnCurso = reclamos.filter(r => {
+  const reclamosEnCursoSinFiltro = reclamos.filter(r => {
     // Si es del itinerario, usar el estado de la orden de trabajo
     if (r.es_itinerario) {
       return r.estado_orden === 'EN_CURSO' || r.estado_orden === 'en_curso' ||
@@ -182,7 +192,7 @@ export default function DashboardOperario() {
            r.estado === 'EN_PROCESO' || r.estado === 'en_proceso';
   });
   
-  const reclamosResueltos = reclamos.filter(r => {
+  const reclamosResueltosSinFiltro = reclamos.filter(r => {
     // Si es del itinerario, usar el estado de la orden de trabajo
     if (r.es_itinerario) {
       return r.estado_orden === 'RESUELTO' || r.estado_orden === 'resuelto' ||
@@ -191,6 +201,11 @@ export default function DashboardOperario() {
     // Si no es del itinerario, usar el estado del reclamo
     return r.estado === 'RESUELTO' || r.estado === 'resuelto';
   });
+
+  // Aplicar filtro de prioridad a cada categoría
+  const reclamosPendientes = filtrarPorPrioridad(reclamosPendientesSinFiltro);
+  const reclamosEnCurso = filtrarPorPrioridad(reclamosEnCursoSinFiltro);
+  const reclamosResueltos = filtrarPorPrioridad(reclamosResueltosSinFiltro);
 
   // Renderizar tarjeta de reclamo
   const ReclamoCard = ({ reclamo }) => {
@@ -296,26 +311,68 @@ export default function DashboardOperario() {
           </div>
         )}
 
-        {/* Controles de vista */}
-        <div className="flex justify-end gap-3">
-          <Button 
-            variant={vistaKanban ? "default" : "outline"}
-            size="sm"
-            onClick={() => setVistaKanban(true)}
-            className={vistaKanban ? "bg-cooperativa-blue hover:bg-cooperativa-light" : ""}
-          >
-            <LayoutGrid className="h-4 w-4 mr-2" />
-            Kanban
-          </Button>
-          <Button 
-            variant={!vistaKanban ? "default" : "outline"}
-            size="sm"
-            onClick={() => setVistaKanban(false)}
-            className={!vistaKanban ? "bg-cooperativa-blue hover:bg-cooperativa-light" : ""}
-          >
-            <List className="h-4 w-4 mr-2" />
-            Lista
-          </Button>
+        {/* Controles de vista y filtros */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          {/* Filtro de prioridad */}
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-medium text-gray-700">Prioridad:</span>
+            <div className="flex gap-2">
+              <Button 
+                variant={filtroPrioridad === 'todas' ? "default" : "outline"}
+                size="sm"
+                onClick={() => setFiltroPrioridad('todas')}
+                className={filtroPrioridad === 'todas' ? "bg-cooperativa-blue hover:bg-cooperativa-light" : ""}
+              >
+                Todas
+              </Button>
+              <Button 
+                variant={filtroPrioridad === 'alta' ? "default" : "outline"}
+                size="sm"
+                onClick={() => setFiltroPrioridad('alta')}
+                className={filtroPrioridad === 'alta' ? "bg-red-600 hover:bg-red-700" : "text-red-600 border-red-300 hover:bg-red-50"}
+              >
+                Alta
+              </Button>
+              <Button 
+                variant={filtroPrioridad === 'media' ? "default" : "outline"}
+                size="sm"
+                onClick={() => setFiltroPrioridad('media')}
+                className={filtroPrioridad === 'media' ? "bg-yellow-600 hover:bg-yellow-700" : "text-yellow-600 border-yellow-300 hover:bg-yellow-50"}
+              >
+                Media
+              </Button>
+              <Button 
+                variant={filtroPrioridad === 'baja' ? "default" : "outline"}
+                size="sm"
+                onClick={() => setFiltroPrioridad('baja')}
+                className={filtroPrioridad === 'baja' ? "bg-green-600 hover:bg-green-700" : "text-green-600 border-green-300 hover:bg-green-50"}
+              >
+                Baja
+              </Button>
+            </div>
+          </div>
+
+          {/* Botones de vista */}
+          <div className="flex gap-3">
+            <Button 
+              variant={vistaKanban ? "default" : "outline"}
+              size="sm"
+              onClick={() => setVistaKanban(true)}
+              className={vistaKanban ? "bg-cooperativa-blue hover:bg-cooperativa-light" : ""}
+            >
+              <LayoutGrid className="h-4 w-4 mr-2" />
+              Kanban
+            </Button>
+            <Button 
+              variant={!vistaKanban ? "default" : "outline"}
+              size="sm"
+              onClick={() => setVistaKanban(false)}
+              className={!vistaKanban ? "bg-cooperativa-blue hover:bg-cooperativa-light" : ""}
+            >
+              <List className="h-4 w-4 mr-2" />
+              Lista
+            </Button>
+          </div>
         </div>
 
         {/* Estadísticas */}
@@ -484,37 +541,174 @@ export default function DashboardOperario() {
           <Card>
             <CardContent className="p-6">
               <div className="space-y-3">
-                {reclamos.length > 0 ? (
-                  reclamos.map(reclamo => (
-                    <div 
-                      key={reclamo.reclamo_id}
-                      onClick={() => navigate(`/dashboard/operario/reclamos/${reclamo.reclamo_id}`)}
-                      className="p-4 border rounded-lg hover:shadow-md transition-all cursor-pointer"
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-2">
-                            <h4 className="font-semibold">{reclamo.detalle_reclamo || reclamo.tipo_reclamo || 'Reclamo Técnico'}</h4>
-                            {getPriorityBadge(reclamo.prioridad)}
-                            {getStatusBadge(reclamo.estado?.toLowerCase())}
-                          </div>
-                          <p className="text-sm text-gray-600 mb-1">
-                            Cliente: {reclamo.socio_nombre} {reclamo.socio_apellido}
-                          </p>
-                          <div className="flex items-center gap-4 text-xs text-gray-500">
-                            <span className="flex items-center gap-1">
-                              <MapPin className="h-3 w-3" />
-                              {reclamo.zona || reclamo.direccion || 'Sin dirección'}
-                            </span>
-                            <span className="flex items-center gap-1">
-                              <Clock className="h-3 w-3" />
-                              {formatearFecha(reclamo.fecha_alta)}
-                            </span>
-                          </div>
+                {/* Usar la misma lógica de filtrado que la vista Kanban */}
+                {[...reclamosPendientes, ...reclamosEnCurso, ...reclamosResueltos].length > 0 ? (
+                  <>
+                    {/* Sección Pendientes */}
+                    {reclamosPendientes.length > 0 && (
+                      <div className="mb-6">
+                        <div className="flex items-center gap-2 mb-3">
+                          <h3 className="font-semibold text-lg flex items-center gap-2">
+                            <Clock className="h-5 w-5 text-yellow-600" />
+                            Pendientes
+                            <Badge className="bg-yellow-100 text-yellow-800">
+                              {reclamosPendientes.length}
+                            </Badge>
+                          </h3>
+                        </div>
+                        <div className="space-y-3">
+                          {reclamosPendientes.map(reclamo => (
+                            <div 
+                              key={reclamo.reclamo_id}
+                              onClick={() => navigate(`/dashboard/operario/ots-tecnicas/${reclamo.ot_id}`)}
+                              className="p-4 border rounded-lg hover:shadow-md transition-all cursor-pointer bg-yellow-50"
+                            >
+                              <div className="flex items-center justify-between">
+                                <div className="flex-1">
+                                  <div className="flex items-center gap-3 mb-2">
+                                    <h4 className="font-semibold">{reclamo.detalle_reclamo || reclamo.tipo_reclamo || 'Reclamo Técnico'}</h4>
+                                    {reclamo.es_itinerario && (
+                                      <Badge className="bg-purple-50 text-purple-700 text-xs border border-purple-200">
+                                        📅 Itinerario
+                                      </Badge>
+                                    )}
+                                    {getPriorityBadge(reclamo.prioridad)}
+                                  </div>
+                                  <p className="text-sm text-gray-600 mb-1">
+                                    Cliente: {reclamo.socio_nombre} {reclamo.socio_apellido}
+                                  </p>
+                                  <div className="flex items-center gap-4 text-xs text-gray-500">
+                                    <span className="flex items-center gap-1">
+                                      <MapPin className="h-3 w-3" />
+                                      {reclamo.zona || reclamo.direccion || 'Sin dirección'}
+                                    </span>
+                                    <span className="flex items-center gap-1">
+                                      <Clock className="h-3 w-3" />
+                                      {formatearFecha(reclamo.fecha_alta)}
+                                    </span>
+                                    {reclamo.fecha_programada && (
+                                      <span className="flex items-center gap-1 text-purple-700 font-medium">
+                                        <Clock className="h-3 w-3" />
+                                        Programada: {formatearFecha(reclamo.fecha_programada)}
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
                         </div>
                       </div>
-                    </div>
-                  ))
+                    )}
+
+                    {/* Sección En Curso */}
+                    {reclamosEnCurso.length > 0 && (
+                      <div className="mb-6">
+                        <div className="flex items-center gap-2 mb-3">
+                          <h3 className="font-semibold text-lg flex items-center gap-2">
+                            <AlertTriangle className="h-5 w-5 text-blue-600" />
+                            En Curso
+                            <Badge className="bg-blue-100 text-blue-800">
+                              {reclamosEnCurso.length}
+                            </Badge>
+                          </h3>
+                        </div>
+                        <div className="space-y-3">
+                          {reclamosEnCurso.map(reclamo => (
+                            <div 
+                              key={reclamo.reclamo_id}
+                              onClick={() => navigate(`/dashboard/operario/ots-tecnicas/${reclamo.ot_id}`)}
+                              className="p-4 border rounded-lg hover:shadow-md transition-all cursor-pointer bg-blue-50"
+                            >
+                              <div className="flex items-center justify-between">
+                                <div className="flex-1">
+                                  <div className="flex items-center gap-3 mb-2">
+                                    <h4 className="font-semibold">{reclamo.detalle_reclamo || reclamo.tipo_reclamo || 'Reclamo Técnico'}</h4>
+                                    {reclamo.es_itinerario && (
+                                      <Badge className="bg-purple-50 text-purple-700 text-xs border border-purple-200">
+                                        📅 Itinerario
+                                      </Badge>
+                                    )}
+                                    {getPriorityBadge(reclamo.prioridad)}
+                                  </div>
+                                  <p className="text-sm text-gray-600 mb-1">
+                                    Cliente: {reclamo.socio_nombre} {reclamo.socio_apellido}
+                                  </p>
+                                  <div className="flex items-center gap-4 text-xs text-gray-500">
+                                    <span className="flex items-center gap-1">
+                                      <MapPin className="h-3 w-3" />
+                                      {reclamo.zona || reclamo.direccion || 'Sin dirección'}
+                                    </span>
+                                    <span className="flex items-center gap-1">
+                                      <Clock className="h-3 w-3" />
+                                      {formatearFecha(reclamo.fecha_alta)}
+                                    </span>
+                                    {reclamo.fecha_programada && (
+                                      <span className="flex items-center gap-1 text-purple-700 font-medium">
+                                        <Clock className="h-3 w-3" />
+                                        Programada: {formatearFecha(reclamo.fecha_programada)}
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Sección Resueltos */}
+                    {reclamosResueltos.length > 0 && (
+                      <div>
+                        <div className="flex items-center gap-2 mb-3">
+                          <h3 className="font-semibold text-lg flex items-center gap-2">
+                            <CheckCircle className="h-5 w-5 text-green-600" />
+                            Resueltos
+                            <Badge className="bg-green-100 text-green-800">
+                              {reclamosResueltos.length}
+                            </Badge>
+                          </h3>
+                        </div>
+                        <div className="space-y-3">
+                          {reclamosResueltos.map(reclamo => (
+                            <div 
+                              key={reclamo.reclamo_id}
+                              onClick={() => navigate(`/dashboard/operario/ots-tecnicas/${reclamo.ot_id}`)}
+                              className="p-4 border rounded-lg hover:shadow-md transition-all cursor-pointer bg-green-50"
+                            >
+                              <div className="flex items-center justify-between">
+                                <div className="flex-1">
+                                  <div className="flex items-center gap-3 mb-2">
+                                    <h4 className="font-semibold">{reclamo.detalle_reclamo || reclamo.tipo_reclamo || 'Reclamo Técnico'}</h4>
+                                    {reclamo.es_itinerario && (
+                                      <Badge className="bg-purple-50 text-purple-700 text-xs border border-purple-200">
+                                        📅 Itinerario
+                                      </Badge>
+                                    )}
+                                    {getPriorityBadge(reclamo.prioridad)}
+                                  </div>
+                                  <p className="text-sm text-gray-600 mb-1">
+                                    Cliente: {reclamo.socio_nombre} {reclamo.socio_apellido}
+                                  </p>
+                                  <div className="flex items-center gap-4 text-xs text-gray-500">
+                                    <span className="flex items-center gap-1">
+                                      <MapPin className="h-3 w-3" />
+                                      {reclamo.zona || reclamo.direccion || 'Sin dirección'}
+                                    </span>
+                                    <span className="flex items-center gap-1">
+                                      <Clock className="h-3 w-3" />
+                                      {reclamo.fecha_cierre ? formatearFecha(reclamo.fecha_cierre) : formatearFecha(reclamo.fecha_alta)}
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </>
                 ) : (
                   <p className="text-center text-gray-500 py-8">No hay reclamos asignados</p>
                 )}
