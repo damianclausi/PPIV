@@ -344,4 +344,38 @@ export default class AdministradorController {
     const MetricasController = (await import('./MetricasController.js')).default;
     return MetricasController.obtenerEstadoOperarios(req, res);
   }
+
+  /**
+   * Obtener historial de consumo eléctrico (lecturas) de una cuenta específica
+   */
+  static async obtenerFacturasCuenta(req, res) {
+    try {
+      const { id } = req.params;
+      
+      const Lectura = (await import('../models/Lectura.js')).default;
+      const lecturas = await Lectura.listarPorCuenta(id);
+      
+      return respuestaExitosa(res, lecturas, 'Historial de consumo obtenido exitosamente');
+    } catch (error) {
+      console.error('Error al obtener historial de consumo:', error);
+      return respuestaError(res, 'Error al obtener historial de consumo');
+    }
+  }
+
+  /**
+   * Obtener reclamos de una cuenta específica
+   */
+  static async obtenerReclamosCuenta(req, res) {
+    try {
+      const { id } = req.params;
+      
+      const Reclamo = (await import('../models/Reclamo.js')).default;
+      const reclamos = await Reclamo.listarPorCuenta(id);
+      
+      return respuestaExitosa(res, reclamos, 'Reclamos obtenidos exitosamente');
+    } catch (error) {
+      console.error('Error al obtener reclamos de cuenta:', error);
+      return respuestaError(res, 'Error al obtener reclamos de la cuenta');
+    }
+  }
 }

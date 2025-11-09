@@ -153,6 +153,29 @@ class Factura {
     `);
     return resultado.rows[0];
   }
+
+  /**
+   * Listar facturas por cuenta
+   */
+  static async listarPorCuenta(cuentaId) {
+    const resultado = await pool.query(`
+      SELECT 
+        f.factura_id,
+        f.numero_factura,
+        f.periodo_facturacion,
+        f.fecha_emision,
+        f.fecha_vencimiento,
+        f.monto_total,
+        f.estado,
+        f.created_at,
+        f.updated_at
+      FROM factura f
+      WHERE f.cuenta_id = $1
+      ORDER BY f.fecha_emision DESC
+      LIMIT 50
+    `, [cuentaId]);
+    return resultado.rows;
+  }
 }
 
 export default Factura;
