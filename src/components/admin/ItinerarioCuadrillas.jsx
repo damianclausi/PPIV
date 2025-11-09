@@ -30,6 +30,7 @@ export default function ItinerarioCuadrillas() {
   const [filtroItinerario, setFiltroItinerario] = useState('todos'); // 'fecha' o 'todos' - por defecto 'todos'
   const [todosLosItinerarios, setTodosLosItinerarios] = useState([]);
   const [loadingItinerarios, setLoadingItinerarios] = useState(false);
+  const [filtroPrioridad, setFiltroPrioridad] = useState('todas'); // 'todas', 'alta', 'media', 'baja'
   
   const {
     itinerario,
@@ -156,6 +157,20 @@ export default function ItinerarioCuadrillas() {
     }
   };
 
+  // Función para filtrar por prioridad
+  const filtrarPorPrioridad = (lista) => {
+    if (filtroPrioridad === 'todas') return lista;
+    return lista.filter(ot => {
+      const prioridad = (ot.prioridad || '').toLowerCase();
+      return prioridad === filtroPrioridad;
+    });
+  };
+
+  // Aplicar filtro de prioridad
+  const otsPendientesFiltradas = filtrarPorPrioridad(otsPendientes);
+  const itinerarioFiltrado = filtrarPorPrioridad(itinerario);
+  const todosLosItinerariosFiltrados = filtrarPorPrioridad(todosLosItinerarios);
+
   return (
     <CooperativaLayout titulo="Itinerario de Cuadrillas">
       <div className="min-h-screen p-6 space-y-6">
@@ -242,6 +257,45 @@ export default function ItinerarioCuadrillas() {
               </p>
             </div>
           </div>
+
+          {/* Filtro de Prioridad */}
+          <div className="mt-6 pt-6 border-t">
+            <label className="text-sm font-medium mb-3 block">Filtrar por Prioridad:</label>
+            <div className="flex gap-2 flex-wrap">
+              <Button 
+                variant={filtroPrioridad === 'todas' ? "default" : "outline"}
+                size="sm"
+                onClick={() => setFiltroPrioridad('todas')}
+                className={filtroPrioridad === 'todas' ? "bg-blue-600 hover:bg-blue-700" : ""}
+              >
+                Todas
+              </Button>
+              <Button 
+                variant={filtroPrioridad === 'alta' ? "default" : "outline"}
+                size="sm"
+                onClick={() => setFiltroPrioridad('alta')}
+                className={filtroPrioridad === 'alta' ? "bg-red-600 hover:bg-red-700" : "text-red-600 border-red-300 hover:bg-red-50"}
+              >
+                Alta
+              </Button>
+              <Button 
+                variant={filtroPrioridad === 'media' ? "default" : "outline"}
+                size="sm"
+                onClick={() => setFiltroPrioridad('media')}
+                className={filtroPrioridad === 'media' ? "bg-yellow-600 hover:bg-yellow-700" : "text-yellow-600 border-yellow-300 hover:bg-yellow-50"}
+              >
+                Media
+              </Button>
+              <Button 
+                variant={filtroPrioridad === 'baja' ? "default" : "outline"}
+                size="sm"
+                onClick={() => setFiltroPrioridad('baja')}
+                className={filtroPrioridad === 'baja' ? "bg-green-600 hover:bg-green-700" : "text-green-600 border-green-300 hover:bg-green-50"}
+              >
+                Baja
+              </Button>
+            </div>
+          </div>
         </CardContent>
       </Card>
 
@@ -257,7 +311,12 @@ export default function ItinerarioCuadrillas() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Wrench className="h-5 w-5" />
-              OTs Técnicas Disponibles ({otsPendientes.length})
+              Ordenes de Trabajo Disponibles ({otsPendientesFiltradas.length})
+              {filtroPrioridad !== 'todas' && (
+                <Badge variant="outline" className="ml-2">
+                  Filtrado: {filtroPrioridad}
+                </Badge>
+              )}
             </CardTitle>
             <CardDescription>
               OTs pendientes que pueden asignarse al itinerario
@@ -268,7 +327,7 @@ export default function ItinerarioCuadrillas() {
               <div className="space-y-2">
                 {[1, 2, 3, 4, 5].map(i => <Skeleton key={i} className="h-12 w-full" />)}
               </div>
-            ) : otsPendientes.length === 0 ? (
+            ) : otsPendientesFiltradas.length === 0 ? (
               <div className="text-center py-12 text-gray-500">
                 <Wrench className="h-12 w-12 mx-auto mb-2 opacity-50" />
                 <p className="font-semibold mb-2">No hay OTs disponibles</p>
@@ -276,7 +335,7 @@ export default function ItinerarioCuadrillas() {
               </div>
             ) : (
               <div className="max-h-[600px] overflow-y-auto space-y-1">
-                {otsPendientes.map((ot) => (
+                {otsPendientesFiltradas.map((ot) => (
                   <div
                     key={ot.id || ot.ot_id}
                     className="flex items-center justify-between p-3 border rounded transition-colors hover:bg-blue-50 hover:border-blue-300 cursor-pointer group"
@@ -329,9 +388,14 @@ export default function ItinerarioCuadrillas() {
             <CardDescription>
               {cuadrillaSeleccionada
                 ? filtroItinerario === 'fecha' 
-                  ? `${itinerario.length} OTs para ${format(new Date(fechaSeleccionada + 'T00:00:00'), 'dd/MM/yyyy', { locale: es })}`
-                  : `${todosLosItinerarios.length} OTs en todos los itinerarios`
+                  ? `${itinerarioFiltrado.length} OTs para ${format(new Date(fechaSeleccionada + 'T00:00:00'), 'dd/MM/yyyy', { locale: es })}`
+                  : `${todosLosItinerariosFiltrados.length} OTs en todos los itinerarios`
                 : 'Selecciona una cuadrilla para ver su itinerario'}
+              {filtroPrioridad !== 'todas' && (
+                <Badge variant="outline" className="ml-2">
+                  Filtrado: {filtroPrioridad}
+                </Badge>
+              )}
             </CardDescription>
             {cuadrillaSeleccionada && (
               <div className="flex gap-2 mt-4">
@@ -341,7 +405,7 @@ export default function ItinerarioCuadrillas() {
                   onClick={() => setFiltroItinerario('fecha')}
                   className="flex-1"
                 >
-                  Solo esta fecha ({itinerario.length})
+                  Solo esta fecha ({itinerarioFiltrado.length})
                 </Button>
                 <Button
                   variant={filtroItinerario === 'todos' ? 'default' : 'outline'}
@@ -349,7 +413,7 @@ export default function ItinerarioCuadrillas() {
                   onClick={() => setFiltroItinerario('todos')}
                   className="flex-1"
                 >
-                  Todos ({todosLosItinerarios.length})
+                  Todos ({todosLosItinerariosFiltrados.length})
                 </Button>
               </div>
             )}
@@ -365,16 +429,16 @@ export default function ItinerarioCuadrillas() {
               <div className="space-y-3">
                 {[1, 2].map(i => <Skeleton key={i} className="h-16 w-full" />)}
               </div>
-            ) : filtroItinerario === 'fecha' && itinerario.length === 0 ? (
+            ) : filtroItinerario === 'fecha' && itinerarioFiltrado.length === 0 ? (
               <div className="text-center py-8 text-gray-500">
                 <Calendar className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                <p>No hay OTs asignadas para esta fecha</p>
+                <p>No hay OTs asignadas {filtroPrioridad !== 'todas' ? `con prioridad ${filtroPrioridad}` : ''} para esta fecha</p>
                 <p className="text-sm mt-1">Asigna OTs desde la lista de pendientes</p>
               </div>
-            ) : filtroItinerario === 'todos' && todosLosItinerarios.length === 0 ? (
+            ) : filtroItinerario === 'todos' && todosLosItinerariosFiltrados.length === 0 ? (
               <div className="text-center py-8 text-gray-500">
                 <Calendar className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                <p>No hay itinerarios para esta cuadrilla</p>
+                <p>No hay itinerarios {filtroPrioridad !== 'todas' ? `con prioridad ${filtroPrioridad}` : ''} para esta cuadrilla</p>
                 <p className="text-sm mt-1">Asigna OTs para crear itinerarios</p>
               </div>
             ) : (
@@ -391,7 +455,7 @@ export default function ItinerarioCuadrillas() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {(filtroItinerario === 'fecha' ? itinerario : todosLosItinerarios).map((ot, index) => (
+                    {(filtroItinerario === 'fecha' ? itinerarioFiltrado : todosLosItinerariosFiltrados).map((ot, index) => (
                       <TableRow key={ot.id || ot.ot_id} className={
                         ot.estado === 'EN CURSO' ? 'bg-blue-50' :
                         ot.estado === 'ASIGNADA' ? 'bg-green-50' :
