@@ -76,10 +76,26 @@ export const generarPDFMetricas = (dashboard, metricasAvanzadas, periodo) => {
   // Tabla de métricas principales
   const metricas = dashboard || {};
   const operariosActivos = metricasAvanzadas?.operarios_activos || {};
+  const estadosReclamos = metricasAvanzadas?.estados_reclamos || {};
+  
+  // Usar datos de metricasAvanzadas si están disponibles Y tienen datos, sino del dashboard
+  // Verificar que no solo exista sino que tenga valor > 0 o usar siempre dashboard para consistencia
+  const totalReclamosResumen = (estadosReclamos?.total !== undefined && estadosReclamos.total > 0) 
+    ? estadosReclamos.total 
+    : (metricas.reclamos?.total || 0);
+  const reclamosResueltosResumen = (estadosReclamos?.total !== undefined && estadosReclamos.total > 0) 
+    ? estadosReclamos.resueltos 
+    : (metricas.reclamos?.resueltos || 0);
+  const reclamosPendientesResumen = (estadosReclamos?.total !== undefined && estadosReclamos.total > 0) 
+    ? estadosReclamos.pendientes 
+    : (metricas.reclamos?.pendientes || 0);
+  const reclamosEnProcesoResumen = (estadosReclamos?.total !== undefined && estadosReclamos.total > 0) 
+    ? estadosReclamos.en_proceso 
+    : (metricas.reclamos?.en_proceso || 0);
   
   autoTable(doc, {
     startY: yPos,
-    head: [['Categoría', 'Total', 'Activos/Resueltos', 'Pendientes/Otros']],
+    head: [['Categoría', 'Total', 'Activos/Resueltos', 'Pendientes/En Proceso']],
     body: [
       [
         'Socios',
@@ -89,21 +105,15 @@ export const generarPDFMetricas = (dashboard, metricasAvanzadas, periodo) => {
       ],
       [
         'Reclamos',
-        `${metricas.reclamos?.total || 0}`,
-        `${metricas.reclamos?.resueltos || 0} resueltos`,
-        `${metricas.reclamos?.pendientes || 0} pendientes`
+        `${totalReclamosResumen}`,
+        `${reclamosResueltosResumen} resueltos`,
+        `${reclamosPendientesResumen} pend. / ${reclamosEnProcesoResumen} proc.`
       ],
       [
-        'Órdenes de Trabajo',
-        `${metricas.ordenes?.total || 0}`,
-        `${metricas.ordenes?.completadas || 0} completadas`,
-        `${metricas.ordenes?.pendientes || 0} pendientes`
-      ],
-      [
-        'Empleados',
-        `${metricas.empleados?.total || 0}`,
-        `${metricas.empleados?.operarios || 0} operarios`,
-        `${operariosActivos.inactivos || 0} sin OTs`
+        'Operarios',
+        `${operariosActivos.total_operarios || 0}`,
+        `${operariosActivos.con_ordenes || 0} con OTs`,
+        `${operariosActivos.inactivos || 0} disponibles`
       ]
     ],
     theme: 'striped',
@@ -135,11 +145,24 @@ export const generarPDFMetricas = (dashboard, metricasAvanzadas, periodo) => {
   yPos += 8;
   
   const facturacion = metricas.facturacion || {};
-  const recaudado = facturacion.recaudado_ultimo_mes || 0;
-  const pendiente = facturacion.monto_pendiente || 0;
-  const totalFacturas = facturacion.total || 0;
-  const facturasPendientes = facturacion.pendientes || 0;
-  const tasaCobro = totalFacturas > 0 ? (((totalFacturas - facturasPendientes) / totalFacturas) * 100).toFixed(1) : 0;
+  const facturacionAvanzada = metricasAvanzadas?.facturacion || {};
+  
+  // Usar datos de metricasAvanzadas si están disponibles Y tienen datos, sino del dashboard (general)
+  const recaudado = (facturacionAvanzada.total_facturas !== undefined && facturacionAvanzada.total_facturas > 0) 
+    ? facturacionAvanzada.recaudado 
+    : (facturacion.recaudado_ultimo_mes || 0);
+  const pendiente = (facturacionAvanzada.total_facturas !== undefined && facturacionAvanzada.total_facturas > 0) 
+    ? facturacionAvanzada.pendiente_cobro 
+    : (facturacion.monto_pendiente || 0);
+  const totalFacturas = (facturacionAvanzada.total_facturas !== undefined && facturacionAvanzada.total_facturas > 0) 
+    ? facturacionAvanzada.total_facturas 
+    : (facturacion.total || 0);
+  const facturasPendientes = (facturacionAvanzada.total_facturas !== undefined && facturacionAvanzada.total_facturas > 0) 
+    ? facturacionAvanzada.facturas_pendientes 
+    : (facturacion.pendientes || 0);
+  const tasaCobro = (facturacionAvanzada.total_facturas !== undefined && facturacionAvanzada.total_facturas > 0) 
+    ? facturacionAvanzada.tasa_cobro 
+    : (totalFacturas > 0 ? (((totalFacturas - facturasPendientes) / totalFacturas) * 100).toFixed(1) : 0);
   
   autoTable(doc, {
     startY: yPos,
@@ -172,10 +195,11 @@ export const generarPDFMetricas = (dashboard, metricasAvanzadas, periodo) => {
   
   yPos += 8;
   
-  const totalReclamos = metricas.reclamos?.total || 1;
-  const pendientes = metricas.reclamos?.pendientes || 0;
-  const enProceso = metricas.reclamos?.en_proceso || 0;
-  const resueltos = metricas.reclamos?.resueltos || 0;
+  // Usar los mismos datos consolidados que en el resumen
+  const totalReclamos = totalReclamosResumen || 1;
+  const pendientes = reclamosPendientesResumen || 0;
+  const enProceso = reclamosEnProcesoResumen || 0;
+  const resueltos = reclamosResueltosResumen || 0;
   const tasaResolucion = ((resueltos / totalReclamos) * 100).toFixed(1);
   
   autoTable(doc, {
@@ -303,10 +327,8 @@ export const generarPDFMetricas = (dashboard, metricasAvanzadas, periodo) => {
   autoTable(doc, {
     startY: yPos,
     body: [
-      ['Total de empleados', `${metricas.empleados?.total || 0}`],
-      ['Operarios disponibles', `${metricas.empleados?.operarios || 0}`],
-      ['Supervisores', `${metricas.empleados?.supervisores || 0}`],
-      ['Operarios sin OTs asignadas', `${operariosActivos.inactivos || 0}`],
+      ['Total de operarios', `${operariosActivos.total_operarios || 0}`],
+      ['Operarios disponibles (sin OTs)', `${operariosActivos.inactivos || 0}`],
       ['Operarios con OTs activas', `${operariosActivos.con_ordenes || 0}`],
       ['Total de OTs activas', `${operariosActivos.total_ots_activas || 0}`]
     ],

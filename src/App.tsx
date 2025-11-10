@@ -29,6 +29,7 @@ import ItinerarioCuadrillas from './components/admin/ItinerarioCuadrillas';
 import ItinerarioOperario from './components/operario/ItinerarioOperario';
 import Reportes from './components/admin/Reportes';
 import OperariosEstado from './components/admin/OperariosEstado';
+import GestionCuentas from './components/admin/GestionCuentas';
 
 // Componente para rutas protegidas
 function RutaProtegida({ children }: { children: React.ReactNode }) {
@@ -296,6 +297,14 @@ function AppRoutes() {
         element={
           <RutaProtegida>
             <OperariosEstado />
+          </RutaProtegida>
+        }
+      />
+      <Route
+        path="/dashboard/admin/gestion-cuentas"
+        element={
+          <RutaProtegida>
+            <GestionCuentas />
           </RutaProtegida>
         }
       />

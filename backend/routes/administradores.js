@@ -47,6 +47,7 @@ router.get('/cuentas/:id/facturas', AdministradorController.obtenerFacturasCuent
 router.get('/cuentas/:id/reclamos', AdministradorController.obtenerReclamosCuenta);
 
 // Gestión de cuentas
+router.get('/cuentas', AdministradorController.listarCuentas);
 router.post('/cuentas', AdministradorController.crearCuenta);
 router.put('/cuentas/:id', AdministradorController.actualizarCuenta);
 

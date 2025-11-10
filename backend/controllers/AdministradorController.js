@@ -436,4 +436,31 @@ export default class AdministradorController {
       return respuestaError(res, 'Error al obtener servicios');
     }
   }
+
+  /**
+   * Listar todas las cuentas del sistema
+   */
+  static async listarCuentas(req, res) {
+    try {
+      const { activa, pagina = 1, limite = 50, busqueda, orden = 'numero_cuenta', direccion = 'ASC' } = req.query;
+      
+      const paginaNum = parseInt(pagina);
+      const limiteNum = parseInt(limite);
+      const offset = (paginaNum - 1) * limiteNum;
+      
+      const resultado = await Cuenta.listar({
+        activa: activa !== undefined ? activa === 'true' : null,
+        offset,
+        limite: limiteNum,
+        busqueda,
+        orden,
+        direccion
+      });
+      
+      return respuestaExitosa(res, resultado, 'Cuentas obtenidas exitosamente');
+    } catch (error) {
+      console.error('Error al listar cuentas:', error);
+      return respuestaError(res, 'Error al listar cuentas');
+    }
+  }
 }

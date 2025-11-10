@@ -140,6 +140,34 @@ class AdministradorService {
   }
 
   /**
+   * Listar todas las cuentas del sistema
+   */
+  async listarCuentas(filtros = {}) {
+    const params = new URLSearchParams();
+    
+    if (filtros.activa !== undefined) {
+      params.append('activa', filtros.activa);
+    }
+    if (filtros.pagina) {
+      params.append('pagina', filtros.pagina);
+    }
+    if (filtros.limite) {
+      params.append('limite', filtros.limite);
+    }
+    if (filtros.busqueda) {
+      params.append('busqueda', filtros.busqueda);
+    }
+    if (filtros.orden) {
+      params.append('orden', filtros.orden);
+    }
+    if (filtros.direccion) {
+      params.append('direccion', filtros.direccion);
+    }
+    
+    return apiClient.get(`/api/administradores/cuentas?${params.toString()}`);
+  }
+
+  /**
    * Obtener facturas de una cuenta específica
    */
   async obtenerFacturasCuenta(cuentaId) {

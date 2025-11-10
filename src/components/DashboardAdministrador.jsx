@@ -20,7 +20,8 @@ import {
   BarChart3,
   TrendingUp,
   Wrench,
-  Calendar
+  Calendar,
+  CreditCard
 } from 'lucide-react';
 
 export default function DashboardAdministrador() {
@@ -159,6 +160,14 @@ export default function DashboardAdministrador() {
               >
                 <BarChart3 className="h-4 w-4 mr-2" />
                 Ver Reportes
+              </Button>
+              <Button 
+                className="w-full justify-start" 
+                variant="outline"
+                onClick={() => navigate('/dashboard/admin/gestion-cuentas')}
+              >
+                <CreditCard className="h-4 w-4 mr-2" />
+                Gestión de Cuentas
               </Button>
             </CardContent>
           </Card>
