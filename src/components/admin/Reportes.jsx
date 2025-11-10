@@ -23,7 +23,8 @@ import {
   Clock,
   XCircle,
   Activity,
-  BarChart3
+  BarChart3,
+  CreditCard
 } from 'lucide-react';
 
 export default function Reportes() {
@@ -171,6 +172,10 @@ export default function Reportes() {
             </p>
           </div>
           <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={() => navigate('/dashboard/admin/gestion-cuentas')}>
+              <CreditCard className="h-4 w-4 mr-2" />
+              Gestión de Cuentas
+            </Button>
             <Button variant="outline" size="sm" onClick={handleDescargarPDF}>
               <FileText className="h-4 w-4 mr-2" />
               Exportar PDF
