@@ -57,7 +57,12 @@ El proyecto está basado en prototipos de Figma que incluyen:
 - `src/components/operario/` - Componentes del dashboard de operarios
 - `src/styles/` - Estilos globales y configuración de CSS
 - `src/guidelines/` - Documentación y guidelines del proyecto
-- `backend/` - API REST con Express y PostgreSQL
+- `api/` - API REST con Express y PostgreSQL (arquitectura MVC)
+  - `api/_lib/models/` - Modelos de datos
+  - `api/_lib/controllers/` - Lógica de negocio
+  - `api/_lib/routes/` - Definición de rutas
+  - `api/_lib/middleware/` - Middlewares (auth, validación)
+  - `api/_lib/utils/` - Utilidades compartidas
 - `docs/` - Documentación técnica del proyecto
 
 ## Instalación y Ejecución
@@ -83,14 +88,14 @@ git checkout integracion-base-datos
 npm install
 
 # Dependencias del backend
-cd backend
+cd api
 npm install
 cd ..
 ```
 
 #### 3. Configurar Variables de Entorno
 
-**Backend** - Crear `backend/.env`:
+**Backend** - Crear `api/.env`:
 ```bash
 PORT=3001
 DATABASE_URL=postgresql://DB_USER:DB_PASSWORD@localhost:5432/DB_NAME
@@ -256,7 +261,7 @@ El sistema incluye **11 usuarios pre-configurados** con diferentes roles:
 ### Backend Tests
 
 ```bash
-cd backend
+cd api
 npm test
 ```
 
@@ -360,11 +365,21 @@ Si se actualiza la imagen en Docker Hub con nuevos datos:
 ## Logs y Monitoreo
 
 ```bash
-# Ver logs del backend
-tail -f backend/server.log
+# Ver logs en tiempo real
+./logs.sh all
 
-# Ver logs del frontend
-tail -f frontend.log
+# Ver solo logs del backend
+./logs.sh backend
+
+# Ver solo logs del frontend
+./logs.sh frontend
+
+# Ver solo errores
+./logs.sh errors
+
+# O manualmente:
+tail -f logs/backend.log
+tail -f logs/frontend.log
 
 # Ver logs de PostgreSQL
 docker logs cooperativa-db -f
@@ -375,16 +390,19 @@ docker logs cooperativa-db -f
 ### El sistema no inicia
 
 ```bash
+# Verificar estado del sistema
+./status.sh
+
 # Verificar que Docker esté corriendo
 docker ps
 
 # Verificar puertos disponibles
-lsof -i :3000  # Frontend
+lsof -i :3002  # Frontend
 lsof -i :3001  # Backend
 lsof -i :5432  # PostgreSQL
 
 # Reiniciar todo
-./scripts/stop.sh && ./scripts/start.sh
+./restart.sh
 ```
 
 ### Error de autenticación
@@ -408,13 +426,27 @@ docker ps | grep cooperativa-db
 
 ## Deployment
 
-### Backend API
+### Vercel (Producción)
 
-El backend está preparado para deployment con:
-- Variables de entorno configurables
-- CORS configurado para producción
-- Logging de errores
-- Validaciones de seguridad
+El sistema está desplegado en Vercel con:
+- **Frontend**: Desplegado automáticamente desde la rama `main`
+- **Backend**: Funciones serverless en `/api` (sin duplicación de código)
+- **Base de Datos**: PostgreSQL externa (configurada vía variables de entorno)
+
+**Arquitectura Unificada:**
+- Un solo directorio `/api` funciona tanto para desarrollo local como producción
+- MVC preservado: models, controllers, routes en `api/_lib/`
+- Sin necesidad de sincronización manual entre carpetas
+
+### Variables de Entorno en Vercel
+
+Backend (Serverless Functions):
+- `DATABASE_URL`
+- `JWT_SECRET`
+- `NODE_ENV=production`
+
+Frontend:
+- `VITE_API_URL` (URL de tu API en Vercel)
 
 ### Frontend
 
