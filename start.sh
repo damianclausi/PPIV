@@ -72,8 +72,8 @@ if [ ! -d "node_modules" ]; then
 fi
 
 if [ ! -d "backend/node_modules" ]; then
-    echo -e "${YELLOW}📦 Instalando dependencias del backend...${NC}"
-    cd backend && npm install && cd ..
+    echo -e "${BLUE}📦 Instalando dependencias del backend...${NC}"
+    cd api && npm install && cd ..
 fi
 
 echo -e "${GREEN}✅ Dependencias verificadas${NC}"
@@ -84,7 +84,7 @@ mkdir -p logs
 
 # Paso 3: Iniciar Backend
 echo -e "${BLUE}📋 Paso 3: Iniciando Backend (Puerto 3001)...${NC}"
-cd backend
+cd api
 npm start > ../logs/backend.log 2>&1 &
 BACKEND_PID=$!
 cd ..
