@@ -54,6 +54,11 @@ router.put('/cuentas/:id', AdministradorController.actualizarCuenta);
 // Gestión de servicios
 router.get('/servicios', AdministradorController.listarServicios);
 
+// Gestión de materiales y stock
+router.get('/materiales/stock-bajo', AdministradorController.obtenerStockBajo);
+router.get('/materiales/resumen-stock', AdministradorController.obtenerResumenStock);
+router.get('/materiales', AdministradorController.listarMateriales);
+
 // Gestión de OTs Administrativas (sin empleado asignado)
 router.get('/ots/administrativas/resumen', OTAdministrativasController.obtenerResumen);
 router.get('/ots/administrativas', OTAdministrativasController.listar);

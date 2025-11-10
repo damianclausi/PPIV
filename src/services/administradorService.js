@@ -201,6 +201,27 @@ class AdministradorService {
   async listarServicios() {
     return apiClient.get('/api/administradores/servicios');
   }
+
+  /**
+   * Obtener materiales con stock bajo
+   */
+  async obtenerStockBajo() {
+    return apiClient.get('/api/administradores/materiales/stock-bajo');
+  }
+
+  /**
+   * Obtener resumen de stock de materiales
+   */
+  async obtenerResumenStock() {
+    return apiClient.get('/api/administradores/materiales/resumen-stock');
+  }
+
+  /**
+   * Listar todos los materiales
+   */
+  async listarMateriales() {
+    return apiClient.get('/api/administradores/materiales');
+  }
 }
 
 const administradorServiceInstance = new AdministradorService();

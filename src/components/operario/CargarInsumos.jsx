@@ -61,12 +61,25 @@ export default function CargarInsumos() {
     const material = materiales.find(m => m.material_id === parseInt(materialSeleccionado));
     if (!material) return;
 
+    const cantidadSolicitada = parseFloat(cantidad);
+    const stockDisponible = material.stock_actual || 0;
+
+    if (cantidadSolicitada > stockDisponible) {
+      alert(`Stock insuficiente. Disponible: ${stockDisponible} ${material.unidad_medida || ''}`);
+      return;
+    }
+
+    if (cantidadSolicitada <= 0) {
+      alert('La cantidad debe ser mayor a 0');
+      return;
+    }
+
     const nuevoMaterial = {
       id: Date.now(), // ID temporal para el frontend
       material_id: material.material_id,
       nombre: material.nombre,
       unidad_medida: material.unidad_medida,
-      cantidad: parseFloat(cantidad),
+      cantidad: cantidadSolicitada,
       observaciones: observacionesItem,
       imagenes: imagenes
     };
@@ -169,7 +182,7 @@ export default function CargarInsumos() {
                     <SelectContent>
                       {materiales.map((mat) => (
                         <SelectItem key={mat.material_id} value={mat.material_id.toString()}>
-                          {mat.nombre} {mat.codigo ? `(${mat.codigo})` : ''}
+                          {mat.nombre} {mat.codigo ? `(${mat.codigo})` : ''} - Stock: {mat.stock_actual || 0} {mat.unidad_medida || ''}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -181,6 +194,11 @@ export default function CargarInsumos() {
                     {materialSeleccionado && materiales.find(m => m.material_id === parseInt(materialSeleccionado))?.unidad_medida && (
                       <span className="text-xs text-muted-foreground ml-1">
                         ({materiales.find(m => m.material_id === parseInt(materialSeleccionado)).unidad_medida})
+                      </span>
+                    )}
+                    {materialSeleccionado && (
+                      <span className="text-xs text-muted-foreground ml-2">
+                        - Disponible: {materiales.find(m => m.material_id === parseInt(materialSeleccionado))?.stock_actual || 0}
                       </span>
                     )}
                   </Label>
