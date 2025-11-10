@@ -22,6 +22,10 @@ class ClienteController {
         return respuestaNoEncontrado(res, 'Perfil no encontrado');
       }
 
+      // Incluir las cuentas del socio en el perfil
+      const cuentas = await Socio.obtenerCuentas(socioId);
+      perfil.cuentas = cuentas || [];
+
       return respuestaExitosa(res, perfil, 'Perfil obtenido exitosamente');
     } catch (error) {
       console.error('Error al obtener perfil:', error);
@@ -62,12 +66,13 @@ class ClienteController {
         return respuestaProhibido(res, 'Usuario no es un socio');
       }
 
-      const { estado, limite = 10, offset = 0 } = req.query;
+      const { estado, limite = 10, offset = 0, cuenta_id } = req.query;
 
       const facturas = await Factura.obtenerPorSocio(socioId, {
         estado,
         limite: parseInt(limite),
-        offset: parseInt(offset)
+        offset: parseInt(offset),
+        cuenta_id: cuenta_id ? parseInt(cuenta_id) : null
       });
 
       return respuestaExitosa(res, facturas, 'Facturas obtenidas exitosamente');
@@ -114,12 +119,13 @@ class ClienteController {
         return respuestaProhibido(res, 'Usuario no es un socio');
       }
 
-      const { estado, limite = 20, offset = 0 } = req.query;
+      const { estado, limite = 20, offset = 0, cuenta_id } = req.query;
 
       const reclamos = await Reclamo.obtenerPorSocio(socioId, {
         estado,
         limite: parseInt(limite),
-        offset: parseInt(offset)
+        offset: parseInt(offset),
+        cuenta_id: cuenta_id ? parseInt(cuenta_id) : null
       });
 
       return respuestaExitosa(res, reclamos, 'Reclamos obtenidos exitosamente');

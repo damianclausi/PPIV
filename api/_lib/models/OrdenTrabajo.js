@@ -946,7 +946,7 @@ class OrdenTrabajo {
         ot.ot_id as id,
         ot.estado,
         ot.created_at as fecha_creacion,
-        ot.direccion_intervencion as domicilio,
+        COALESCE(ot.direccion_intervencion, ct.direccion) as domicilio,
         r.reclamo_id,
         r.descripcion,
         s.socio_id as nro_socio,

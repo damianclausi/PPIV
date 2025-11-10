@@ -4,7 +4,7 @@ class Factura {
   /**
    * Obtener facturas por socio
    */
-  static async obtenerPorSocio(socioId, { estado = null, limite = 10, offset = 0 }) {
+  static async obtenerPorSocio(socioId, { estado = null, limite = 10, offset = 0, cuenta_id = null }) {
     let query = `
       SELECT 
         f.factura_id,
@@ -24,6 +24,11 @@ class Factura {
     `;
 
     const params = [socioId];
+
+    if (cuenta_id) {
+      query += ` AND f.cuenta_id = $${params.length + 1}`;
+      params.push(cuenta_id);
+    }
 
     if (estado) {
       query += ` AND f.estado = $${params.length + 1}`;
@@ -152,6 +157,29 @@ class Factura {
       FROM factura
     `);
     return resultado.rows[0];
+  }
+
+  /**
+   * Listar facturas por cuenta
+   */
+  static async listarPorCuenta(cuentaId) {
+    const resultado = await pool.query(`
+      SELECT 
+        f.factura_id,
+        f.numero_factura,
+        f.periodo_facturacion,
+        f.fecha_emision,
+        f.fecha_vencimiento,
+        f.monto_total,
+        f.estado,
+        f.created_at,
+        f.updated_at
+      FROM factura f
+      WHERE f.cuenta_id = $1
+      ORDER BY f.fecha_emision DESC
+      LIMIT 50
+    `, [cuentaId]);
+    return resultado.rows;
   }
 }
 

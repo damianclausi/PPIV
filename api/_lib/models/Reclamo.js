@@ -5,7 +5,7 @@ class Reclamo {
   /**
    * Obtener reclamos por socio
    */
-  static async obtenerPorSocio(socioId, { estado = null, limite = 20, offset = 0 }) {
+  static async obtenerPorSocio(socioId, { estado = null, limite = 20, offset = 0, cuenta_id = null }) {
     let query = `
       SELECT 
         r.reclamo_id,
@@ -21,16 +21,26 @@ class Reclamo {
         t.nombre as tipo_reclamo,
         p.nombre as prioridad,
         c.numero_cuenta,
-        c.direccion
+        c.direccion,
+        v.valoracion_id,
+        v.calificacion,
+        v.comentario as comentario_valoracion,
+        v.fecha_valoracion
       FROM reclamo r
       INNER JOIN detalle_tipo_reclamo d ON r.detalle_id = d.detalle_id
       INNER JOIN tipo_reclamo t ON d.tipo_id = t.tipo_id
       INNER JOIN prioridad p ON r.prioridad_id = p.prioridad_id
       INNER JOIN cuenta c ON r.cuenta_id = c.cuenta_id
+      LEFT JOIN valoracion v ON r.reclamo_id = v.reclamo_id
       WHERE c.socio_id = $1
     `;
 
     const params = [socioId];
+
+    if (cuenta_id) {
+      query += ` AND r.cuenta_id = $${params.length + 1}`;
+      params.push(cuenta_id);
+    }
 
     if (estado) {
       query += ` AND r.estado = $${params.length + 1}`;
@@ -61,7 +71,11 @@ class Reclamo {
         s.nombre as socio_nombre,
         s.apellido as socio_apellido,
         s.telefono as socio_telefono,
-        ot.empleado_id as operario_asignado_id
+        ot.empleado_id as operario_asignado_id,
+        v.valoracion_id,
+        v.calificacion,
+        v.comentario as comentario_valoracion,
+        v.fecha_valoracion
       FROM reclamo r
       INNER JOIN detalle_tipo_reclamo d ON r.detalle_id = d.detalle_id
       INNER JOIN tipo_reclamo t ON d.tipo_id = t.tipo_id
@@ -69,6 +83,7 @@ class Reclamo {
       INNER JOIN cuenta c ON r.cuenta_id = c.cuenta_id
       LEFT JOIN socio s ON c.socio_id = s.socio_id
       LEFT JOIN orden_trabajo ot ON r.reclamo_id = ot.reclamo_id
+      LEFT JOIN valoracion v ON r.reclamo_id = v.reclamo_id
       WHERE r.reclamo_id = $1
     `, [reclamoId]);
   return resultado.rows[0];
@@ -238,13 +253,18 @@ class Reclamo {
         c.numero_cuenta,
         c.direccion,
         s.nombre as socio_nombre,
-        s.apellido as socio_apellido
+        s.apellido as socio_apellido,
+        v.valoracion_id,
+        v.calificacion,
+        v.comentario as comentario_valoracion,
+        v.fecha_valoracion
       FROM reclamo r
       INNER JOIN detalle_tipo_reclamo d ON r.detalle_id = d.detalle_id
       INNER JOIN tipo_reclamo t ON d.tipo_id = t.tipo_id
       INNER JOIN prioridad p ON r.prioridad_id = p.prioridad_id
       INNER JOIN cuenta c ON r.cuenta_id = c.cuenta_id
       INNER JOIN socio s ON c.socio_id = s.socio_id
+      LEFT JOIN valoracion v ON r.reclamo_id = v.reclamo_id
       WHERE 1=1
     `;
 
@@ -467,6 +487,35 @@ class Reclamo {
       RETURNING *
     `, [operarioId, reclamoId]);
     return resultado.rows[0];
+  }
+
+  /**
+   * Listar reclamos por cuenta
+   */
+  static async listarPorCuenta(cuentaId) {
+    const resultado = await pool.query(`
+      SELECT 
+        r.reclamo_id,
+        r.descripcion,
+        r.estado,
+        r.fecha_alta,
+        r.fecha_cierre,
+        r.prioridad_id,
+        p.nombre as prioridad,
+        tr.nombre as tipo_reclamo,
+        dtr.nombre as detalle_tipo,
+        e.nombre || ' ' || e.apellido as operario_asignado
+      FROM reclamo r
+      LEFT JOIN prioridad p ON r.prioridad_id = p.prioridad_id
+      INNER JOIN detalle_tipo_reclamo dtr ON r.detalle_id = dtr.detalle_id
+      INNER JOIN tipo_reclamo tr ON dtr.tipo_id = tr.tipo_id
+      LEFT JOIN orden_trabajo ot ON r.reclamo_id = ot.reclamo_id
+      LEFT JOIN empleado e ON ot.empleado_id = e.empleado_id
+      WHERE r.cuenta_id = $1
+      ORDER BY r.fecha_alta DESC
+      LIMIT 50
+    `, [cuentaId]);
+    return resultado.rows;
   }
 }
 
