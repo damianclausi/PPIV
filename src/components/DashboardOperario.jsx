@@ -469,8 +469,8 @@ export default function DashboardOperario() {
               </div>
               <div className="space-y-3">
                 {reclamosPendientes.length > 0 ? (
-                  reclamosPendientes.map(reclamo => (
-                    <ReclamoCard key={`pendiente-${reclamo.ot_id || reclamo.reclamo_id}`} reclamo={reclamo} />
+                  reclamosPendientes.map((reclamo, index) => (
+                    <ReclamoCard key={`pendiente-${reclamo.ot_id}-${reclamo.reclamo_id}-${index}`} reclamo={reclamo} />
                   ))
                 ) : (
                   <p className="text-center text-gray-500 text-sm py-8">
@@ -497,8 +497,8 @@ export default function DashboardOperario() {
               </div>
               <div className="space-y-3">
                 {reclamosEnCurso.length > 0 ? (
-                  reclamosEnCurso.map(reclamo => (
-                    <ReclamoCard key={`encurso-${reclamo.ot_id || reclamo.reclamo_id}`} reclamo={reclamo} />
+                  reclamosEnCurso.map((reclamo, index) => (
+                    <ReclamoCard key={`encurso-${reclamo.ot_id}-${reclamo.reclamo_id}-${index}`} reclamo={reclamo} />
                   ))
                 ) : (
                   <p className="text-center text-gray-500 text-sm py-8">
@@ -525,8 +525,8 @@ export default function DashboardOperario() {
               </div>
               <div className="space-y-3">
                 {reclamosResueltos.length > 0 ? (
-                  reclamosResueltos.map(reclamo => (
-                    <ReclamoCard key={`resuelto-${reclamo.ot_id || reclamo.reclamo_id}`} reclamo={reclamo} />
+                  reclamosResueltos.map((reclamo, index) => (
+                    <ReclamoCard key={`resuelto-${reclamo.ot_id}-${reclamo.reclamo_id}-${index}`} reclamo={reclamo} />
                   ))
                 ) : (
                   <p className="text-center text-gray-500 text-sm py-8">
@@ -557,9 +557,9 @@ export default function DashboardOperario() {
                           </h3>
                         </div>
                         <div className="space-y-3">
-                          {reclamosPendientes.map(reclamo => (
+                          {reclamosPendientes.map((reclamo, index) => (
                             <div 
-                              key={`lista-pendiente-${reclamo.ot_id || reclamo.reclamo_id}`}
+                              key={`lista-pendiente-${reclamo.ot_id}-${reclamo.reclamo_id}-${index}`}
                               onClick={() => navigate(`/dashboard/operario/ots-tecnicas/${reclamo.ot_id}`)}
                               className="p-4 border rounded-lg hover:shadow-md transition-all cursor-pointer bg-yellow-50"
                             >
@@ -614,9 +614,9 @@ export default function DashboardOperario() {
                           </h3>
                         </div>
                         <div className="space-y-3">
-                          {reclamosEnCurso.map(reclamo => (
+                          {reclamosEnCurso.map((reclamo, index) => (
                             <div 
-                              key={`lista-encurso-${reclamo.ot_id || reclamo.reclamo_id}`}
+                              key={`lista-encurso-${reclamo.ot_id}-${reclamo.reclamo_id}-${index}`}
                               onClick={() => navigate(`/dashboard/operario/ots-tecnicas/${reclamo.ot_id}`)}
                               className="p-4 border rounded-lg hover:shadow-md transition-all cursor-pointer bg-blue-50"
                             >
@@ -671,9 +671,9 @@ export default function DashboardOperario() {
                           </h3>
                         </div>
                         <div className="space-y-3">
-                          {reclamosResueltos.map(reclamo => (
+                          {reclamosResueltos.map((reclamo, index) => (
                             <div 
-                              key={`lista-resuelto-${reclamo.ot_id || reclamo.reclamo_id}`}
+                              key={`lista-resuelto-${reclamo.ot_id}-${reclamo.reclamo_id}-${index}`}
                               onClick={() => navigate(`/dashboard/operario/ots-tecnicas/${reclamo.ot_id}`)}
                               className="p-4 border rounded-lg hover:shadow-md transition-all cursor-pointer bg-green-50"
                             >
