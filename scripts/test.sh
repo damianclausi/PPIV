@@ -12,7 +12,7 @@ BLUE='\033[0;34m'
 RED='\033[0;31m'
 NC='\033[0m' # No Color
 
-cd backend
+cd api
 
 # 1. Tests Unitarios
 echo -e "${BLUE}[1/2]${NC} Tests Unitarios..."

@@ -71,7 +71,7 @@ if [ ! -d "node_modules" ]; then
     npm install
 fi
 
-if [ ! -d "backend/node_modules" ]; then
+if [ ! -d "api/node_modules" ]; then
     echo -e "${BLUE}📦 Instalando dependencias del backend...${NC}"
     cd api && npm install && cd ..
 fi
