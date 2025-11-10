@@ -179,13 +179,13 @@ export default function FacturasListado() {
 
   return (
     <CooperativaLayout titulo="Mis Facturas">
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6 px-4 sm:px-0">
         {/* Filtros */}
         <Card className="shadow-lg">
-          <CardHeader className="bg-gradient-to-r from-cooperativa-dark/5 to-cooperativa-blue/5">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-cooperativa-dark flex items-center gap-2">
-                <FileText className="h-5 w-5" />
+          <CardHeader className="bg-gradient-to-r from-cooperativa-dark/5 to-cooperativa-blue/5 p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
+              <CardTitle className="text-cooperativa-dark flex items-center gap-2 text-base sm:text-lg">
+                <FileText className="h-4 w-4 sm:h-5 sm:w-5" />
                 Filtros
               </CardTitle>
               {(filtros.estado !== 'todas' || inputPeriodo) && (
@@ -193,22 +193,22 @@ export default function FacturasListado() {
                   variant="outline" 
                   size="sm" 
                   onClick={limpiarFiltros}
-                  className="border-cooperativa-blue text-cooperativa-blue hover:bg-cooperativa-blue hover:text-white"
+                  className="border-cooperativa-blue text-cooperativa-blue hover:bg-cooperativa-blue hover:text-white text-xs sm:text-sm w-full sm:w-auto"
                 >
-                  <X className="h-4 w-4 mr-2" />
+                  <X className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
                   Limpiar filtros
                 </Button>
               )}
             </div>
           </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <CardContent className="p-4 sm:p-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">
                   Estado
                 </label>
                 <Select value={filtros.estado} onValueChange={handleFiltroEstado}>
-                  <SelectTrigger>
+                  <SelectTrigger className="text-sm">
                     <SelectValue placeholder="Estado" />
                   </SelectTrigger>
                   <SelectContent>
@@ -220,27 +220,28 @@ export default function FacturasListado() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">
                   Período
                 </label>
                 <Input 
                   placeholder="Ej: Nov 2024" 
                   value={inputPeriodo}
                   onChange={handleFiltroPeriodo}
+                  className="text-sm"
                 />
               </div>
             </div>
             
             {/* Indicador de filtros activos */}
             {(filtros.estado !== 'todas' || inputPeriodo) && (
-              <div className="mt-4 flex gap-2 flex-wrap">
+              <div className="mt-3 sm:mt-4 flex gap-2 flex-wrap">
                 {filtros.estado !== 'todas' && (
-                  <Badge variant="outline" className="bg-blue-50">
+                  <Badge variant="outline" className="bg-blue-50 text-xs">
                     Estado: {filtros.estado}
                   </Badge>
                 )}
                 {inputPeriodo && (
-                  <Badge variant="outline" className="bg-blue-50">
+                  <Badge variant="outline" className="bg-blue-50 text-xs">
                     Período: {inputPeriodo}
                   </Badge>
                 )}
@@ -260,13 +261,13 @@ export default function FacturasListado() {
 
         {/* Tabla de Facturas */}
         <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle>
+          <CardHeader className="p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+              <CardTitle className="text-base sm:text-lg">
                 Facturas ({facturasFiltradas.length})
               </CardTitle>
               {facturasFiltradas.length === 0 && facturasParaMostrar.length > 0 && (filtros.estado !== 'todas' || inputPeriodo) && (
-                <span className="text-sm text-gray-500">
+                <span className="text-xs sm:text-sm text-gray-500">
                   No se encontraron facturas con los filtros aplicados
                 </span>
               )}
@@ -274,47 +275,49 @@ export default function FacturasListado() {
           </CardHeader>
           <CardContent className="p-0">
             {facturasFiltradas.length === 0 ? (
-              <div className="p-8 text-center text-gray-500">
-                <p className="text-lg mb-2">No hay facturas para mostrar</p>
+              <div className="p-6 sm:p-8 text-center text-gray-500">
+                <p className="text-base sm:text-lg mb-2">No hay facturas para mostrar</p>
                 {(filtros.estado !== 'todas' || inputPeriodo) && (
-                  <Button variant="outline" size="sm" onClick={limpiarFiltros}>
+                  <Button variant="outline" size="sm" onClick={limpiarFiltros} className="text-xs sm:text-sm">
                     Limpiar filtros
                   </Button>
                 )}
               </div>
             ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Número</TableHead>
-                    <TableHead>Período</TableHead>
-                    <TableHead>Vencimiento</TableHead>
-                    <TableHead>Monto</TableHead>
-                    <TableHead>Estado</TableHead>
-                    <TableHead></TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {facturasFiltradas.map((factura) => (
-                    <TableRow
-                      key={factura.id}
-                      className="cursor-pointer hover:bg-gray-50"
-                      onClick={() => navigate(`/dashboard/cliente/factura/${factura.id}`)}
-                    >
-                      <TableCell>{factura.numero || 'N/A'}</TableCell>
-                      <TableCell>{factura.periodoFormateado || formatearMesAnio(factura.periodo) || 'N/A'}</TableCell>
-                      <TableCell>{factura.vencimientoFormateado || formatearFecha(factura.vencimiento) || 'N/A'}</TableCell>
-                      <TableCell>${factura.monto ? factura.monto.toFixed(2) : '0.00'}</TableCell>
-                      <TableCell>{getStatusBadge(factura.estado)}</TableCell>
-                      <TableCell>
-                        <Button size="sm" variant="ghost">
-                          Ver
-                        </Button>
-                      </TableCell>
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="text-xs sm:text-sm">Número</TableHead>
+                      <TableHead className="text-xs sm:text-sm hidden sm:table-cell">Período</TableHead>
+                      <TableHead className="text-xs sm:text-sm hidden md:table-cell">Vencimiento</TableHead>
+                      <TableHead className="text-xs sm:text-sm">Monto</TableHead>
+                      <TableHead className="text-xs sm:text-sm">Estado</TableHead>
+                      <TableHead className="hidden sm:table-cell"></TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {facturasFiltradas.map((factura) => (
+                      <TableRow
+                        key={factura.id}
+                        className="cursor-pointer hover:bg-gray-50"
+                        onClick={() => navigate(`/dashboard/cliente/factura/${factura.id}`)}
+                      >
+                        <TableCell className="text-xs sm:text-sm font-medium">{factura.numero || 'N/A'}</TableCell>
+                        <TableCell className="text-xs sm:text-sm hidden sm:table-cell">{factura.periodoFormateado || formatearMesAnio(factura.periodo) || 'N/A'}</TableCell>
+                        <TableCell className="text-xs sm:text-sm hidden md:table-cell">{factura.vencimientoFormateado || formatearFecha(factura.vencimiento) || 'N/A'}</TableCell>
+                        <TableCell className="text-xs sm:text-sm font-semibold">${factura.monto ? factura.monto.toFixed(2) : '0.00'}</TableCell>
+                        <TableCell className="text-xs">{getStatusBadge(factura.estado)}</TableCell>
+                        <TableCell className="hidden sm:table-cell">
+                          <Button size="sm" variant="ghost" className="text-xs">
+                            Ver
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
             )}
           </CardContent>
         </Card>

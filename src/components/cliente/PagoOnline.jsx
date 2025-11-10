@@ -281,48 +281,48 @@ export default function PagoOnline() {
   if (pagoExitoso) {
     return (
       <CooperativaLayout titulo="Pago Online - Confirmación">
-        <div className="max-w-2xl mx-auto space-y-6">
+        <div className="max-w-2xl mx-auto space-y-4 sm:space-y-6 px-4 sm:px-0">
           {/* Animación de éxito */}
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
             <Card className="border-green-200 bg-green-50">
-              <CardContent className="pt-6">
-                <div className="text-center space-y-4">
+              <CardContent className="p-4 sm:pt-6">
+                <div className="text-center space-y-3 sm:space-y-4">
                   <div className="flex justify-center">
-                    <div className="bg-green-100 p-4 rounded-full animate-in zoom-in duration-300">
-                      <CheckCircle className="h-16 w-16 text-green-600" />
+                    <div className="bg-green-100 p-3 sm:p-4 rounded-full animate-in zoom-in duration-300">
+                      <CheckCircle className="h-12 sm:h-16 w-12 sm:w-16 text-green-600" />
                     </div>
                   </div>
-                  <h2 className="text-2xl font-bold text-green-900">¡Pago Exitoso!</h2>
+                  <h2 className="text-xl sm:text-2xl font-bold text-green-900">¡Pago Exitoso!</h2>
                   
                   {/* Detalles del pago */}
-                  <div className="bg-white rounded-lg p-6 space-y-3">
+                  <div className="bg-white rounded-lg p-4 sm:p-6 space-y-3">
                     <div className="border-b pb-3">
-                      <p className="text-sm text-gray-600 mb-1">Código de Autorización</p>
-                      <p className="text-lg font-mono font-semibold text-gray-900">
+                      <p className="text-xs sm:text-sm text-gray-600 mb-1">Código de Autorización</p>
+                      <p className="text-base sm:text-lg font-mono font-semibold text-gray-900 break-all">
                         {respuestaPago?.codigo_autorizacion}
                       </p>
                     </div>
                     
-                    <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div className="grid grid-cols-2 gap-3 sm:gap-4 text-xs sm:text-sm">
                       <div>
                         <p className="text-gray-600">Factura</p>
                         <p className="font-semibold">#{facturaSeleccionada?.factura_id}</p>
                       </div>
                       <div>
                         <p className="text-gray-600">Fecha</p>
-                        <p className="font-semibold">
+                        <p className="font-semibold text-xs sm:text-sm">
                           {formatearFechaHora(respuestaPago?.fecha_transaccion)}
                         </p>
                       </div>
                       <div>
                         <p className="text-gray-600">Tarjeta</p>
-                        <p className="font-semibold">
+                        <p className="font-semibold text-xs sm:text-sm">
                           {respuestaPago?.tipo_tarjeta} •••• {respuestaPago?.ultimos_digitos}
                         </p>
                       </div>
                       <div>
                         <p className="text-gray-600">Monto</p>
-                        <p className="text-xl font-bold text-green-600">
+                        <p className="text-lg sm:text-xl font-bold text-green-600">
                           ${respuestaPago?.monto?.toLocaleString('es-AR')}
                         </p>
                       </div>
@@ -331,21 +331,21 @@ export default function PagoOnline() {
                   
                   <Alert className="bg-green-100 border-green-300">
                     <CheckCircle className="h-4 w-4 text-green-700" />
-                    <AlertDescription className="text-green-800">
+                    <AlertDescription className="text-green-800 text-xs sm:text-sm">
                       Se ha enviado un comprobante a tu email registrado
                     </AlertDescription>
                   </Alert>
                   
-                  <div className="pt-4 space-y-2">
+                  <div className="pt-3 sm:pt-4 space-y-2">
                     <Button
-                      className="w-full bg-green-600 hover:bg-green-700"
+                      className="w-full bg-green-600 hover:bg-green-700 text-xs sm:text-sm"
                       onClick={() => navigate('/dashboard')}
                     >
                       Volver al Dashboard
                     </Button>
                     <Button
                       variant="outline"
-                      className="w-full"
+                      className="w-full text-xs sm:text-sm"
                       onClick={() => {
                         reiniciarFormulario();
                         navigate('/dashboard/facturas');
@@ -355,7 +355,7 @@ export default function PagoOnline() {
                     </Button>
                     <Button
                       variant="ghost"
-                      className="w-full"
+                      className="w-full text-xs sm:text-sm"
                       onClick={reiniciarFormulario}
                     >
                       Realizar Otro Pago
@@ -368,8 +368,8 @@ export default function PagoOnline() {
 
           {/* Información adicional */}
           <Card>
-            <CardContent className="pt-6">
-              <div className="text-sm text-gray-600 space-y-2">
+            <CardContent className="p-4 sm:pt-6">
+              <div className="text-xs sm:text-sm text-gray-600 space-y-2">
                 <p className="font-semibold text-gray-900">Recordá:</p>
                 <ul className="list-disc list-inside space-y-1">
                   <li>Guardá el código de autorización para futuras consultas</li>
@@ -398,16 +398,16 @@ export default function PagoOnline() {
 
   return (
     <CooperativaLayout titulo="Pago Online">
-      <div className="max-w-4xl mx-auto space-y-6">
+      <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6 px-4 sm:px-0">
         {/* Facturas Pendientes */}
         <Card className="shadow-lg">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <FileText className="h-5 w-5" />
+          <CardHeader className="p-4 sm:p-6">
+            <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+              <FileText className="h-4 sm:h-5 w-4 sm:w-5" />
               Facturas Pendientes de Pago
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="space-y-2 sm:space-y-3 p-4 sm:p-6">
             {facturasImpagas.length === 0 ? (
               <Alert>
                 <CheckCircle className="h-4 w-4" />
@@ -442,23 +442,23 @@ export default function PagoOnline() {
                 return (
                   <div
                     key={factura.id}
-                    className={`p-4 border rounded-lg cursor-pointer transition-all ${
+                    className={`p-3 sm:p-4 border rounded-lg cursor-pointer transition-all ${
                       facturaSeleccionada?.id === factura.id
                         ? 'border-blue-500 bg-blue-50'
                         : 'border-gray-200 hover:bg-gray-50'
                     }`}
                     onClick={() => handleSeleccionarFactura(factura)}
                   >
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-2">
-                          <p className="font-semibold">{factura.numero}</p>
-                          <Badge variant="destructive">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                      <div className="flex-1 w-full">
+                        <div className="flex items-center gap-2 sm:gap-3 mb-2">
+                          <p className="font-semibold text-sm sm:text-base">{factura.numero}</p>
+                          <Badge variant="destructive" className="text-xs">
                             {factura.estado === 'vencida' ? 'Vencida' : 'Pendiente'}
                           </Badge>
                         </div>
-                        <div className="flex items-center gap-2 text-sm text-gray-600">
-                          <Calendar className="h-4 w-4" />
+                        <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600">
+                          <Calendar className="h-3 sm:h-4 w-3 sm:w-4" />
                           <span>
                             Vencimiento: {formatearFechaConFallback(factura.vencimiento)}
                           </span>
@@ -467,12 +467,12 @@ export default function PagoOnline() {
                           Período: {formatearMesAnio(factura.periodo)}
                         </p>
                       </div>
-                      <div className="text-right">
-                        <p className="text-2xl font-bold text-gray-900">
+                      <div className="text-right w-full sm:w-auto">
+                        <p className="text-xl sm:text-2xl font-bold text-gray-900">
                           ${factura.monto?.toFixed(2) || '0.00'}
                         </p>
                         {factura.estado === 'vencida' && (
-                          <Badge variant="destructive" className="mt-1">Vencida</Badge>
+                          <Badge variant="destructive" className="mt-1 text-xs">Vencida</Badge>
                         )}
                       </div>
                     </div>
@@ -496,16 +496,16 @@ export default function PagoOnline() {
         {/* Formulario de Pago */}
         {facturaSeleccionada && (
           <Card className="animate-in slide-in-from-bottom-4 duration-300">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <CreditCard className="h-5 w-5" />
+            <CardHeader className="p-4 sm:p-6">
+              <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                <CreditCard className="h-4 sm:h-5 w-4 sm:w-5" />
                 Datos de la Tarjeta
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-3 sm:space-y-4 p-4 sm:p-6">
               {/* Número de Tarjeta */}
               <div>
-                <label className="block text-sm font-medium mb-2">
+                <label className="block text-xs sm:text-sm font-medium mb-2">
                   Número de Tarjeta *
                 </label>
                 <div className="relative">
@@ -515,12 +515,12 @@ export default function PagoOnline() {
                     value={formPago.numeroTarjeta}
                     onChange={handleInputChange}
                     placeholder="1234 5678 9012 3456"
-                    className={`w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                    className={`w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
                       erroresValidacion.numeroTarjeta ? 'border-red-500' : 'border-gray-300'
                     }`}
                   />
                   {formPago.numeroTarjeta && (
-                    <div className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-gray-500">
+                    <div className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 text-[10px] sm:text-xs font-semibold text-gray-500">
                       {PasarelaPagoSimulada.detectarTipoTarjeta(formPago.numeroTarjeta)}
                     </div>
                   )}
@@ -531,9 +531,9 @@ export default function PagoOnline() {
               </div>
 
               {/* Vencimiento y CVV */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3 sm:gap-4">
                 <div>
-                  <label className="block text-sm font-medium mb-2">
+                  <label className="block text-xs sm:text-sm font-medium mb-2">
                     Vencimiento *
                   </label>
                   <input
@@ -542,7 +542,7 @@ export default function PagoOnline() {
                     value={formPago.vencimiento}
                     onChange={handleInputChange}
                     placeholder="MM/AA"
-                    className={`w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                    className={`w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
                       erroresValidacion.vencimiento ? 'border-red-500' : 'border-gray-300'
                     }`}
                   />
@@ -551,7 +551,7 @@ export default function PagoOnline() {
                   )}
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">
+                  <label className="block text-xs sm:text-sm font-medium mb-2">
                     CVV *
                   </label>
                   <input
@@ -561,7 +561,7 @@ export default function PagoOnline() {
                     onChange={handleInputChange}
                     placeholder="123"
                     maxLength="4"
-                    className={`w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                    className={`w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
                       erroresValidacion.cvv ? 'border-red-500' : 'border-gray-300'
                     }`}
                   />
@@ -573,7 +573,7 @@ export default function PagoOnline() {
 
               {/* Nombre del Titular */}
               <div>
-                <label className="block text-sm font-medium mb-2">
+                <label className="block text-xs sm:text-sm font-medium mb-2">
                   Nombre del Titular *
                 </label>
                 <input
@@ -582,7 +582,7 @@ export default function PagoOnline() {
                   value={formPago.nombreTitular}
                   onChange={handleInputChange}
                   placeholder="Como figura en la tarjeta"
-                  className={`w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 uppercase ${
+                  className={`w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 uppercase ${
                     erroresValidacion.nombreTitular ? 'border-red-500' : 'border-gray-300'
                   }`}
                 />
@@ -592,38 +592,38 @@ export default function PagoOnline() {
               </div>
 
               {/* Total y Botón de Pago */}
-              <div className="pt-4 border-t">
-                <div className="space-y-2 mb-4">
-                  <div className="flex items-center justify-between text-sm text-gray-600">
+              <div className="pt-3 sm:pt-4 border-t">
+                <div className="space-y-2 mb-3 sm:mb-4">
+                  <div className="flex items-center justify-between text-xs sm:text-sm text-gray-600">
                     <span>Factura:</span>
                     <span>{facturaSeleccionada.numero}</span>
                   </div>
-                  <div className="flex items-center justify-between text-sm text-gray-600">
+                  <div className="flex items-center justify-between text-xs sm:text-sm text-gray-600">
                     <span>Período:</span>
                     <span>{formatearMesAnio(facturaSeleccionada.periodo)}</span>
                   </div>
                   <div className="flex items-center justify-between pt-2 border-t">
-                    <span className="text-lg font-semibold">Total a Pagar:</span>
-                    <span className="text-3xl font-bold text-blue-600">
+                    <span className="text-base sm:text-lg font-semibold">Total a Pagar:</span>
+                    <span className="text-2xl sm:text-3xl font-bold text-blue-600">
                       ${facturaSeleccionada.monto?.toFixed(2) || '0.00'}
                     </span>
                   </div>
                 </div>
 
                 <Button
-                  className="w-full"
+                  className="w-full text-sm sm:text-base"
                   size="lg"
                   onClick={handlePagar}
                   disabled={procesando}
                 >
                   {procesando ? (
                     <>
-                      <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                      <Loader2 className="h-4 sm:h-5 w-4 sm:w-5 mr-2 animate-spin" />
                       Procesando Pago...
                     </>
                   ) : (
                     <>
-                      <DollarSign className="h-5 w-5 mr-2" />
+                      <DollarSign className="h-4 sm:h-5 w-4 sm:w-5 mr-2" />
                       Pagar Ahora
                     </>
                   )}
@@ -635,10 +635,10 @@ export default function PagoOnline() {
 
         {/* Información de Seguridad */}
         <Card className="border-blue-200 bg-blue-50">
-          <CardContent className="pt-6">
-            <div className="flex gap-3">
-              <Shield className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
-              <div className="text-sm text-blue-900">
+          <CardContent className="p-4 sm:pt-6">
+            <div className="flex gap-2 sm:gap-3">
+              <Shield className="h-4 sm:h-5 w-4 sm:w-5 text-blue-600 flex-shrink-0 mt-0.5" />
+              <div className="text-xs sm:text-sm text-blue-900">
                 <p className="font-medium mb-1">Pago 100% Seguro</p>
                 <p className="text-blue-700">
                   Tus datos están protegidos con encriptación SSL de última generación. 

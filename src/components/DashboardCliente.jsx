@@ -106,59 +106,59 @@ export default function DashboardCliente() {
 
   return (
     <CooperativaLayout titulo="Panel de Control">
-      <div className="space-y-8">
+      <div className="space-y-6 sm:space-y-8 px-4 sm:px-0">
         {/* Selector de Cuentas */}
         {cuentas.length > 0 && (
           <Card className="border-2 border-cooperativa-blue/20 shadow-lg">
-            <CardHeader className="bg-gradient-to-r from-cooperativa-dark to-cooperativa-blue text-white">
-              <CardTitle className="flex items-center gap-2">
-                <CreditCard className="h-5 w-5" />
+            <CardHeader className="bg-gradient-to-r from-cooperativa-dark to-cooperativa-blue text-white p-4 sm:p-6">
+              <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                <CreditCard className="h-4 w-4 sm:h-5 sm:w-5" />
                 Mis Cuentas
               </CardTitle>
-              <CardDescription className="text-white/90">
+              <CardDescription className="text-white/90 text-xs sm:text-sm">
                 Selecciona una cuenta para ver su información detallada
               </CardDescription>
             </CardHeader>
-            <CardContent className="pt-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <CardContent className="pt-4 sm:pt-6 p-4 sm:p-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                 {cuentas.map((cuenta) => (
                   <div
                     key={cuenta.cuenta_id}
                     onClick={() => handleSeleccionarCuenta(cuenta.cuenta_id)}
-                    className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${
+                    className={`p-3 sm:p-4 border-2 rounded-lg cursor-pointer transition-all ${
                       cuentaSeleccionada === cuenta.cuenta_id
                         ? 'border-cooperativa-blue bg-cooperativa-blue/10 shadow-md ring-2 ring-cooperativa-blue/30'
                         : 'border-gray-200 hover:border-cooperativa-blue/50 hover:bg-gray-50'
                     }`}
                   >
                     <div className="flex items-start justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        <span className="font-bold text-cooperativa-dark">
+                      <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                        <span className="font-bold text-cooperativa-dark text-sm sm:text-base">
                           #{cuenta.numero_cuenta}
                         </span>
                         {cuenta.principal && (
-                          <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                          <span className="px-1.5 sm:px-2 py-0.5 text-[10px] sm:text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
                             Principal
                           </span>
                         )}
                       </div>
                       {cuentaSeleccionada === cuenta.cuenta_id && (
-                        <CheckCircle className="h-5 w-5 text-cooperativa-blue" />
+                        <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-cooperativa-blue flex-shrink-0" />
                       )}
                     </div>
-                    <div className="flex items-start gap-2 text-sm text-gray-600">
-                      <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                      <span>{cuenta.direccion}</span>
+                    <div className="flex items-start gap-2 text-xs sm:text-sm text-gray-600">
+                      <MapPin className="h-3 w-3 sm:h-4 sm:w-4 mt-0.5 flex-shrink-0" />
+                      <span className="line-clamp-2">{cuenta.direccion}</span>
                     </div>
                     <div className="mt-2 pt-2 border-t border-gray-200">
-                      <span className="text-xs text-gray-500">Servicio: </span>
-                      <span className="text-xs font-medium text-cooperativa-dark">
+                      <span className="text-[10px] sm:text-xs text-gray-500">Servicio: </span>
+                      <span className="text-[10px] sm:text-xs font-medium text-cooperativa-dark">
                         {cuenta.servicio_nombre || 'No especificado'}
                       </span>
                     </div>
                     {(cuenta.deuda && cuenta.deuda > 0) && (
                       <div className="mt-2 pt-2 border-t border-red-200">
-                        <span className="text-xs font-semibold text-red-600">
+                        <span className="text-[10px] sm:text-xs font-semibold text-red-600">
                           Deuda: ${Number(cuenta.deuda).toFixed(2)}
                         </span>
                       </div>
@@ -171,17 +171,17 @@ export default function DashboardCliente() {
         )}
 
         {/* Cards de Resumen con estilo Edenor */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {/* Estado del Servicio */}
           <Card className="border-l-4 border-l-cooperativa-teal shadow-lg hover:shadow-xl transition-shadow">
-            <CardHeader className="flex flex-row items-center space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-cooperativa-dark">
+            <CardHeader className="flex flex-row items-center space-y-0 pb-2 p-4 sm:p-6">
+              <CardTitle className="text-xs sm:text-sm font-medium text-cooperativa-dark">
                 Estado del Servicio
               </CardTitle>
-              <CheckCircle className="h-5 w-5 ml-auto text-cooperativa-teal" />
+              <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 ml-auto text-cooperativa-teal" />
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-cooperativa-dark">
+            <CardContent className="p-4 sm:p-6 pt-0">
+              <div className="text-xl sm:text-2xl font-bold text-cooperativa-dark">
                 {cuentaActual?.activa ? 'Activo' : 'Inactivo'}
               </div>
               {cuentaActual && (
@@ -200,27 +200,27 @@ export default function DashboardCliente() {
 
           {/* Facturas Pendientes */}
           <Card className="border-l-4 border-l-cooperativa-blue shadow-lg hover:shadow-xl transition-shadow">
-            <CardHeader className="flex flex-row items-center space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-cooperativa-dark">
+            <CardHeader className="flex flex-row items-center space-y-0 pb-2 p-4 sm:p-6">
+              <CardTitle className="text-xs sm:text-sm font-medium text-cooperativa-dark">
                 Facturas Pendientes
               </CardTitle>
-              <FileText className="h-5 w-5 ml-auto text-cooperativa-blue" />
+              <FileText className="h-4 w-4 sm:h-5 sm:w-5 ml-auto text-cooperativa-blue" />
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-4 sm:p-6 pt-0">
               {cargandoCuentas ? (
                 <Skeleton className="h-8 w-32" />
               ) : (
                 <>
-                  <div className="text-2xl font-bold text-cooperativa-dark">
+                  <div className="text-xl sm:text-2xl font-bold text-cooperativa-dark">
                     ${Number(montoPendiente).toFixed(2)}
                   </div>
-                  <p className="text-xs text-muted-foreground mt-1">
+                  <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">
                     {facturasPendientes.length} factura(s) pendiente(s)
                   </p>
                   <Button
                     variant="link"
                     size="sm"
-                    className="mt-2 h-auto p-0 text-cooperativa-blue hover:text-cooperativa-light"
+                    className="mt-2 h-auto p-0 text-xs sm:text-sm text-cooperativa-blue hover:text-cooperativa-light"
                     onClick={() => navigate('/dashboard/facturas')}
                   >
                     Ver detalles →
@@ -232,27 +232,27 @@ export default function DashboardCliente() {
 
           {/* Reclamos Activos */}
           <Card className="border-l-4 border-l-orange-500 shadow-lg hover:shadow-xl transition-shadow">
-            <CardHeader className="flex flex-row items-center space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-cooperativa-dark">
+            <CardHeader className="flex flex-row items-center space-y-0 pb-2 p-4 sm:p-6">
+              <CardTitle className="text-xs sm:text-sm font-medium text-cooperativa-dark">
                 Reclamos Activos
               </CardTitle>
-              <Bell className="h-5 w-5 ml-auto text-orange-500" />
+              <Bell className="h-4 w-4 sm:h-5 sm:w-5 ml-auto text-orange-500" />
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-4 sm:p-6 pt-0">
               {cargandoCuentas ? (
                 <Skeleton className="h-8 w-16" />
               ) : (
                 <>
-                  <div className="text-2xl font-bold text-cooperativa-dark">
+                  <div className="text-xl sm:text-2xl font-bold text-cooperativa-dark">
                     {reclamosActivos.length}
                   </div>
-                  <p className="text-xs text-muted-foreground mt-1">
+                  <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">
                     {reclamosActivos.filter(r => r.estado === 'PENDIENTE').length} pendiente(s), {reclamosActivos.filter(r => r.estado === 'EN_PROCESO').length} en curso
                   </p>
                   <Button
                     variant="link"
                     size="sm"
-                    className="mt-2 h-auto p-0 text-orange-500 hover:text-orange-600"
+                    className="mt-2 h-auto p-0 text-xs sm:text-sm text-orange-500 hover:text-orange-600"
                     onClick={() => navigate('/dashboard/reclamos')}
                   >
                     Ver detalles →
@@ -264,35 +264,35 @@ export default function DashboardCliente() {
         </div>
 
         {/* Grid Inferior - 2 Columnas */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
           {/* Acciones Rápidas */}
           <Card className="shadow-lg">
-            <CardHeader className="bg-gradient-to-r from-cooperativa-dark to-cooperativa-blue text-white rounded-t-lg">
-              <CardTitle>Acciones Rápidas</CardTitle>
-              <CardDescription className="text-white/80">
+            <CardHeader className="bg-gradient-to-r from-cooperativa-dark to-cooperativa-blue text-white rounded-t-lg p-4 sm:p-6">
+              <CardTitle className="text-base sm:text-lg">Acciones Rápidas</CardTitle>
+              <CardDescription className="text-white/80 text-xs sm:text-sm">
                 Accede a las funcionalidades principales
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-3 pt-6">
+            <CardContent className="space-y-2 sm:space-y-3 pt-4 sm:pt-6 p-4 sm:p-6">
               <Button 
-                className="w-full justify-start bg-cooperativa-blue hover:bg-cooperativa-light text-white shadow-md" 
+                className="w-full justify-start bg-cooperativa-blue hover:bg-cooperativa-light text-white shadow-md text-sm sm:text-base py-2 sm:py-2.5" 
                 onClick={() => navigate('/dashboard/facturas')}
               >
-                <FileText className="h-4 w-4 mr-2" />
+                <FileText className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
                 Ver Facturas
               </Button>
               <Button 
-                className="w-full justify-start bg-cooperativa-cyan hover:bg-cooperativa-teal text-white shadow-md" 
+                className="w-full justify-start bg-cooperativa-cyan hover:bg-cooperativa-teal text-white shadow-md text-sm sm:text-base py-2 sm:py-2.5" 
                 onClick={() => navigate('/dashboard/reclamos')}
               >
-                <Bell className="h-4 w-4 mr-2" />
+                <Bell className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
                 Mis Reclamos
               </Button>
               <Button 
-                className="w-full justify-start bg-cooperativa-teal hover:bg-green-600 text-white shadow-md"
+                className="w-full justify-start bg-cooperativa-teal hover:bg-green-600 text-white shadow-md text-sm sm:text-base py-2 sm:py-2.5"
                 onClick={() => navigate('/dashboard/pagar-online')}
               >
-                <DollarSign className="h-4 w-4 mr-2" />
+                <DollarSign className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
                 Pagar Online
               </Button>
             </CardContent>
@@ -300,31 +300,31 @@ export default function DashboardCliente() {
 
           {/* Información Personal */}
           <Card className="shadow-lg">
-            <CardHeader className="bg-gradient-to-r from-cooperativa-dark to-cooperativa-blue text-white rounded-t-lg">
-              <CardTitle>Mi Información</CardTitle>
-              <CardDescription className="text-white/80">
+            <CardHeader className="bg-gradient-to-r from-cooperativa-dark to-cooperativa-blue text-white rounded-t-lg p-4 sm:p-6">
+              <CardTitle className="text-base sm:text-lg">Mi Información</CardTitle>
+              <CardDescription className="text-white/80 text-xs sm:text-sm">
                 Datos de tu cuenta
               </CardDescription>
             </CardHeader>
-            <CardContent className="pt-6">
-              <div className="space-y-4">
-                <div className="border-l-2 border-cooperativa-cyan pl-3">
-                  <p className="text-xs font-medium text-muted-foreground">Nombre Completo</p>
-                  <p className="text-sm font-semibold text-cooperativa-dark">
+            <CardContent className="pt-4 sm:pt-6 p-4 sm:p-6">
+              <div className="space-y-3 sm:space-y-4">
+                <div className="border-l-2 border-cooperativa-cyan pl-2 sm:pl-3">
+                  <p className="text-[10px] sm:text-xs font-medium text-muted-foreground">Nombre Completo</p>
+                  <p className="text-xs sm:text-sm font-semibold text-cooperativa-dark">
                     {perfil?.nombre} {perfil?.apellido}
                   </p>
                 </div>
-                <div className="border-l-2 border-cooperativa-blue pl-3">
-                  <p className="text-xs font-medium text-muted-foreground">DNI</p>
-                  <p className="text-sm font-semibold text-cooperativa-dark">{perfil?.dni}</p>
+                <div className="border-l-2 border-cooperativa-blue pl-2 sm:pl-3">
+                  <p className="text-[10px] sm:text-xs font-medium text-muted-foreground">DNI</p>
+                  <p className="text-xs sm:text-sm font-semibold text-cooperativa-dark">{perfil?.dni}</p>
                 </div>
-                <div className="border-l-2 border-cooperativa-cyan pl-3">
-                  <p className="text-xs font-medium text-muted-foreground">Email</p>
-                  <p className="text-sm font-semibold text-cooperativa-dark">{perfil?.email}</p>
+                <div className="border-l-2 border-cooperativa-cyan pl-2 sm:pl-3">
+                  <p className="text-[10px] sm:text-xs font-medium text-muted-foreground">Email</p>
+                  <p className="text-xs sm:text-sm font-semibold text-cooperativa-dark break-all">{perfil?.email}</p>
                 </div>
-                <div className="border-l-2 border-cooperativa-blue pl-3">
-                  <p className="text-xs font-medium text-muted-foreground">Teléfono</p>
-                  <p className="text-sm font-semibold text-cooperativa-dark">
+                <div className="border-l-2 border-cooperativa-blue pl-2 sm:pl-3">
+                  <p className="text-[10px] sm:text-xs font-medium text-muted-foreground">Teléfono</p>
+                  <p className="text-xs sm:text-sm font-semibold text-cooperativa-dark">
                     {perfil?.telefono || 'No especificado'}
                   </p>
                 </div>
