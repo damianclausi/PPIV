@@ -46,6 +46,13 @@ router.get('/empleados', AdministradorController.listarEmpleados);
 router.get('/cuentas/:id/facturas', AdministradorController.obtenerFacturasCuenta);
 router.get('/cuentas/:id/reclamos', AdministradorController.obtenerReclamosCuenta);
 
+// Gestión de cuentas
+router.post('/cuentas', AdministradorController.crearCuenta);
+router.put('/cuentas/:id', AdministradorController.actualizarCuenta);
+
+// Gestión de servicios
+router.get('/servicios', AdministradorController.listarServicios);
+
 // Gestión de OTs Administrativas (sin empleado asignado)
 router.get('/ots/administrativas/resumen', OTAdministrativasController.obtenerResumen);
 router.get('/ots/administrativas', OTAdministrativasController.listar);

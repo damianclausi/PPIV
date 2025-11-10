@@ -7,6 +7,8 @@ import Empleado from '../models/Empleado.js';
 import Socio from '../models/Socio.js';
 import Reclamo from '../models/Reclamo.js';
 import Factura from '../models/Factura.js';
+import Cuenta from '../models/Cuenta.js';
+import Servicio from '../models/Servicio.js';
 import { respuestaExitosa, respuestaError, respuestaNoEncontrado } from '../utils/respuestas.js';
 
 export default class AdministradorController {
@@ -376,6 +378,62 @@ export default class AdministradorController {
     } catch (error) {
       console.error('Error al obtener reclamos de cuenta:', error);
       return respuestaError(res, 'Error al obtener reclamos de la cuenta');
+    }
+  }
+
+  /**
+   * Crear nueva cuenta para un socio
+   */
+  static async crearCuenta(req, res) {
+    try {
+      const datos = req.body;
+      
+      // Validar campos requeridos
+      if (!datos.socio_id || !datos.direccion || !datos.servicio_id) {
+        return respuestaError(res, 'Faltan campos requeridos (socio_id, direccion, servicio_id)', 400);
+      }
+      
+      const cuenta = await Cuenta.crear(datos);
+      
+      return respuestaExitosa(res, cuenta, 'Cuenta y medidor creados exitosamente', 201);
+    } catch (error) {
+      console.error('Error al crear cuenta:', error);
+      return respuestaError(res, 'Error al crear cuenta: ' + error.message);
+    }
+  }
+
+  /**
+   * Actualizar cuenta
+   */
+  static async actualizarCuenta(req, res) {
+    try {
+      const { id } = req.params;
+      const datos = req.body;
+      
+      const cuenta = await Cuenta.actualizar(id, datos);
+      
+      if (!cuenta) {
+        return respuestaNoEncontrado(res, 'Cuenta no encontrada');
+      }
+      
+      return respuestaExitosa(res, cuenta, 'Cuenta actualizada exitosamente');
+    } catch (error) {
+      console.error('Error al actualizar cuenta:', error);
+      return respuestaError(res, 'Error al actualizar cuenta: ' + error.message);
+    }
+  }
+
+  /**
+   * Listar todos los servicios disponibles
+   */
+  static async listarServicios(req, res) {
+    try {
+      const servicios = await Servicio.listar();
+      
+      return respuestaExitosa(res, servicios, 'Servicios obtenidos exitosamente');
+    } catch (error) {
+      console.error('Error al listar servicios:', error);
+      return respuestaError(res, 'Error al obtener servicios');
     }
   }
 }
