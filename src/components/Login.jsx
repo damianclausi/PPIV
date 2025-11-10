@@ -63,39 +63,39 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-cooperativa-gradient px-4 py-8">
+    <div className="min-h-screen flex items-center justify-center bg-cooperativa-gradient px-4 py-8 sm:py-12">
       {/* Logo y Título Superior */}
-      <div className="absolute top-8 left-0 right-0 text-center">
-        <div className="flex justify-center mb-4">
-          <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4 shadow-xl">
+      <div className="absolute top-4 sm:top-8 left-0 right-0 text-center px-4">
+        <div className="flex justify-center mb-2 sm:mb-4">
+          <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-2 sm:p-4 shadow-xl">
             <img
               src={logoImage}
               alt="Logo Cooperativa"
-              className="h-16 w-16 object-contain"
+              className="h-12 w-12 sm:h-16 sm:w-16 object-contain"
             />
           </div>
         </div>
-        <h1 className="text-4xl font-bold text-white mb-2">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-1 sm:mb-2">
           Cooperativa Eléctrica
         </h1>
-        <p className="text-xl text-white/90">
+        <p className="text-base sm:text-lg md:text-xl text-white/90">
           Gobernador Ugarte
         </p>
       </div>
 
       {/* Card de Login */}
-      <Card className="w-full max-w-md shadow-2xl border-0 mt-32">
-        <CardHeader className="space-y-1 bg-gradient-to-r from-cooperativa-dark to-cooperativa-blue text-white rounded-t-lg">
-          <CardTitle className="text-2xl font-bold text-center">
+      <Card className="w-full max-w-md shadow-2xl border-0 mt-28 sm:mt-32">
+        <CardHeader className="space-y-1 bg-gradient-to-r from-cooperativa-dark to-cooperativa-blue text-white rounded-t-lg p-4 sm:p-6">
+          <CardTitle className="text-xl sm:text-2xl font-bold text-center">
             Iniciar Sesión
           </CardTitle>
-          <CardDescription className="text-center text-white/90">
+          <CardDescription className="text-center text-white/90 text-sm sm:text-base">
             Ingresa tus credenciales para acceder al sistema
           </CardDescription>
         </CardHeader>
-        <CardContent className="pt-6">
+        <CardContent className="pt-4 sm:pt-6 p-4 sm:p-6">
           {mostrarError && error && (
-            <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-[9999] w-full max-w-md px-4">
+            <div className="fixed top-4 left-4 right-4 sm:left-1/2 sm:right-auto sm:transform sm:-translate-x-1/2 z-[9999] sm:w-full sm:max-w-md">
               <Alert variant="destructive" className="border-4 border-red-600 bg-red-100 shadow-2xl relative">
                 <button
                   onClick={() => {
@@ -108,10 +108,10 @@ export default function Login() {
                 >
                   ×
                 </button>
-                <AlertDescription className="text-red-900 font-extrabold text-center py-4 pr-8 flex flex-col items-center gap-3">
-                  <span className="text-5xl">⚠️</span>
-                  <span className="text-lg leading-tight">{error}</span>
-                  <span className="text-sm font-normal text-red-700 mt-2">
+                <AlertDescription className="text-red-900 font-extrabold text-center py-3 sm:py-4 pr-8 flex flex-col items-center gap-2 sm:gap-3">
+                  <span className="text-3xl sm:text-5xl">⚠️</span>
+                  <span className="text-base sm:text-lg leading-tight">{error}</span>
+                  <span className="text-xs sm:text-sm font-normal text-red-700 mt-1 sm:mt-2">
                     Click en la X para cerrar este mensaje
                   </span>
                 </AlertDescription>
@@ -171,59 +171,59 @@ export default function Login() {
             </Button>
 
             {/* Usuarios de Prueba */}
-            <div className="mt-6 pt-6 border-t border-gray-200">
-              <p className="text-xs font-semibold text-cooperativa-dark mb-3 text-center">
+            <div className="mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-gray-200">
+              <p className="text-xs sm:text-sm font-semibold text-cooperativa-dark mb-2 sm:mb-3 text-center">
                 Usuarios de Prueba (contraseña: password123)
               </p>
               
-              <div className="space-y-2">
+              <div className="space-y-1.5 sm:space-y-2">
                 {/* Cliente */}
-                <div className="bg-cooperativa-teal/10 border border-cooperativa-teal/30 rounded-lg p-3 hover:shadow-md transition-shadow">
-                  <p className="text-xs font-bold text-cooperativa-teal mb-1.5">👤 CLIENTE</p>
+                <div className="bg-cooperativa-teal/10 border border-cooperativa-teal/30 rounded-lg p-2 sm:p-3 hover:shadow-md transition-shadow">
+                  <p className="text-xs font-bold text-cooperativa-teal mb-1 sm:mb-1.5">👤 CLIENTE</p>
                   <button
                     type="button"
                     onClick={() => {
                       setEmail('mariaelena.gonzalez@hotmail.com');
                       setPassword('password123');
                     }}
-                    className="text-xs text-cooperativa-dark hover:text-cooperativa-blue font-mono break-all text-left w-full transition-colors"
+                    className="text-[10px] sm:text-xs text-cooperativa-dark hover:text-cooperativa-blue font-mono break-all text-left w-full transition-colors"
                   >
                     mariaelena.gonzalez@hotmail.com
                   </button>
                 </div>
 
                 {/* Operario */}
-                <div className="bg-cooperativa-blue/10 border border-cooperativa-blue/30 rounded-lg p-3 hover:shadow-md transition-shadow">
-                  <p className="text-xs font-bold text-cooperativa-blue mb-1.5">🔧 OPERARIO</p>
+                <div className="bg-cooperativa-blue/10 border border-cooperativa-blue/30 rounded-lg p-2 sm:p-3 hover:shadow-md transition-shadow">
+                  <p className="text-xs font-bold text-cooperativa-blue mb-1 sm:mb-1.5">🔧 OPERARIO</p>
                   <button
                     type="button"
                     onClick={() => {
                       setEmail('pedro.electricista@cooperativa-ugarte.com.ar');
                       setPassword('password123');
                     }}
-                    className="text-xs text-cooperativa-dark hover:text-cooperativa-blue font-mono break-all text-left w-full transition-colors"
+                    className="text-[10px] sm:text-xs text-cooperativa-dark hover:text-cooperativa-blue font-mono break-all text-left w-full transition-colors"
                   >
                     pedro.electricista@cooperativa-ugarte.com.ar
                   </button>
                 </div>
 
                 {/* Administrador */}
-                <div className="bg-cooperativa-cyan/10 border border-cooperativa-cyan/30 rounded-lg p-3 hover:shadow-md transition-shadow">
-                  <p className="text-xs font-bold text-cooperativa-cyan mb-1.5">⚡ ADMINISTRADOR</p>
+                <div className="bg-cooperativa-cyan/10 border border-cooperativa-cyan/30 rounded-lg p-2 sm:p-3 hover:shadow-md transition-shadow">
+                  <p className="text-xs font-bold text-cooperativa-cyan mb-1 sm:mb-1.5">⚡ ADMINISTRADOR</p>
                   <button
                     type="button"
                     onClick={() => {
                       setEmail('monica.administradora@cooperativa-ugarte.com.ar');
                       setPassword('password123');
                     }}
-                    className="text-xs text-cooperativa-dark hover:text-cooperativa-cyan font-mono break-all text-left w-full transition-colors"
+                    className="text-[10px] sm:text-xs text-cooperativa-dark hover:text-cooperativa-cyan font-mono break-all text-left w-full transition-colors"
                   >
                     monica.administradora@cooperativa-ugarte.com.ar
                   </button>
                 </div>
               </div>
 
-              <p className="text-xs text-gray-500 mt-3 text-center">
+              <p className="text-[10px] sm:text-xs text-gray-500 mt-2 sm:mt-3 text-center">
                 💡 Click en el email para autocompletar
               </p>
             </div>
@@ -232,8 +232,8 @@ export default function Login() {
       </Card>
 
       {/* Footer */}
-      <div className="absolute bottom-4 left-0 right-0 text-center">
-        <p className="text-white/80 text-sm">
+      <div className="absolute bottom-2 sm:bottom-4 left-0 right-0 text-center px-4">
+        <p className="text-white/80 text-xs sm:text-sm">
           © 2025 Cooperativa Eléctrica Gobernador Ugarte
         </p>
       </div>
