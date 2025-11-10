@@ -258,21 +258,9 @@ El sistema incluye **11 usuarios pre-configurados** con diferentes roles:
 
 ## Testing
 
-### Backend Tests
+El sistema utiliza **pruebas manuales** y validación en desarrollo local antes del deployment.
 
-```bash
-cd api
-npm test
-```
-
-**32 tests pasando** que verifican:
-- Endpoints de autenticación
-- Endpoints de clientes
-- Endpoints de operarios
-- Endpoints de administradores
-- Validaciones y permisos por rol
-
-### Ejemplo de Uso Manual
+### Ejemplo de Uso Manual (Testing de API)
 
 ```bash
 # Login como cliente
