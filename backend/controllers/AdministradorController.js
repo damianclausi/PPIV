@@ -9,6 +9,7 @@ import Reclamo from '../models/Reclamo.js';
 import Factura from '../models/Factura.js';
 import Cuenta from '../models/Cuenta.js';
 import Servicio from '../models/Servicio.js';
+import Material from '../models/Material.js';
 import { respuestaExitosa, respuestaError, respuestaNoEncontrado } from '../utils/respuestas.js';
 
 export default class AdministradorController {
@@ -461,6 +462,48 @@ export default class AdministradorController {
     } catch (error) {
       console.error('Error al listar cuentas:', error);
       return respuestaError(res, 'Error al listar cuentas');
+    }
+  }
+
+  /**
+   * Obtener materiales con stock bajo (stock_actual <= stock_minimo)
+   */
+  static async obtenerStockBajo(req, res) {
+    try {
+      const materialesStockBajo = await Material.obtenerStockBajo();
+      
+      return respuestaExitosa(res, materialesStockBajo, 'Materiales con stock bajo obtenidos exitosamente');
+    } catch (error) {
+      console.error('Error al obtener materiales con stock bajo:', error);
+      return respuestaError(res, 'Error al obtener materiales con stock bajo');
+    }
+  }
+
+  /**
+   * Obtener resumen de inventario
+   */
+  static async obtenerResumenStock(req, res) {
+    try {
+      const resumen = await Material.obtenerResumenStock();
+      
+      return respuestaExitosa(res, resumen, 'Resumen de stock obtenido exitosamente');
+    } catch (error) {
+      console.error('Error al obtener resumen de stock:', error);
+      return respuestaError(res, 'Error al obtener resumen de stock');
+    }
+  }
+
+  /**
+   * Listar todos los materiales
+   */
+  static async listarMateriales(req, res) {
+    try {
+      const materiales = await Material.listarTodos();
+      
+      return respuestaExitosa(res, materiales, 'Materiales obtenidos exitosamente');
+    } catch (error) {
+      console.error('Error al listar materiales:', error);
+      return respuestaError(res, 'Error al listar materiales');
     }
   }
 }

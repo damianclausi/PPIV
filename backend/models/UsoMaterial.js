@@ -38,6 +38,20 @@ class UsoMaterial {
       // Insertar cada material usado
       const resultados = [];
       for (const mat of materiales) {
+        // Verificar stock disponible antes de usar
+        const stockCheck = await client.query(
+          'SELECT stock_actual FROM material WHERE material_id = $1',
+          [mat.material_id]
+        );
+        
+        if (stockCheck.rows.length === 0) {
+          throw new Error(`Material ${mat.material_id} no encontrado`);
+        }
+        
+        if (stockCheck.rows[0].stock_actual < mat.cantidad) {
+          throw new Error(`Stock insuficiente para material ${mat.material_id}. Disponible: ${stockCheck.rows[0].stock_actual}, Solicitado: ${mat.cantidad}`);
+        }
+        
         const resultado = await client.query(`
           INSERT INTO uso_material (
             ot_id,
@@ -53,10 +67,11 @@ class UsoMaterial {
         
         resultados.push(resultado.rows[0]);
         
-        // TODO: Registrar movimiento de stock si existe la tabla mov_stock
-        // await client.query(`
-        //   INSERT INTO mov_stock (...)
-        // `, [mat.material_id, mat.cantidad, otId, empleadoId]);
+        // Descontar del stock actual
+        await client.query(
+          'UPDATE material SET stock_actual = stock_actual - $1 WHERE material_id = $2',
+          [mat.cantidad, mat.material_id]
+        );
       }
       
       await client.query('COMMIT');

@@ -11,6 +11,7 @@ import CooperativaLayout from './layout/CooperativaLayout';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Skeleton } from './ui/skeleton';
+import AlertasStock from './admin/AlertasStock';
 import { 
   Users, 
   AlertCircle, 
@@ -112,6 +113,9 @@ export default function DashboardAdministrador() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Alertas de Stock */}
+        <AlertasStock />
 
         {/* Grid Inferior - 2 Columnas */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
