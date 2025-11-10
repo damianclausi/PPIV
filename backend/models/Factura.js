@@ -4,7 +4,7 @@ class Factura {
   /**
    * Obtener facturas por socio
    */
-  static async obtenerPorSocio(socioId, { estado = null, limite = 10, offset = 0 }) {
+  static async obtenerPorSocio(socioId, { estado = null, limite = 10, offset = 0, cuenta_id = null }) {
     let query = `
       SELECT 
         f.factura_id,
@@ -24,6 +24,11 @@ class Factura {
     `;
 
     const params = [socioId];
+
+    if (cuenta_id) {
+      query += ` AND f.cuenta_id = $${params.length + 1}`;
+      params.push(cuenta_id);
+    }
 
     if (estado) {
       query += ` AND f.estado = $${params.length + 1}`;
