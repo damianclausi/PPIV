@@ -240,16 +240,16 @@ export default function DashboardOperario() {
       onDragStart={onDragStartLocal}
       onDragEnd={onDragEndLocal}
       onClick={onClickLocal}
-      className="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-all cursor-pointer border-2 border-transparent hover:border-blue-200"
+      className="bg-white p-3 sm:p-4 rounded-lg shadow-sm hover:shadow-md transition-all cursor-pointer border-2 border-transparent hover:border-blue-200"
     >
-      <div className="space-y-3">
+      <div className="space-y-2 sm:space-y-3">
         <div className="flex items-start justify-between gap-2">
-          <div className="flex-1">
-            <h4 className="font-semibold text-sm line-clamp-2">
+          <div className="flex-1 min-w-0">
+            <h4 className="font-semibold text-xs sm:text-sm line-clamp-2">
               {reclamo.detalle_reclamo || reclamo.tipo_reclamo || 'Reclamo Técnico'}
             </h4>
             {reclamo.es_itinerario && (
-              <Badge className="bg-purple-50 text-purple-700 text-xs mt-1 border border-purple-200">
+              <Badge className="bg-purple-50 text-purple-700 text-[10px] sm:text-xs mt-1 border border-purple-200">
                 📅 Itinerario
               </Badge>
             )}
@@ -257,37 +257,37 @@ export default function DashboardOperario() {
           {getPriorityBadge(reclamo.prioridad)}
         </div>
         
-        <div className="flex items-center gap-2 text-xs text-gray-600">
-          <MapPin className="h-3 w-3" />
+        <div className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-xs text-gray-600">
+          <MapPin className="h-3 w-3 flex-shrink-0" />
           <span className="line-clamp-1">
             {reclamo.zona || reclamo.direccion || 'Sin dirección'}
           </span>
         </div>
 
-        <p className="text-xs text-gray-700">
+        <p className="text-[10px] sm:text-xs text-gray-700 truncate">
           {reclamo.socio_nombre} {reclamo.socio_apellido}
         </p>
 
-        <p className="text-xs text-gray-500 line-clamp-2">
+        <p className="text-[10px] sm:text-xs text-gray-500 line-clamp-2">
           {reclamo.descripcion || 'Sin descripción'}
         </p>
 
         <div className="space-y-1">
           {reclamo.fecha_programada && (
-            <div className="flex items-center gap-2 text-xs font-medium text-purple-700">
-              <Clock className="h-3 w-3" />
-              Programada: {formatearFecha(reclamo.fecha_programada)}
+            <div className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-xs font-medium text-purple-700">
+              <Clock className="h-3 w-3 flex-shrink-0" />
+              <span className="truncate">Programada: {formatearFecha(reclamo.fecha_programada)}</span>
             </div>
           )}
           {reclamo.fecha_cierre ? (
-            <div className="flex items-center gap-2 text-xs font-medium text-green-700">
-              <CheckCircle className="h-3 w-3" />
-              Cerrada: {formatearFecha(reclamo.fecha_cierre)}
+            <div className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-xs font-medium text-green-700">
+              <CheckCircle className="h-3 w-3 flex-shrink-0" />
+              <span className="truncate">Cerrada: {formatearFecha(reclamo.fecha_cierre)}</span>
             </div>
           ) : (
-            <div className="flex items-center gap-2 text-xs text-gray-500">
-              <Clock className="h-3 w-3" />
-              Creada: {formatearFecha(reclamo.fecha_alta)}
+            <div className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-xs text-gray-500">
+              <Clock className="h-3 w-3 flex-shrink-0" />
+              <span className="truncate">Creada: {formatearFecha(reclamo.fecha_alta)}</span>
             </div>
           )}
         </div>
@@ -298,11 +298,11 @@ export default function DashboardOperario() {
 
   return (
     <CooperativaLayout titulo="Reclamos Asignados">
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6 px-4 sm:px-0">
         {/* Info del operario */}
         {perfil && (
-          <div className="bg-white rounded-lg shadow-md p-4 border-l-4 border-l-cooperativa-blue">
-            <p className="text-sm text-gray-600">
+          <div className="bg-white rounded-lg shadow-md p-3 sm:p-4 border-l-4 border-l-cooperativa-blue">
+            <p className="text-xs sm:text-sm text-gray-600">
               <span className="font-semibold text-cooperativa-dark">Operario:</span> {perfil.nombre} {perfil.apellido}
             </p>
             <p className="text-xs text-gray-500 mt-1">
@@ -312,16 +312,16 @@ export default function DashboardOperario() {
         )}
 
         {/* Controles de vista y filtros */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div className="flex flex-col gap-3 sm:gap-4">
           {/* Filtro de prioridad */}
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-medium text-gray-700">Prioridad:</span>
-            <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+            <span className="text-xs sm:text-sm font-medium text-gray-700">Prioridad:</span>
+            <div className="flex flex-wrap gap-2">
               <Button 
                 variant={filtroPrioridad === 'todas' ? "default" : "outline"}
                 size="sm"
                 onClick={() => setFiltroPrioridad('todas')}
-                className={filtroPrioridad === 'todas' ? "bg-cooperativa-blue hover:bg-cooperativa-light" : ""}
+                className={`text-xs ${filtroPrioridad === 'todas' ? "bg-cooperativa-blue hover:bg-cooperativa-light" : ""}`}
               >
                 Todas
               </Button>
@@ -329,7 +329,7 @@ export default function DashboardOperario() {
                 variant={filtroPrioridad === 'alta' ? "default" : "outline"}
                 size="sm"
                 onClick={() => setFiltroPrioridad('alta')}
-                className={filtroPrioridad === 'alta' ? "bg-red-600 hover:bg-red-700" : "text-red-600 border-red-300 hover:bg-red-50"}
+                className={`text-xs ${filtroPrioridad === 'alta' ? "bg-red-600 hover:bg-red-700" : "text-red-600 border-red-300 hover:bg-red-50"}`}
               >
                 Alta
               </Button>
@@ -337,7 +337,7 @@ export default function DashboardOperario() {
                 variant={filtroPrioridad === 'media' ? "default" : "outline"}
                 size="sm"
                 onClick={() => setFiltroPrioridad('media')}
-                className={filtroPrioridad === 'media' ? "bg-yellow-600 hover:bg-yellow-700" : "text-yellow-600 border-yellow-300 hover:bg-yellow-50"}
+                className={`text-xs ${filtroPrioridad === 'media' ? "bg-yellow-600 hover:bg-yellow-700" : "text-yellow-600 border-yellow-300 hover:bg-yellow-50"}`}
               >
                 Media
               </Button>
@@ -345,7 +345,7 @@ export default function DashboardOperario() {
                 variant={filtroPrioridad === 'baja' ? "default" : "outline"}
                 size="sm"
                 onClick={() => setFiltroPrioridad('baja')}
-                className={filtroPrioridad === 'baja' ? "bg-green-600 hover:bg-green-700" : "text-green-600 border-green-300 hover:bg-green-50"}
+                className={`text-xs ${filtroPrioridad === 'baja' ? "bg-green-600 hover:bg-green-700" : "text-green-600 border-green-300 hover:bg-green-50"}`}
               >
                 Baja
               </Button>
@@ -353,73 +353,73 @@ export default function DashboardOperario() {
           </div>
 
           {/* Botones de vista */}
-          <div className="flex gap-3">
+          <div className="flex gap-2 sm:gap-3">
             <Button 
               variant={vistaKanban ? "default" : "outline"}
               size="sm"
               onClick={() => setVistaKanban(true)}
-              className={vistaKanban ? "bg-cooperativa-blue hover:bg-cooperativa-light" : ""}
+              className={`text-xs flex-1 sm:flex-none ${vistaKanban ? "bg-cooperativa-blue hover:bg-cooperativa-light" : ""}`}
             >
-              <LayoutGrid className="h-4 w-4 mr-2" />
+              <LayoutGrid className="h-3 sm:h-4 w-3 sm:w-4 mr-1 sm:mr-2" />
               Kanban
             </Button>
             <Button 
               variant={!vistaKanban ? "default" : "outline"}
               size="sm"
               onClick={() => setVistaKanban(false)}
-              className={!vistaKanban ? "bg-cooperativa-blue hover:bg-cooperativa-light" : ""}
+              className={`text-xs flex-1 sm:flex-none ${!vistaKanban ? "bg-cooperativa-blue hover:bg-cooperativa-light" : ""}`}
             >
-              <List className="h-4 w-4 mr-2" />
+              <List className="h-3 sm:h-4 w-3 sm:w-4 mr-1 sm:mr-2" />
               Lista
             </Button>
           </div>
         </div>
 
         {/* Estadísticas */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           <Card>
-            <CardContent className="pt-6">
+            <CardContent className="p-4 sm:pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">Pendientes</p>
-                  <p className="text-3xl font-bold text-yellow-600">
+                  <p className="text-xs sm:text-sm text-gray-600">Pendientes</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-yellow-600">
                     {reclamosPendientes.length}
                   </p>
                 </div>
-                <div className="bg-yellow-100 rounded-full p-3">
-                  <Clock className="h-6 w-6 text-yellow-600" />
+                <div className="bg-yellow-100 rounded-full p-2 sm:p-3">
+                  <Clock className="h-4 sm:h-6 w-4 sm:w-6 text-yellow-600" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardContent className="pt-6">
+            <CardContent className="p-4 sm:pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">En Curso</p>
-                  <p className="text-3xl font-bold text-blue-600">
+                  <p className="text-xs sm:text-sm text-gray-600">En Curso</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-blue-600">
                     {reclamosEnCurso.length}
                   </p>
                 </div>
-                <div className="bg-blue-100 rounded-full p-3">
-                  <AlertTriangle className="h-6 w-6 text-blue-600" />
+                <div className="bg-blue-100 rounded-full p-2 sm:p-3">
+                  <AlertTriangle className="h-4 sm:h-6 w-4 sm:w-6 text-blue-600" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardContent className="pt-6">
+            <CardContent className="p-4 sm:pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">Resueltos</p>
-                  <p className="text-3xl font-bold text-green-600">
+                  <p className="text-xs sm:text-sm text-gray-600">Resueltos</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-green-600">
                     {reclamosResueltos.length}
                   </p>
                 </div>
-                <div className="bg-green-100 rounded-full p-3">
-                  <CheckCircle className="h-6 w-6 text-green-600" />
+                <div className="bg-green-100 rounded-full p-2 sm:p-3">
+                  <CheckCircle className="h-4 sm:h-6 w-4 sm:w-6 text-green-600" />
                 </div>
               </div>
             </CardContent>
@@ -429,14 +429,14 @@ export default function DashboardOperario() {
             className="cursor-pointer hover:shadow-lg transition-shadow"
             onClick={() => navigate('/dashboard/operario/itinerario')}
           >
-            <CardContent className="pt-6">
+            <CardContent className="p-4 sm:pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">Mi Itinerario</p>
-                  <p className="text-xs text-gray-500 mt-1">Ver por fecha</p>
+                  <p className="text-xs sm:text-sm text-gray-600">Mi Itinerario</p>
+                  <p className="text-[10px] sm:text-xs text-gray-500 mt-1">Ver por fecha</p>
                 </div>
-                <div className="bg-purple-100 rounded-full p-3">
-                  <Clock className="h-6 w-6 text-purple-600" />
+                <div className="bg-purple-100 rounded-full p-2 sm:p-3">
+                  <Clock className="h-4 sm:h-6 w-4 sm:w-6 text-purple-600" />
                 </div>
               </div>
             </CardContent>
@@ -450,146 +450,148 @@ export default function DashboardOperario() {
             <p className="mt-4 text-gray-600">Cargando reclamos...</p>
           </div>
         ) : vistaKanban ? (
-          /* Vista Kanban con Drag & Drop */
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Columna Pendientes */}
-            <div 
-              className="bg-yellow-50 rounded-lg p-4 min-h-[600px]"
-              onDragOver={handleDragOver}
-              onDrop={(e) => handleDrop(e, 'pendiente')}
-            >
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-lg flex items-center gap-2">
-                  <Clock className="h-5 w-5 text-yellow-600" />
-                  Pendientes
-                  <Badge className="bg-yellow-100 text-yellow-800">
-                    {reclamosPendientes.length}
-                  </Badge>
-                </h3>
+          /* Vista Kanban con Drag & Drop - Scroll horizontal en móvil */
+          <div className="overflow-x-auto -mx-4 sm:mx-0 pb-4">
+            <div className="flex lg:grid lg:grid-cols-3 gap-3 sm:gap-6 px-4 sm:px-0 min-w-max lg:min-w-0">
+              {/* Columna Pendientes */}
+              <div 
+                className="bg-yellow-50 rounded-lg p-3 sm:p-4 min-h-[400px] sm:min-h-[600px] w-[280px] sm:w-[320px] lg:w-auto flex-shrink-0"
+                onDragOver={handleDragOver}
+                onDrop={(e) => handleDrop(e, 'pendiente')}
+              >
+                <div className="flex items-center justify-between mb-3 sm:mb-4">
+                  <h3 className="font-semibold text-sm sm:text-base lg:text-lg flex items-center gap-2">
+                    <Clock className="h-4 sm:h-5 w-4 sm:w-5 text-yellow-600 flex-shrink-0" />
+                    <span>Pendientes</span>
+                    <Badge className="bg-yellow-100 text-yellow-800 text-xs">
+                      {reclamosPendientes.length}
+                    </Badge>
+                  </h3>
+                </div>
+                <div className="space-y-2 sm:space-y-3">
+                  {reclamosPendientes.length > 0 ? (
+                    reclamosPendientes.map((reclamo, index) => (
+                      <ReclamoCard key={`pendiente-${reclamo.ot_id}-${reclamo.reclamo_id}-${index}`} reclamo={reclamo} />
+                    ))
+                  ) : (
+                    <p className="text-center text-gray-500 text-xs sm:text-sm py-6 sm:py-8">
+                      No hay reclamos pendientes
+                    </p>
+                  )}
+                </div>
               </div>
-              <div className="space-y-3">
-                {reclamosPendientes.length > 0 ? (
-                  reclamosPendientes.map((reclamo, index) => (
-                    <ReclamoCard key={`pendiente-${reclamo.ot_id}-${reclamo.reclamo_id}-${index}`} reclamo={reclamo} />
-                  ))
-                ) : (
-                  <p className="text-center text-gray-500 text-sm py-8">
-                    No hay reclamos pendientes
-                  </p>
-                )}
-              </div>
-            </div>
 
-            {/* Columna En Curso */}
-            <div 
-              className="bg-blue-50 rounded-lg p-4 min-h-[600px]"
-              onDragOver={handleDragOver}
-              onDrop={(e) => handleDrop(e, 'en_curso')}
-            >
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-lg flex items-center gap-2">
-                  <AlertTriangle className="h-5 w-5 text-blue-600" />
-                  En Curso
-                  <Badge className="bg-blue-100 text-blue-800">
-                    {reclamosEnCurso.length}
-                  </Badge>
-                </h3>
+              {/* Columna En Curso */}
+              <div 
+                className="bg-blue-50 rounded-lg p-3 sm:p-4 min-h-[400px] sm:min-h-[600px] w-[280px] sm:w-[320px] lg:w-auto flex-shrink-0"
+                onDragOver={handleDragOver}
+                onDrop={(e) => handleDrop(e, 'en_curso')}
+              >
+                <div className="flex items-center justify-between mb-3 sm:mb-4">
+                  <h3 className="font-semibold text-sm sm:text-base lg:text-lg flex items-center gap-2">
+                    <AlertTriangle className="h-4 sm:h-5 w-4 sm:w-5 text-blue-600 flex-shrink-0" />
+                    <span>En Curso</span>
+                    <Badge className="bg-blue-100 text-blue-800 text-xs">
+                      {reclamosEnCurso.length}
+                    </Badge>
+                  </h3>
+                </div>
+                <div className="space-y-2 sm:space-y-3">
+                  {reclamosEnCurso.length > 0 ? (
+                    reclamosEnCurso.map((reclamo, index) => (
+                      <ReclamoCard key={`encurso-${reclamo.ot_id}-${reclamo.reclamo_id}-${index}`} reclamo={reclamo} />
+                    ))
+                  ) : (
+                    <p className="text-center text-gray-500 text-xs sm:text-sm py-6 sm:py-8">
+                      No hay reclamos en curso
+                    </p>
+                  )}
+                </div>
               </div>
-              <div className="space-y-3">
-                {reclamosEnCurso.length > 0 ? (
-                  reclamosEnCurso.map((reclamo, index) => (
-                    <ReclamoCard key={`encurso-${reclamo.ot_id}-${reclamo.reclamo_id}-${index}`} reclamo={reclamo} />
-                  ))
-                ) : (
-                  <p className="text-center text-gray-500 text-sm py-8">
-                    No hay reclamos en curso
-                  </p>
-                )}
-              </div>
-            </div>
 
-            {/* Columna Resueltos */}
-            <div 
-              className="bg-green-50 rounded-lg p-4 min-h-[600px]"
-              onDragOver={handleDragOver}
-              onDrop={(e) => handleDrop(e, 'resuelto')}
-            >
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-lg flex items-center gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-600" />
-                  Resueltos
-                  <Badge className="bg-green-100 text-green-800">
-                    {reclamosResueltos.length}
-                  </Badge>
-                </h3>
-              </div>
-              <div className="space-y-3">
-                {reclamosResueltos.length > 0 ? (
-                  reclamosResueltos.map((reclamo, index) => (
-                    <ReclamoCard key={`resuelto-${reclamo.ot_id}-${reclamo.reclamo_id}-${index}`} reclamo={reclamo} />
-                  ))
-                ) : (
-                  <p className="text-center text-gray-500 text-sm py-8">
-                    No hay reclamos resueltos
-                  </p>
-                )}
+              {/* Columna Resueltos */}
+              <div 
+                className="bg-green-50 rounded-lg p-3 sm:p-4 min-h-[400px] sm:min-h-[600px] w-[280px] sm:w-[320px] lg:w-auto flex-shrink-0"
+                onDragOver={handleDragOver}
+                onDrop={(e) => handleDrop(e, 'resuelto')}
+              >
+                <div className="flex items-center justify-between mb-3 sm:mb-4">
+                  <h3 className="font-semibold text-sm sm:text-base lg:text-lg flex items-center gap-2">
+                    <CheckCircle className="h-4 sm:h-5 w-4 sm:w-5 text-green-600 flex-shrink-0" />
+                    <span>Resueltos</span>
+                    <Badge className="bg-green-100 text-green-800 text-xs">
+                      {reclamosResueltos.length}
+                    </Badge>
+                  </h3>
+                </div>
+                <div className="space-y-2 sm:space-y-3">
+                  {reclamosResueltos.length > 0 ? (
+                    reclamosResueltos.map((reclamo, index) => (
+                      <ReclamoCard key={`resuelto-${reclamo.ot_id}-${reclamo.reclamo_id}-${index}`} reclamo={reclamo} />
+                    ))
+                  ) : (
+                    <p className="text-center text-gray-500 text-xs sm:text-sm py-6 sm:py-8">
+                      No hay reclamos resueltos
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
           </div>
         ) : (
           /* Vista Lista */
           <Card>
-            <CardContent className="p-6">
-              <div className="space-y-3">
+            <CardContent className="p-3 sm:p-6">
+              <div className="space-y-3 sm:space-y-4">
                 {/* Usar la misma lógica de filtrado que la vista Kanban */}
                 {[...reclamosPendientes, ...reclamosEnCurso, ...reclamosResueltos].length > 0 ? (
                   <>
                     {/* Sección Pendientes */}
                     {reclamosPendientes.length > 0 && (
-                      <div className="mb-6">
-                        <div className="flex items-center gap-2 mb-3">
-                          <h3 className="font-semibold text-lg flex items-center gap-2">
-                            <Clock className="h-5 w-5 text-yellow-600" />
+                      <div className="mb-4 sm:mb-6">
+                        <div className="flex items-center gap-2 mb-2 sm:mb-3">
+                          <h3 className="font-semibold text-base sm:text-lg flex items-center gap-2">
+                            <Clock className="h-4 sm:h-5 w-4 sm:w-5 text-yellow-600" />
                             Pendientes
-                            <Badge className="bg-yellow-100 text-yellow-800">
+                            <Badge className="bg-yellow-100 text-yellow-800 text-xs">
                               {reclamosPendientes.length}
                             </Badge>
                           </h3>
                         </div>
-                        <div className="space-y-3">
+                        <div className="space-y-2 sm:space-y-3">
                           {reclamosPendientes.map((reclamo, index) => (
                             <div 
                               key={`lista-pendiente-${reclamo.ot_id}-${reclamo.reclamo_id}-${index}`}
                               onClick={() => navigate(`/dashboard/operario/ots-tecnicas/${reclamo.ot_id}`)}
-                              className="p-4 border rounded-lg hover:shadow-md transition-all cursor-pointer bg-yellow-50"
+                              className="p-3 sm:p-4 border rounded-lg hover:shadow-md transition-all cursor-pointer bg-yellow-50"
                             >
-                              <div className="flex items-center justify-between">
-                                <div className="flex-1">
-                                  <div className="flex items-center gap-3 mb-2">
-                                    <h4 className="font-semibold">{reclamo.detalle_reclamo || reclamo.tipo_reclamo || 'Reclamo Técnico'}</h4>
+                              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex flex-wrap items-center gap-2 mb-2">
+                                    <h4 className="font-semibold text-sm sm:text-base line-clamp-1">{reclamo.detalle_reclamo || reclamo.tipo_reclamo || 'Reclamo Técnico'}</h4>
                                     {reclamo.es_itinerario && (
-                                      <Badge className="bg-purple-50 text-purple-700 text-xs border border-purple-200">
+                                      <Badge className="bg-purple-50 text-purple-700 text-[10px] sm:text-xs border border-purple-200">
                                         📅 Itinerario
                                       </Badge>
                                     )}
                                     {getPriorityBadge(reclamo.prioridad)}
                                   </div>
-                                  <p className="text-sm text-gray-600 mb-1">
+                                  <p className="text-xs sm:text-sm text-gray-600 mb-1">
                                     Cliente: {reclamo.socio_nombre} {reclamo.socio_apellido}
                                   </p>
-                                  <div className="flex items-center gap-4 text-xs text-gray-500">
+                                  <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-[10px] sm:text-xs text-gray-500">
                                     <span className="flex items-center gap-1">
-                                      <MapPin className="h-3 w-3" />
-                                      {reclamo.zona || reclamo.direccion || 'Sin dirección'}
+                                      <MapPin className="h-3 w-3 flex-shrink-0" />
+                                      <span className="truncate">{reclamo.zona || reclamo.direccion || 'Sin dirección'}</span>
                                     </span>
                                     <span className="flex items-center gap-1">
-                                      <Clock className="h-3 w-3" />
+                                      <Clock className="h-3 w-3 flex-shrink-0" />
                                       {formatearFecha(reclamo.fecha_alta)}
                                     </span>
                                     {reclamo.fecha_programada && (
                                       <span className="flex items-center gap-1 text-purple-700 font-medium">
-                                        <Clock className="h-3 w-3" />
-                                        Programada: {formatearFecha(reclamo.fecha_programada)}
+                                        <Clock className="h-3 w-3 flex-shrink-0" />
+                                        Prog: {formatearFecha(reclamo.fecha_programada)}
                                       </span>
                                     )}
                                   </div>
@@ -603,50 +605,50 @@ export default function DashboardOperario() {
 
                     {/* Sección En Curso */}
                     {reclamosEnCurso.length > 0 && (
-                      <div className="mb-6">
-                        <div className="flex items-center gap-2 mb-3">
-                          <h3 className="font-semibold text-lg flex items-center gap-2">
-                            <AlertTriangle className="h-5 w-5 text-blue-600" />
+                      <div className="mb-4 sm:mb-6">
+                        <div className="flex items-center gap-2 mb-2 sm:mb-3">
+                          <h3 className="font-semibold text-base sm:text-lg flex items-center gap-2">
+                            <AlertTriangle className="h-4 sm:h-5 w-4 sm:w-5 text-blue-600" />
                             En Curso
-                            <Badge className="bg-blue-100 text-blue-800">
+                            <Badge className="bg-blue-100 text-blue-800 text-xs">
                               {reclamosEnCurso.length}
                             </Badge>
                           </h3>
                         </div>
-                        <div className="space-y-3">
+                        <div className="space-y-2 sm:space-y-3">
                           {reclamosEnCurso.map((reclamo, index) => (
                             <div 
                               key={`lista-encurso-${reclamo.ot_id}-${reclamo.reclamo_id}-${index}`}
                               onClick={() => navigate(`/dashboard/operario/ots-tecnicas/${reclamo.ot_id}`)}
-                              className="p-4 border rounded-lg hover:shadow-md transition-all cursor-pointer bg-blue-50"
+                              className="p-3 sm:p-4 border rounded-lg hover:shadow-md transition-all cursor-pointer bg-blue-50"
                             >
-                              <div className="flex items-center justify-between">
-                                <div className="flex-1">
-                                  <div className="flex items-center gap-3 mb-2">
-                                    <h4 className="font-semibold">{reclamo.detalle_reclamo || reclamo.tipo_reclamo || 'Reclamo Técnico'}</h4>
+                              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex flex-wrap items-center gap-2 mb-2">
+                                    <h4 className="font-semibold text-sm sm:text-base line-clamp-1">{reclamo.detalle_reclamo || reclamo.tipo_reclamo || 'Reclamo Técnico'}</h4>
                                     {reclamo.es_itinerario && (
-                                      <Badge className="bg-purple-50 text-purple-700 text-xs border border-purple-200">
+                                      <Badge className="bg-purple-50 text-purple-700 text-[10px] sm:text-xs border border-purple-200">
                                         📅 Itinerario
                                       </Badge>
                                     )}
                                     {getPriorityBadge(reclamo.prioridad)}
                                   </div>
-                                  <p className="text-sm text-gray-600 mb-1">
+                                  <p className="text-xs sm:text-sm text-gray-600 mb-1">
                                     Cliente: {reclamo.socio_nombre} {reclamo.socio_apellido}
                                   </p>
-                                  <div className="flex items-center gap-4 text-xs text-gray-500">
+                                  <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-[10px] sm:text-xs text-gray-500">
                                     <span className="flex items-center gap-1">
-                                      <MapPin className="h-3 w-3" />
-                                      {reclamo.zona || reclamo.direccion || 'Sin dirección'}
+                                      <MapPin className="h-3 w-3 flex-shrink-0" />
+                                      <span className="truncate">{reclamo.zona || reclamo.direccion || 'Sin dirección'}</span>
                                     </span>
                                     <span className="flex items-center gap-1">
-                                      <Clock className="h-3 w-3" />
+                                      <Clock className="h-3 w-3 flex-shrink-0" />
                                       {formatearFecha(reclamo.fecha_alta)}
                                     </span>
                                     {reclamo.fecha_programada && (
                                       <span className="flex items-center gap-1 text-purple-700 font-medium">
-                                        <Clock className="h-3 w-3" />
-                                        Programada: {formatearFecha(reclamo.fecha_programada)}
+                                        <Clock className="h-3 w-3 flex-shrink-0" />
+                                        Prog: {formatearFecha(reclamo.fecha_programada)}
                                       </span>
                                     )}
                                   </div>
@@ -661,43 +663,43 @@ export default function DashboardOperario() {
                     {/* Sección Resueltos */}
                     {reclamosResueltos.length > 0 && (
                       <div>
-                        <div className="flex items-center gap-2 mb-3">
-                          <h3 className="font-semibold text-lg flex items-center gap-2">
-                            <CheckCircle className="h-5 w-5 text-green-600" />
+                        <div className="flex items-center gap-2 mb-2 sm:mb-3">
+                          <h3 className="font-semibold text-base sm:text-lg flex items-center gap-2">
+                            <CheckCircle className="h-4 sm:h-5 w-4 sm:w-5 text-green-600" />
                             Resueltos
-                            <Badge className="bg-green-100 text-green-800">
+                            <Badge className="bg-green-100 text-green-800 text-xs">
                               {reclamosResueltos.length}
                             </Badge>
                           </h3>
                         </div>
-                        <div className="space-y-3">
+                        <div className="space-y-2 sm:space-y-3">
                           {reclamosResueltos.map((reclamo, index) => (
                             <div 
                               key={`lista-resuelto-${reclamo.ot_id}-${reclamo.reclamo_id}-${index}`}
                               onClick={() => navigate(`/dashboard/operario/ots-tecnicas/${reclamo.ot_id}`)}
-                              className="p-4 border rounded-lg hover:shadow-md transition-all cursor-pointer bg-green-50"
+                              className="p-3 sm:p-4 border rounded-lg hover:shadow-md transition-all cursor-pointer bg-green-50"
                             >
-                              <div className="flex items-center justify-between">
-                                <div className="flex-1">
-                                  <div className="flex items-center gap-3 mb-2">
-                                    <h4 className="font-semibold">{reclamo.detalle_reclamo || reclamo.tipo_reclamo || 'Reclamo Técnico'}</h4>
+                              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex flex-wrap items-center gap-2 mb-2">
+                                    <h4 className="font-semibold text-sm sm:text-base line-clamp-1">{reclamo.detalle_reclamo || reclamo.tipo_reclamo || 'Reclamo Técnico'}</h4>
                                     {reclamo.es_itinerario && (
-                                      <Badge className="bg-purple-50 text-purple-700 text-xs border border-purple-200">
+                                      <Badge className="bg-purple-50 text-purple-700 text-[10px] sm:text-xs border border-purple-200">
                                         📅 Itinerario
                                       </Badge>
                                     )}
                                     {getPriorityBadge(reclamo.prioridad)}
                                   </div>
-                                  <p className="text-sm text-gray-600 mb-1">
+                                  <p className="text-xs sm:text-sm text-gray-600 mb-1">
                                     Cliente: {reclamo.socio_nombre} {reclamo.socio_apellido}
                                   </p>
-                                  <div className="flex items-center gap-4 text-xs text-gray-500">
+                                  <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-[10px] sm:text-xs text-gray-500">
                                     <span className="flex items-center gap-1">
-                                      <MapPin className="h-3 w-3" />
-                                      {reclamo.zona || reclamo.direccion || 'Sin dirección'}
+                                      <MapPin className="h-3 w-3 flex-shrink-0" />
+                                      <span className="truncate">{reclamo.zona || reclamo.direccion || 'Sin dirección'}</span>
                                     </span>
                                     <span className="flex items-center gap-1">
-                                      <Clock className="h-3 w-3" />
+                                      <Clock className="h-3 w-3 flex-shrink-0" />
                                       {reclamo.fecha_cierre ? formatearFecha(reclamo.fecha_cierre) : formatearFecha(reclamo.fecha_alta)}
                                     </span>
                                   </div>
