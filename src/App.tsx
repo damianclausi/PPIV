@@ -308,10 +308,15 @@ function AppRoutes() {
 
 // Componente principal de la aplicación
 function App() {
-  const [showSplash, setShowSplash] = useState(true);
+  // Solo mostrar splash si no se ha visto en esta sesión
+  const [showSplash, setShowSplash] = useState(() => {
+    const splashShown = sessionStorage.getItem('splashShown');
+    return !splashShown;
+  });
 
   const handleSplashComplete = () => {
     setShowSplash(false);
+    sessionStorage.setItem('splashShown', 'true');
   };
 
   return (

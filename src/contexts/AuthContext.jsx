@@ -40,6 +40,9 @@ export const AuthProvider = ({ children }) => {
       setAutenticado(true);
       return datos;
     } catch (error) {
+      // Asegurar que el estado se mantiene como NO autenticado en caso de error
+      setUsuario(null);
+      setAutenticado(false);
       throw error;
     }
   };

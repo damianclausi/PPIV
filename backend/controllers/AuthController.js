@@ -29,6 +29,11 @@ class AuthController {
         return respuestaNoAutorizado(res, 'Usuario inactivo');
       }
 
+      // Si es un socio, verificar que el socio también esté activo
+      if (usuario.socio_id && usuario.socio_activo === false) {
+        return respuestaNoAutorizado(res, 'Socio inactivo. Contacte con la cooperativa.');
+      }
+
       // Verificar contraseña
       const passwordValido = await compararPassword(password, usuario.hash_pass);
 
