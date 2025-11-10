@@ -40,11 +40,28 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        // Colores estilo Edenor
+        cooperativa: {
+          dark: '#1e3a5f',      // Azul oscuro sidebar
+          blue: '#2563a8',       // Azul medio
+          light: '#4a90d9',      // Azul claro
+          cyan: '#3db3c6',       // Cyan/turquesa
+          teal: '#40c9a2',       // Verde azulado
+          gradient: {
+            start: '#1e3a5f',
+            mid: '#2563a8',
+            end: '#40c9a2',
+          }
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+      },
+      backgroundImage: {
+        'cooperativa-gradient': 'linear-gradient(135deg, #1e3a5f 0%, #2563a8 50%, #40c9a2 100%)',
+        'cooperativa-gradient-horizontal': 'linear-gradient(90deg, #1e3a5f 0%, #2563a8 50%, #40c9a2 100%)',
       },
     },
   },

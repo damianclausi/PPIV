@@ -7,6 +7,9 @@ import Empleado from '../models/Empleado.js';
 import Socio from '../models/Socio.js';
 import Reclamo from '../models/Reclamo.js';
 import Factura from '../models/Factura.js';
+import Cuenta from '../models/Cuenta.js';
+import Servicio from '../models/Servicio.js';
+import Material from '../models/Material.js';
 import { respuestaExitosa, respuestaError, respuestaNoEncontrado } from '../utils/respuestas.js';
 
 export default class AdministradorController {
@@ -335,5 +338,172 @@ export default class AdministradorController {
     // Importar dinámicamente para evitar problemas de dependencias circulares
     const MetricasController = (await import('./MetricasController.js')).default;
     return MetricasController.obtenerMetricasAvanzadas(req, res);
+  }
+
+  /**
+   * Obtener estado de operarios con sus OTs asignadas
+   */
+  static async obtenerEstadoOperarios(req, res) {
+    const MetricasController = (await import('./MetricasController.js')).default;
+    return MetricasController.obtenerEstadoOperarios(req, res);
+  }
+
+  /**
+   * Obtener historial de consumo eléctrico (lecturas) de una cuenta específica
+   */
+  static async obtenerFacturasCuenta(req, res) {
+    try {
+      const { id } = req.params;
+      
+      const Lectura = (await import('../models/Lectura.js')).default;
+      const lecturas = await Lectura.listarPorCuenta(id);
+      
+      return respuestaExitosa(res, lecturas, 'Historial de consumo obtenido exitosamente');
+    } catch (error) {
+      console.error('Error al obtener historial de consumo:', error);
+      return respuestaError(res, 'Error al obtener historial de consumo');
+    }
+  }
+
+  /**
+   * Obtener reclamos de una cuenta específica
+   */
+  static async obtenerReclamosCuenta(req, res) {
+    try {
+      const { id } = req.params;
+      
+      const Reclamo = (await import('../models/Reclamo.js')).default;
+      const reclamos = await Reclamo.listarPorCuenta(id);
+      
+      return respuestaExitosa(res, reclamos, 'Reclamos obtenidos exitosamente');
+    } catch (error) {
+      console.error('Error al obtener reclamos de cuenta:', error);
+      return respuestaError(res, 'Error al obtener reclamos de la cuenta');
+    }
+  }
+
+  /**
+   * Crear nueva cuenta para un socio
+   */
+  static async crearCuenta(req, res) {
+    try {
+      const datos = req.body;
+      
+      // Validar campos requeridos
+      if (!datos.socio_id || !datos.direccion || !datos.servicio_id) {
+        return respuestaError(res, 'Faltan campos requeridos (socio_id, direccion, servicio_id)', 400);
+      }
+      
+      const cuenta = await Cuenta.crear(datos);
+      
+      return respuestaExitosa(res, cuenta, 'Cuenta y medidor creados exitosamente', 201);
+    } catch (error) {
+      console.error('Error al crear cuenta:', error);
+      return respuestaError(res, 'Error al crear cuenta: ' + error.message);
+    }
+  }
+
+  /**
+   * Actualizar cuenta
+   */
+  static async actualizarCuenta(req, res) {
+    try {
+      const { id } = req.params;
+      const datos = req.body;
+      
+      const cuenta = await Cuenta.actualizar(id, datos);
+      
+      if (!cuenta) {
+        return respuestaNoEncontrado(res, 'Cuenta no encontrada');
+      }
+      
+      return respuestaExitosa(res, cuenta, 'Cuenta actualizada exitosamente');
+    } catch (error) {
+      console.error('Error al actualizar cuenta:', error);
+      return respuestaError(res, 'Error al actualizar cuenta: ' + error.message);
+    }
+  }
+
+  /**
+   * Listar todos los servicios disponibles
+   */
+  static async listarServicios(req, res) {
+    try {
+      const servicios = await Servicio.listar();
+      
+      return respuestaExitosa(res, servicios, 'Servicios obtenidos exitosamente');
+    } catch (error) {
+      console.error('Error al listar servicios:', error);
+      return respuestaError(res, 'Error al obtener servicios');
+    }
+  }
+
+  /**
+   * Listar todas las cuentas del sistema
+   */
+  static async listarCuentas(req, res) {
+    try {
+      const { activa, pagina = 1, limite = 50, busqueda, orden = 'numero_cuenta', direccion = 'ASC' } = req.query;
+      
+      const paginaNum = parseInt(pagina);
+      const limiteNum = parseInt(limite);
+      const offset = (paginaNum - 1) * limiteNum;
+      
+      const resultado = await Cuenta.listar({
+        activa: activa !== undefined ? activa === 'true' : null,
+        offset,
+        limite: limiteNum,
+        busqueda,
+        orden,
+        direccion
+      });
+      
+      return respuestaExitosa(res, resultado, 'Cuentas obtenidas exitosamente');
+    } catch (error) {
+      console.error('Error al listar cuentas:', error);
+      return respuestaError(res, 'Error al listar cuentas');
+    }
+  }
+
+  /**
+   * Obtener materiales con stock bajo (stock_actual <= stock_minimo)
+   */
+  static async obtenerStockBajo(req, res) {
+    try {
+      const materialesStockBajo = await Material.obtenerStockBajo();
+      
+      return respuestaExitosa(res, materialesStockBajo, 'Materiales con stock bajo obtenidos exitosamente');
+    } catch (error) {
+      console.error('Error al obtener materiales con stock bajo:', error);
+      return respuestaError(res, 'Error al obtener materiales con stock bajo');
+    }
+  }
+
+  /**
+   * Obtener resumen de inventario
+   */
+  static async obtenerResumenStock(req, res) {
+    try {
+      const resumen = await Material.obtenerResumenStock();
+      
+      return respuestaExitosa(res, resumen, 'Resumen de stock obtenido exitosamente');
+    } catch (error) {
+      console.error('Error al obtener resumen de stock:', error);
+      return respuestaError(res, 'Error al obtener resumen de stock');
+    }
+  }
+
+  /**
+   * Listar todos los materiales
+   */
+  static async listarMateriales(req, res) {
+    try {
+      const materiales = await Material.listarTodos();
+      
+      return respuestaExitosa(res, materiales, 'Materiales obtenidos exitosamente');
+    } catch (error) {
+      console.error('Error al listar materiales:', error);
+      return respuestaError(res, 'Error al listar materiales');
+    }
   }
 }

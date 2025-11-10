@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import CooperativaLayout from '../layout/CooperativaLayout';
+
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
 import { Badge } from '../ui/badge';
-import { Home, X } from 'lucide-react';
+import { Home, X, FileText } from 'lucide-react';
 import { Skeleton } from '../ui/skeleton';
 import { Alert, AlertDescription } from '../ui/alert';
 import { useFacturas } from '../../hooks/useCliente';
@@ -89,16 +91,6 @@ export default function FacturasListado() {
       vencimientoFormateado: '15/10/2024',
       monto: 7890.00,
       estado: 'pagada'
-    },
-    {
-      id: 4,
-      numero: 'F001-0231',
-      periodo: '2024-08-01',
-      periodoFormateado: 'Ago 2024',
-      vencimiento: '2024-09-15',
-      vencimientoFormateado: '15/09/2024',
-      monto: 12340.00,
-      estado: 'vencida'
     }
   ];
 
@@ -121,9 +113,18 @@ export default function FacturasListado() {
   const facturasFiltradas = facturasParaMostrar.filter(factura => {
     if (!factura) return false;
     
-    // Filtro por estado
-    if (filtros.estado !== 'todas' && factura.estado !== filtros.estado) {
+    // Excluir facturas vencidas (solo mostrar PAGADA y PENDIENTE)
+    const estadoNormalizado = (factura.estado || '').toUpperCase();
+    if (estadoNormalizado === 'VENCIDA') {
       return false;
+    }
+    
+    // Filtro por estado
+    if (filtros.estado !== 'todas') {
+      const estadoFiltro = filtros.estado.toUpperCase();
+      if (estadoNormalizado !== estadoFiltro) {
+        return false;
+      }
     }
     
     // Filtro por período (busca en ambos formatos)
@@ -160,47 +161,39 @@ export default function FacturasListado() {
     const estadoNormalizado = estado?.toLowerCase();
     const badges = {
       pagada: <Badge className="bg-green-100 text-green-800 hover:bg-green-100">Pagada</Badge>,
-      pendiente: <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">Pendiente</Badge>,
-      vencida: <Badge className="bg-red-100 text-red-800 hover:bg-red-100">Vencida</Badge>
+      pendiente: <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">Pendiente</Badge>
     };
     return badges[estadoNormalizado] || badges.pendiente;
   };
 
   if (cargando) {
     return (
-      <div className="min-h-screen bg-gray-50 p-8">
-        <div className="max-w-6xl mx-auto space-y-6">
+      <CooperativaLayout titulo="Mis Facturas">
+        <div className="space-y-6">
           <Skeleton className="h-12 w-64" />
           <Skeleton className="h-96" />
         </div>
-      </div>
+      </CooperativaLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-6xl mx-auto space-y-8">
-        {/* Header */}
-        <div className="flex items-start justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">Mis Facturas</h1>
-            <p className="text-gray-600 mt-1">Consulta y gestiona tus facturas</p>
-          </div>
-          <Button variant="outline" size="sm" onClick={() => navigate('/dashboard')}>
-            Volver
-          </Button>
-        </div>
-
+    <CooperativaLayout titulo="Mis Facturas">
+      <div className="space-y-6">
         {/* Filtros */}
-        <Card>
-          <CardHeader>
+        <Card className="shadow-lg">
+          <CardHeader className="bg-gradient-to-r from-cooperativa-dark/5 to-cooperativa-blue/5">
             <div className="flex items-center justify-between">
-              <CardTitle>Filtros</CardTitle>
+              <CardTitle className="text-cooperativa-dark flex items-center gap-2">
+                <FileText className="h-5 w-5" />
+                Filtros
+              </CardTitle>
               {(filtros.estado !== 'todas' || inputPeriodo) && (
                 <Button 
                   variant="outline" 
                   size="sm" 
                   onClick={limpiarFiltros}
+                  className="border-cooperativa-blue text-cooperativa-blue hover:bg-cooperativa-blue hover:text-white"
                 >
                   <X className="h-4 w-4 mr-2" />
                   Limpiar filtros
@@ -222,7 +215,6 @@ export default function FacturasListado() {
                     <SelectItem value="todas">Todas</SelectItem>
                     <SelectItem value="pagada">Pagadas</SelectItem>
                     <SelectItem value="pendiente">Pendientes</SelectItem>
-                    <SelectItem value="vencida">Vencidas</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -327,6 +319,6 @@ export default function FacturasListado() {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </CooperativaLayout>
   );
 }

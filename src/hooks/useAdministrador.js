@@ -192,19 +192,15 @@ export function useEmpleados(filtros = {}) {
 /**
  * Hook para obtener métricas avanzadas del sistema
  */
-export function useMetricasAvanzadas() {
+export function useMetricasAvanzadas(periodo = 'mes_actual') {
   const [metricas, setMetricas] = useState(null);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    cargarMetricas();
-  }, []);
-
-  const cargarMetricas = async () => {
+  const cargarMetricas = useCallback(async () => {
     try {
       setCargando(true);
-      const data = await administradorService.obtenerMetricasAvanzadas();
+      const data = await administradorService.obtenerMetricasAvanzadas(periodo);
       setMetricas(data.datos);
       setError(null);
     } catch (err) {
@@ -213,7 +209,11 @@ export function useMetricasAvanzadas() {
     } finally {
       setCargando(false);
     }
-  };
+  }, [periodo]);
+
+  useEffect(() => {
+    cargarMetricas();
+  }, [cargarMetricas]);
 
   return { metricas, cargando, error, recargar: cargarMetricas };
 }

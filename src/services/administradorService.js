@@ -128,9 +128,105 @@ class AdministradorService {
   /**
    * Obtener métricas avanzadas del sistema
    */
-  async obtenerMetricasAvanzadas() {
-    return apiClient.get('/api/administradores/metricas-avanzadas');
+  async obtenerMetricasAvanzadas(periodo = 'mes_actual') {
+    return apiClient.get(`/api/administradores/metricas-avanzadas?periodo=${periodo}`);
+  }
+
+  /**
+   * Obtener estado de operarios con OTs asignadas
+   */
+  async obtenerEstadoOperarios() {
+    return apiClient.get('/api/administradores/operarios-estado');
+  }
+
+  /**
+   * Listar todas las cuentas del sistema
+   */
+  async listarCuentas(filtros = {}) {
+    const params = new URLSearchParams();
+    
+    if (filtros.activa !== undefined) {
+      params.append('activa', filtros.activa);
+    }
+    if (filtros.pagina) {
+      params.append('pagina', filtros.pagina);
+    }
+    if (filtros.limite) {
+      params.append('limite', filtros.limite);
+    }
+    if (filtros.busqueda) {
+      params.append('busqueda', filtros.busqueda);
+    }
+    if (filtros.orden) {
+      params.append('orden', filtros.orden);
+    }
+    if (filtros.direccion) {
+      params.append('direccion', filtros.direccion);
+    }
+    
+    return apiClient.get(`/api/administradores/cuentas?${params.toString()}`);
+  }
+
+  /**
+   * Obtener facturas de una cuenta específica
+   */
+  async obtenerFacturasCuenta(cuentaId) {
+    return apiClient.get(`/api/administradores/cuentas/${cuentaId}/facturas`);
+  }
+
+  /**
+   * Obtener reclamos de una cuenta específica
+   */
+  async obtenerReclamosCuenta(cuentaId) {
+    return apiClient.get(`/api/administradores/cuentas/${cuentaId}/reclamos`);
+  }
+
+  /**
+   * Crear nueva cuenta para un socio
+   */
+  async crearCuenta(datos) {
+    return apiClient.post('/api/administradores/cuentas', datos);
+  }
+
+  /**
+   * Actualizar cuenta
+   */
+  async actualizarCuenta(id, datos) {
+    return apiClient.put(`/api/administradores/cuentas/${id}`, datos);
+  }
+
+  /**
+   * Listar todos los servicios disponibles
+   */
+  async listarServicios() {
+    return apiClient.get('/api/administradores/servicios');
+  }
+
+  /**
+   * Obtener materiales con stock bajo
+   */
+  async obtenerStockBajo() {
+    return apiClient.get('/api/administradores/materiales/stock-bajo');
+  }
+
+  /**
+   * Obtener resumen de stock de materiales
+   */
+  async obtenerResumenStock() {
+    return apiClient.get('/api/administradores/materiales/resumen-stock');
+  }
+
+  /**
+   * Listar todos los materiales
+   */
+  async listarMateriales() {
+    return apiClient.get('/api/administradores/materiales');
   }
 }
 
-export default new AdministradorService();
+const administradorServiceInstance = new AdministradorService();
+
+export default administradorServiceInstance;
+
+// Exportar funciones individuales para usar con destructuring
+export const obtenerEstadoOperarios = () => administradorServiceInstance.obtenerEstadoOperarios();

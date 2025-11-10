@@ -31,6 +31,7 @@ class Socio {
         c.numero_cuenta,
         c.direccion,
         c.localidad,
+        c.servicio_id,
         c.principal,
         c.activa,
         s.nombre as servicio_nombre,
@@ -130,7 +131,8 @@ class Socio {
         s.telefono,
         s.activo,
         s.fecha_alta,
-        COUNT(c.cuenta_id) as cantidad_cuentas
+        COUNT(c.cuenta_id) as cantidad_cuentas,
+        MAX(CASE WHEN c.principal = true THEN c.direccion ELSE NULL END) as direcciones
       FROM socio s
       LEFT JOIN cuenta c ON s.socio_id = c.socio_id
       WHERE 1=1
@@ -150,7 +152,8 @@ class Socio {
         s.nombre ILIKE $${paramCount} OR 
         s.apellido ILIKE $${paramCount} OR 
         s.dni ILIKE $${paramCount} OR
-        s.email ILIKE $${paramCount}
+        s.email ILIKE $${paramCount} OR
+        c.direccion ILIKE $${paramCount}
       )`;
       params.push(`%${busqueda}%`);
       paramCount++;

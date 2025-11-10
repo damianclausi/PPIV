@@ -6,6 +6,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import apiClient from '../../services/api';
+import CooperativaLayout from '../layout/CooperativaLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
@@ -229,59 +230,64 @@ export default function OTsAdministrativas() {
 
   if (cargando) {
     return (
-      <div className="min-h-screen bg-gray-50 p-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-center h-64">
-            <div className="text-center">
-              <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-              <p className="mt-4 text-gray-600">Cargando reclamos comerciales...</p>
+      <CooperativaLayout titulo="Reclamos Comerciales">
+        <div className="min-h-screen p-8">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex items-center justify-center h-64">
+              <div className="text-center">
+                <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                <p className="mt-4 text-gray-600">Cargando reclamos comerciales...</p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </CooperativaLayout>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 p-8">
-        <div className="max-w-7xl mx-auto">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => navigate('/dashboard')}
-            className="mb-6"
-          >
-            Volver
-          </Button>
+      <CooperativaLayout titulo="Reclamos Comerciales">
+        <div className="min-h-screen p-8">
+          <div className="max-w-7xl mx-auto">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => navigate('/dashboard')}
+              className="mb-6"
+            >
+              Volver
+            </Button>
 
-          <Card className="border-red-200 bg-red-50">
-            <CardContent className="pt-6">
-              <div className="flex items-center gap-3 text-red-800">
-                <AlertCircle className="h-5 w-5" />
-                <div>
-                  <p className="font-semibold">Error al cargar OTs</p>
-                  <p className="text-sm">{error}</p>
+            <Card className="border-red-200 bg-red-50">
+              <CardContent className="pt-6">
+                <div className="flex items-center gap-3 text-red-800">
+                  <AlertCircle className="h-5 w-5" />
+                  <div>
+                    <p className="font-semibold">Error al cargar OTs</p>
+                    <p className="text-sm">{error}</p>
+                  </div>
                 </div>
-              </div>
-              <Button
-                onClick={cargarOTs}
-                className="mt-4"
-                variant="outline"
-              >
-                <RefreshCw className="h-4 w-4 mr-2" />
-                Reintentar
-              </Button>
-            </CardContent>
-          </Card>
+                <Button
+                  onClick={cargarOTs}
+                  className="mt-4"
+                  variant="outline"
+                >
+                  <RefreshCw className="h-4 w-4 mr-2" />
+                  Reintentar
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
         </div>
-      </div>
+      </CooperativaLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-7xl mx-auto space-y-6">
+    <CooperativaLayout titulo="Reclamos Comerciales">
+      <div className="min-h-screen p-8">
+        <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-start justify-between">
           <div>
@@ -481,9 +487,9 @@ export default function OTsAdministrativas() {
             )}
           </CardContent>
         </Card>
-      </div>
+        </div>
 
-      {/* Modal de Detalle */}
+        {/* Modal de Detalle */}
       <Dialog open={modalAbierto} onOpenChange={setModalAbierto}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
@@ -675,6 +681,7 @@ export default function OTsAdministrativas() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+      </div>
+    </CooperativaLayout>
   );
 }

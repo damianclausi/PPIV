@@ -6,6 +6,7 @@ import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { Textarea } from '../ui/textarea';
 import { Alert, AlertDescription } from '../ui/alert';
+import MapaOpenStreet from '../ui/MapaOpenStreet';
 import {
   ArrowLeft,
   MapPin,
@@ -112,18 +113,34 @@ const OTTecnicaDetalle = ({ ot, onVolver }) => {
           <CardTitle>Detalles del Trabajo</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {/* Dirección */}
-          {ot.direccion_intervencion && (
-            <div>
-              <div className="flex items-start gap-2 mb-1">
-                <MapPin className="h-4 w-4 text-muted-foreground mt-0.5" />
-                <span className="font-medium text-sm">Dirección de Intervención</span>
-              </div>
-              <p className="text-sm text-muted-foreground ml-6">
-                {ot.direccion_intervencion}
-              </p>
+          {/* Dirección con Mapa */}
+          <div>
+            <div className="flex items-start gap-2 mb-3">
+              <MapPin className="h-4 w-4 text-cooperativa-blue mt-0.5" />
+              <span className="font-medium text-sm">Dirección de Intervención</span>
             </div>
-          )}
+            <div className="ml-6 space-y-3">
+              {(ot.direccion_intervencion || ot.cuenta_direccion || ot.direccion || ot.zona) ? (
+                <>
+                  <p className="text-sm font-semibold text-cooperativa-dark">
+                    {ot.direccion_intervencion || ot.cuenta_direccion || ot.direccion || ot.zona}
+                  </p>
+                  <MapaOpenStreet 
+                    direccion={ot.direccion_intervencion || ot.cuenta_direccion || ot.direccion || ot.zona} 
+                    altura="350px"
+                  />
+                </>
+              ) : (
+                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                  <p className="text-sm text-gray-600">
+                    <span className="font-medium">Dirección no disponible</span>
+                    <br />
+                    <span className="text-xs">Esta orden de trabajo no tiene una dirección de intervención registrada.</span>
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
 
           {/* Descripción del Reclamo */}
           <div>

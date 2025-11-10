@@ -23,6 +23,9 @@ router.get('/dashboard', AdministradorController.obtenerDashboard);
 // Métricas avanzadas para reportes
 router.get('/metricas-avanzadas', AdministradorController.obtenerMetricasAvanzadas);
 
+// Estado de operarios con OTs
+router.get('/operarios-estado', AdministradorController.obtenerEstadoOperarios);
+
 // Gestión de socios
 router.get('/socios', AdministradorController.listarSocios);
 router.post('/socios', AdministradorController.crearSocio);
@@ -38,6 +41,23 @@ router.patch('/reclamos/:id/asignar', AdministradorController.asignarOperarioRec
 
 // Gestión de empleados
 router.get('/empleados', AdministradorController.listarEmpleados);
+
+// Historial de cuentas
+router.get('/cuentas/:id/facturas', AdministradorController.obtenerFacturasCuenta);
+router.get('/cuentas/:id/reclamos', AdministradorController.obtenerReclamosCuenta);
+
+// Gestión de cuentas
+router.get('/cuentas', AdministradorController.listarCuentas);
+router.post('/cuentas', AdministradorController.crearCuenta);
+router.put('/cuentas/:id', AdministradorController.actualizarCuenta);
+
+// Gestión de servicios
+router.get('/servicios', AdministradorController.listarServicios);
+
+// Gestión de materiales y stock
+router.get('/materiales/stock-bajo', AdministradorController.obtenerStockBajo);
+router.get('/materiales/resumen-stock', AdministradorController.obtenerResumenStock);
+router.get('/materiales', AdministradorController.listarMateriales);
 
 // Gestión de OTs Administrativas (sin empleado asignado)
 router.get('/ots/administrativas/resumen', OTAdministrativasController.obtenerResumen);

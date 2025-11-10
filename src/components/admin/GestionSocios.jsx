@@ -9,6 +9,7 @@ import { ArrowLeft, Search, UserPlus, Edit, Eye, Trash2, Users, ChevronUp, Chevr
 import { formatearFecha } from '../../utils/formatters.js';
 import administradorService from '../../services/administradorService.js';
 import { Button } from '../ui/button';
+import CooperativaLayout from '../layout/CooperativaLayout';
 
 export default function GestionSocios() {
   const navigate = useNavigate();
@@ -77,7 +78,8 @@ export default function GestionSocios() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <CooperativaLayout titulo="Gestión de Socios">
+      <div className="min-h-screen">
       {/* Header */}
       <header className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -123,7 +125,7 @@ export default function GestionSocios() {
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <input
                   type="text"
-                  placeholder="Nombre, apellido, DNI, email..."
+                  placeholder="Nombre, apellido, DNI, email, dirección..."
                   value={filtros.busqueda}
                   onChange={(e) => setFiltros({ ...filtros, busqueda: e.target.value, pagina: 1 })}
                   className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -192,6 +194,9 @@ export default function GestionSocios() {
                         Contacto
                       </th>
                       <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        Dirección
+                      </th>
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                         <button
                           onClick={() => manejarOrdenamiento('activo')}
                           className="flex items-center gap-1 hover:text-blue-600 transition-colors"
@@ -233,6 +238,11 @@ export default function GestionSocios() {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span className="text-sm text-gray-900">{socio.telefono}</span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className="text-sm text-gray-600">
+                            {socio.direcciones || 'Sin dirección'}
+                          </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
@@ -327,6 +337,7 @@ export default function GestionSocios() {
           )}
         </div>
       </main>
-    </div>
+      </div>
+    </CooperativaLayout>
   );
 }

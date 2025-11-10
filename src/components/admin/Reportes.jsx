@@ -6,9 +6,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDashboard, useMetricasAvanzadas } from '../../hooks/useAdministrador.js';
+import CooperativaLayout from '../layout/CooperativaLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Skeleton } from '../ui/skeleton';
+import { generarPDFMetricas } from '../../utils/generadorPDFMetricas';
 import { 
   Users, 
   AlertCircle, 
@@ -21,14 +23,15 @@ import {
   Clock,
   XCircle,
   Activity,
-  BarChart3
+  BarChart3,
+  CreditCard
 } from 'lucide-react';
 
 export default function Reportes() {
   const navigate = useNavigate();
   const { dashboard, cargando } = useDashboard();
-  const { metricas: metricasAvanzadas, cargando: cargandoMetricas } = useMetricasAvanzadas();
-  const [periodoSeleccionado, setPeriodoSeleccionado] = useState('30dias');
+  const [periodoSeleccionado, setPeriodoSeleccionado] = useState('mes_actual');
+  const { metricas: metricasAvanzadas, cargando: cargandoMetricas } = useMetricasAvanzadas(periodoSeleccionado);
 
   // Calcular métricas y porcentajes
   const calcularCambio = (actual, anterior) => {
@@ -36,28 +39,66 @@ export default function Reportes() {
     return ((actual - anterior) / anterior * 100).toFixed(1);
   };
 
+  // Función para descargar el PDF
+  const handleDescargarPDF = () => {
+    try {
+      generarPDFMetricas(dashboard, metricasAvanzadas, periodoSeleccionado);
+    } catch (error) {
+      console.error('Error al generar PDF:', error);
+      alert('Error al generar el PDF. Por favor, intente nuevamente.');
+    }
+  };
+
+  // Obtener texto descriptivo del período
+  const obtenerTextoPeriodo = () => {
+    switch(periodoSeleccionado) {
+      case 'mes_actual': return 'mes actual';
+      case '7dias': return 'últimos 7 días';
+      case '30dias': return 'últimos 30 días';
+      case '90dias': return 'últimos 90 días';
+      case 'año': return 'este año';
+      default: return periodoSeleccionado;
+    }
+  };
+
+  const obtenerTextoPeriodoAnterior = () => {
+    switch(periodoSeleccionado) {
+      case 'mes_actual': return 'mes anterior';
+      case '7dias': return '7 días anteriores';
+      case '30dias': return '30 días anteriores';
+      case '90dias': return '90 días anteriores';
+      case 'año': return 'año anterior';
+      default: return 'período anterior';
+    }
+  };
+
   if (cargando || cargandoMetricas) {
     return (
-      <div className="min-h-screen bg-gray-50 p-8">
-        <div className="max-w-7xl mx-auto space-y-6">
-          <Skeleton className="h-12 w-64" />
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <Skeleton className="h-40" />
-            <Skeleton className="h-40" />
-            <Skeleton className="h-40" />
-            <Skeleton className="h-40" />
+      <CooperativaLayout titulo="Panel de Métricas">
+        <div className="min-h-screen p-8">
+          <div className="max-w-7xl mx-auto space-y-6">
+            <Skeleton className="h-12 w-64" />
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              <Skeleton className="h-40" />
+              <Skeleton className="h-40" />
+              <Skeleton className="h-40" />
+              <Skeleton className="h-40" />
+            </div>
           </div>
         </div>
-      </div>
+      </CooperativaLayout>
     );
   }
 
-  // Usar métricas reales calculadas en el backend
+  // Extraer métricas calculadas en el backend
   const tiempoResolucion = metricasAvanzadas?.tiempo_resolucion || {};
   const eficiencia = metricasAvanzadas?.eficiencia_operativa || {};
   const satisfaccion = metricasAvanzadas?.satisfaccion_socio || {};
+  const operariosActivos = metricasAvanzadas?.operarios_activos || {};
+  const estadosReclamos = metricasAvanzadas?.estados_reclamos || {};
+  const facturacionData = metricasAvanzadas?.facturacion || {};
 
-  // Datos de ejemplo para las métricas (integrar con API real)
+  // Consolidar datos de métricas (combinando dashboard general y métricas por período)
   const metricas = {
     socios: {
       total: dashboard?.socios?.total || 0,
@@ -66,39 +107,77 @@ export default function Reportes() {
       cambio: calcularCambio(dashboard?.socios?.nuevos_ultimo_mes || 0, 5) // Comparar con mes anterior
     },
     reclamos: {
-      total: dashboard?.reclamos?.total || 0,
-      pendientes: dashboard?.reclamos?.pendientes || 0,
-      enProceso: dashboard?.reclamos?.en_proceso || 0,
-      resueltos: dashboard?.reclamos?.resueltos || 0,
-      cambio: calcularCambio(dashboard?.reclamos?.resueltos || 0, dashboard?.reclamos?.total || 1)
+      // Si hay datos de estadosReclamos, usar SOLO esos (por período)
+      // Si no, usar los del dashboard (datos generales sin filtro de período)
+      total: (estadosReclamos?.total !== undefined && estadosReclamos?.total > 0) 
+        ? estadosReclamos.total 
+        : (dashboard?.reclamos?.total || 0),
+      pendientes: (estadosReclamos?.total !== undefined && estadosReclamos?.total > 0) 
+        ? estadosReclamos.pendientes 
+        : (dashboard?.reclamos?.pendientes || 0),
+      enProceso: (estadosReclamos?.total !== undefined && estadosReclamos?.total > 0) 
+        ? estadosReclamos.en_proceso 
+        : (dashboard?.reclamos?.en_proceso || 0),
+      resueltos: (estadosReclamos?.total !== undefined && estadosReclamos?.total > 0) 
+        ? estadosReclamos.resueltos 
+        : (dashboard?.reclamos?.resueltos || 0),
+      cambio: calcularCambio(
+        (estadosReclamos?.total !== undefined && estadosReclamos?.total > 0) ? estadosReclamos.resueltos : (dashboard?.reclamos?.resueltos || 0),
+        (estadosReclamos?.total !== undefined && estadosReclamos?.total > 0) ? estadosReclamos.total : (dashboard?.reclamos?.total || 1)
+      )
     },
     facturacion: {
-      totalMes: dashboard?.facturacion?.recaudado_ultimo_mes || 0,
-      pendiente: dashboard?.facturacion?.monto_pendiente || 0,
-      facturasPendientes: dashboard?.facturacion?.pendientes || 0,
-      totalFacturas: dashboard?.facturacion?.total || 0,
+      // Si hay datos de facturacionData, usar SOLO esos (por período)
+      // Si no, usar los del dashboard (datos generales sin filtro de período)
+      totalMes: (facturacionData?.total_facturas !== undefined) 
+        ? facturacionData.recaudado 
+        : (dashboard?.facturacion?.recaudado_ultimo_mes || 0),
+      pendiente: (facturacionData?.total_facturas !== undefined) 
+        ? facturacionData.pendiente_cobro 
+        : (dashboard?.facturacion?.monto_pendiente || 0),
+      facturasPendientes: (facturacionData?.total_facturas !== undefined) 
+        ? facturacionData.facturas_pendientes 
+        : (dashboard?.facturacion?.pendientes || 0),
+      totalFacturas: (facturacionData?.total_facturas !== undefined) 
+        ? facturacionData.total_facturas 
+        : (dashboard?.facturacion?.total || 0),
+      tasaCobro: (facturacionData?.total_facturas !== undefined) 
+        ? facturacionData.tasa_cobro 
+        : null,
       cambio: 12.5 // Calcular con datos reales
     },
     empleados: {
       total: dashboard?.empleados?.total || 0,
       operarios: dashboard?.empleados?.operarios || 0,
       supervisores: dashboard?.empleados?.supervisores || 0,
-      activos: dashboard?.empleados?.activos || 0
+      inactivos: operariosActivos?.inactivos || 0, // Operarios sin OTs asignadas
+      conOrdenes: operariosActivos?.con_ordenes || 0,
+      totalOtsActivas: operariosActivos?.total_ots_activas || 0
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-7xl mx-auto space-y-8">
+    <CooperativaLayout titulo="Panel de Métricas">
+      <div className="min-h-screen p-8">
+        <div className="max-w-7xl mx-auto space-y-8">
         {/* Header */}
         <div className="flex items-start justify-between">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Panel de Métricas</h1>
-            <p className="text-gray-600 mt-1">Estadísticas y reportes del sistema</p>
+            <p className="text-gray-600 mt-1">
+              Estadísticas y reportes del sistema - 
+              <span className="font-semibold text-blue-600 ml-1">
+                {obtenerTextoPeriodo()}
+              </span>
+            </p>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" size="sm">
-              <Calendar className="h-4 w-4 mr-2" />
+            <Button variant="outline" size="sm" onClick={() => navigate('/dashboard/admin/gestion-cuentas')}>
+              <CreditCard className="h-4 w-4 mr-2" />
+              Gestión de Cuentas
+            </Button>
+            <Button variant="outline" size="sm" onClick={handleDescargarPDF}>
+              <FileText className="h-4 w-4 mr-2" />
               Exportar PDF
             </Button>
             <Button variant="outline" size="sm" onClick={() => navigate('/dashboard/administrador')}>
@@ -108,7 +187,15 @@ export default function Reportes() {
         </div>
 
         {/* Selector de Período */}
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
+          <span className="text-sm font-medium text-gray-700 mr-2">Período:</span>
+          <Button 
+            variant={periodoSeleccionado === 'mes_actual' ? 'default' : 'outline'} 
+            size="sm"
+            onClick={() => setPeriodoSeleccionado('mes_actual')}
+          >
+            Mes actual
+          </Button>
           <Button 
             variant={periodoSeleccionado === '7dias' ? 'default' : 'outline'} 
             size="sm"
@@ -224,11 +311,14 @@ export default function Reportes() {
           </Card>
 
           {/* Empleados */}
-          <Card className="relative overflow-hidden border-l-4 border-l-purple-500">
+          <Card 
+            className="relative overflow-hidden border-l-4 border-l-purple-500 cursor-pointer transition-all hover:shadow-lg hover:scale-[1.02]"
+            onClick={() => navigate('/dashboard/admin/operarios-estado')}
+          >
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-sm font-medium text-gray-500">
-                  Personal Activo
+                  Operarios Inactivos
                 </CardTitle>
                 <div className="p-2 bg-purple-50 rounded-lg">
                   <Activity className="h-5 w-5 text-purple-600" />
@@ -236,18 +326,17 @@ export default function Reportes() {
               </div>
             </CardHeader>
             <CardContent className="pt-0">
-              <div className="text-3xl font-bold text-gray-900 mb-2">{metricas.empleados.activos}</div>
+              <div className="text-3xl font-bold text-gray-900 mb-2">{metricas.empleados.inactivos}</div>
               <div className="flex items-center gap-1 text-sm">
                 <Clock className="h-4 w-4 text-gray-600" />
-                <span className="text-gray-600 font-medium">{metricas.empleados.total}</span>
-                <span className="text-gray-500">total empleados</span>
+                <span className="text-gray-600 font-medium">sin órdenes asignadas</span>
               </div>
               <div className="mt-3 flex gap-4 text-xs text-gray-600">
                 <div>
-                  <span className="font-semibold text-purple-600">{metricas.empleados.operarios}</span> operarios
+                  <span className="font-semibold text-purple-600">{metricas.empleados.conOrdenes}</span> con OTs
                 </div>
                 <div>
-                  <span className="font-semibold text-purple-600">{metricas.empleados.supervisores}</span> supervisores
+                  <span className="font-semibold text-gray-500">{metricas.empleados.totalOtsActivas}</span> OTs activas
                 </div>
               </div>
             </CardContent>
@@ -281,7 +370,7 @@ export default function Reportes() {
                     <div 
                       className="bg-red-500 h-2.5 rounded-full transition-all duration-500"
                       style={{ 
-                        width: `${(metricas.reclamos.pendientes / metricas.reclamos.total * 100) || 0}%` 
+                        width: `${Math.min(100, metricas.reclamos.total > 0 ? (metricas.reclamos.pendientes / metricas.reclamos.total * 100) : 0)}%` 
                       }}
                     ></div>
                   </div>
@@ -300,7 +389,7 @@ export default function Reportes() {
                     <div 
                       className="bg-yellow-500 h-2.5 rounded-full transition-all duration-500"
                       style={{ 
-                        width: `${(metricas.reclamos.enProceso / metricas.reclamos.total * 100) || 0}%` 
+                        width: `${Math.min(100, metricas.reclamos.total > 0 ? (metricas.reclamos.enProceso / metricas.reclamos.total * 100) : 0)}%` 
                       }}
                     ></div>
                   </div>
@@ -319,7 +408,7 @@ export default function Reportes() {
                     <div 
                       className="bg-green-500 h-2.5 rounded-full transition-all duration-500"
                       style={{ 
-                        width: `${(metricas.reclamos.resueltos / metricas.reclamos.total * 100) || 0}%` 
+                        width: `${Math.min(100, metricas.reclamos.total > 0 ? (metricas.reclamos.resueltos / metricas.reclamos.total * 100) : 0)}%` 
                       }}
                     ></div>
                   </div>
@@ -334,7 +423,7 @@ export default function Reportes() {
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-gray-500">Tasa de resolución</span>
                     <span className="font-bold text-green-600">
-                      {((metricas.reclamos.resueltos / metricas.reclamos.total * 100) || 0).toFixed(1)}%
+                      {metricas.reclamos.total > 0 ? ((metricas.reclamos.resueltos / metricas.reclamos.total * 100).toFixed(1)) : '0.0'}%
                     </span>
                   </div>
                 </div>
@@ -393,7 +482,10 @@ export default function Reportes() {
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-gray-500">Tasa de cobro</span>
                     <span className="font-bold text-green-600">
-                      {(((metricas.facturacion.totalFacturas - metricas.facturacion.facturasPendientes) / metricas.facturacion.totalFacturas * 100) || 0).toFixed(1)}%
+                      {metricas.facturacion.tasaCobro !== null && metricas.facturacion.tasaCobro !== undefined 
+                        ? `${metricas.facturacion.tasaCobro.toFixed(1)}%`
+                        : `${(((metricas.facturacion.totalFacturas - metricas.facturacion.facturasPendientes) / metricas.facturacion.totalFacturas * 100) || 0).toFixed(1)}%`
+                      }
                     </span>
                   </div>
                 </div>
@@ -405,10 +497,11 @@ export default function Reportes() {
         {/* Indicadores Adicionales - 3 columnas */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Promedio de Resolución */}
-          <Card className="border-t-4 border-t-blue-500">
+          <Card className={`border-t-4 border-t-blue-500 transition-opacity duration-200 ${cargandoMetricas ? 'opacity-50' : 'opacity-100'}`}>
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-500">
+              <CardTitle className="text-sm font-medium text-gray-500 flex items-center justify-between">
                 Tiempo Promedio de Resolución
+                {cargandoMetricas && <Clock className="h-4 w-4 animate-spin text-blue-500" />}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -422,7 +515,7 @@ export default function Reportes() {
                     <span className="text-green-600 font-medium">
                       {Math.abs(tiempoResolucion.cambio_porcentual || 0)}%
                     </span>
-                    <span className="text-gray-500">mejor que mes anterior</span>
+                    <span className="text-gray-500">mejor que {obtenerTextoPeriodoAnterior()}</span>
                   </>
                 ) : (
                   <>
@@ -430,18 +523,22 @@ export default function Reportes() {
                     <span className="text-red-600 font-medium">
                       +{Math.abs(tiempoResolucion.cambio_porcentual || 0)}%
                     </span>
-                    <span className="text-gray-500">vs mes anterior</span>
+                    <span className="text-gray-500">vs {obtenerTextoPeriodoAnterior()}</span>
                   </>
                 )}
+              </div>
+              <div className="mt-2 text-xs text-gray-500">
+                {tiempoResolucion.total_resueltos || 0} reclamos resueltos
               </div>
             </CardContent>
           </Card>
 
           {/* Satisfacción */}
-          <Card className="border-t-4 border-t-yellow-500">
+          <Card className={`border-t-4 border-t-yellow-500 transition-opacity duration-200 ${cargandoMetricas ? 'opacity-50' : 'opacity-100'}`}>
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-500">
+              <CardTitle className="text-sm font-medium text-gray-500 flex items-center justify-between">
                 Satisfacción del Socio
+                {cargandoMetricas && <Clock className="h-4 w-4 animate-spin text-yellow-500" />}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -464,16 +561,20 @@ export default function Reportes() {
                     </span>
                   </>
                 )}
-                <span className="text-gray-500">vs trimestre anterior</span>
+                <span className="text-gray-500">vs {obtenerTextoPeriodoAnterior()}</span>
+              </div>
+              <div className="mt-2 text-xs text-gray-500">
+                {satisfaccion.total_valoraciones || 0} valoraciones
               </div>
             </CardContent>
           </Card>
 
           {/* Eficiencia Operativa */}
-          <Card className="border-t-4 border-t-purple-500">
+          <Card className={`border-t-4 border-t-purple-500 transition-opacity duration-200 ${cargandoMetricas ? 'opacity-50' : 'opacity-100'}`}>
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-500">
+              <CardTitle className="text-sm font-medium text-gray-500 flex items-center justify-between">
                 Eficiencia Operativa
+                {cargandoMetricas && <Clock className="h-4 w-4 animate-spin text-purple-500" />}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -496,12 +597,16 @@ export default function Reportes() {
                     </span>
                   </>
                 )}
-                <span className="text-gray-500">este mes</span>
+                <span className="text-gray-500">vs {obtenerTextoPeriodoAnterior()}</span>
+              </div>
+              <div className="mt-2 text-xs text-gray-500">
+                {eficiencia.reclamos_resueltos || 0} de {eficiencia.total_reclamos || 0} reclamos
               </div>
             </CardContent>
           </Card>
         </div>
       </div>
     </div>
+    </CooperativaLayout>
   );
 }

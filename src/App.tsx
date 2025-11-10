@@ -1,5 +1,8 @@
+import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import SplashScreen from './components/ui/SplashScreen';
+import ErrorBoundary from './components/ErrorBoundary';
 import Login from './components/Login';
 import DashboardCliente from './components/DashboardCliente';
 import DashboardOperario from './components/DashboardOperario';
@@ -25,6 +28,8 @@ import SupervisorOTsTecnicas from './components/supervisor/SupervisorOTsTecnicas
 import ItinerarioCuadrillas from './components/admin/ItinerarioCuadrillas';
 import ItinerarioOperario from './components/operario/ItinerarioOperario';
 import Reportes from './components/admin/Reportes';
+import OperariosEstado from './components/admin/OperariosEstado';
+import GestionCuentas from './components/admin/GestionCuentas';
 
 // Componente para rutas protegidas
 function RutaProtegida({ children }: { children: React.ReactNode }) {
@@ -133,7 +138,9 @@ function AppRoutes() {
         path="/dashboard/reclamos"
         element={
           <RutaProtegida>
-            <ReclamosListado />
+            <ErrorBoundary>
+              <ReclamosListado />
+            </ErrorBoundary>
           </RutaProtegida>
         }
       />
@@ -285,6 +292,22 @@ function AppRoutes() {
           </RutaProtegida>
         }
       />
+      <Route
+        path="/dashboard/admin/operarios-estado"
+        element={
+          <RutaProtegida>
+            <OperariosEstado />
+          </RutaProtegida>
+        }
+      />
+      <Route
+        path="/dashboard/admin/gestion-cuentas"
+        element={
+          <RutaProtegida>
+            <GestionCuentas />
+          </RutaProtegida>
+        }
+      />
       
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
@@ -294,10 +317,25 @@ function AppRoutes() {
 
 // Componente principal de la aplicación
 function App() {
+  // Solo mostrar splash si no se ha visto en esta sesión
+  const [showSplash, setShowSplash] = useState(() => {
+    const splashShown = sessionStorage.getItem('splashShown');
+    return !splashShown;
+  });
+
+  const handleSplashComplete = () => {
+    setShowSplash(false);
+    sessionStorage.setItem('splashShown', 'true');
+  };
+
   return (
     <Router>
       <AuthProvider>
-        <AppRoutes />
+        {showSplash ? (
+          <SplashScreen onComplete={handleSplashComplete} />
+        ) : (
+          <AppRoutes />
+        )}
       </AuthProvider>
     </Router>
   );

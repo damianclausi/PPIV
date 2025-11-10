@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import CooperativaLayout from '../layout/CooperativaLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
@@ -19,6 +20,7 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { formatearFecha, formatearMesAnio } from '../../utils/formatters.js';
+import { descargarPDFFactura } from '../../utils/generadorPDFFactura.js';
 
 export default function FacturaDetalle() {
   const navigate = useNavigate();
@@ -101,8 +103,16 @@ export default function FacturaDetalle() {
   };
 
   const handleDescargarPDF = () => {
-    // TODO: Implementar descarga de PDF
-    alert('Descarga de PDF no implementada aún');
+    if (!factura) {
+      alert('No hay datos de factura disponibles');
+      return;
+    }
+    
+    const resultado = descargarPDFFactura(factura);
+    
+    if (!resultado.exito) {
+      alert('Error al generar el PDF: ' + (resultado.error || 'Error desconocido'));
+    }
   };
 
   const handlePagar = () => {
@@ -111,18 +121,18 @@ export default function FacturaDetalle() {
 
   if (cargando) {
     return (
-      <div className="min-h-screen bg-gray-50 p-8">
-        <div className="max-w-4xl mx-auto space-y-6">
+      <CooperativaLayout titulo="Detalle de Factura">
+        <div className="space-y-6">
           <Skeleton className="h-12 w-64" />
           <Skeleton className="h-96" />
         </div>
-      </div>
+      </CooperativaLayout>
     );
   }
 
   if (error || !factura) {
     return (
-      <div className="min-h-screen bg-gray-50 p-8">
+      <CooperativaLayout titulo="Detalle de Factura">
         <div className="max-w-4xl mx-auto">
           <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
@@ -137,13 +147,13 @@ export default function FacturaDetalle() {
             Volver
           </Button>
         </div>
-      </div>
+      </CooperativaLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-4xl mx-auto space-y-6">
+    <CooperativaLayout titulo="Detalle de Factura">
+      <div className="space-y-6">
         {/* Header */}
         <div className="flex items-start justify-between">
           <div>
@@ -321,6 +331,6 @@ export default function FacturaDetalle() {
           </Card>
         )}
       </div>
-    </div>
+    </CooperativaLayout>
   );
 }
