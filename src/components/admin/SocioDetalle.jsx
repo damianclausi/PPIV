@@ -210,24 +210,6 @@ export default function SocioDetalle() {
                 </label>
                 <p className="text-gray-900">{socio.telefono}</p>
               </div>
-              
-              <div>
-                <label className="text-sm font-medium text-gray-600 flex items-center gap-1">
-                  <MapPin className="h-4 w-4" />
-                  Dirección
-                </label>
-                <p className="text-gray-900">{socio.direccion}</p>
-              </div>
-              
-              <div>
-                <label className="text-sm font-medium text-gray-600 flex items-center gap-1">
-                  <Calendar className="h-4 w-4" />
-                  Fecha de Nacimiento
-                </label>
-                <p className="text-gray-900">
-                  {formatearFecha(socio.fecha_nacimiento)}
-                </p>
-              </div>
             </CardContent>
           </Card>
 
@@ -257,6 +239,20 @@ export default function SocioDetalle() {
                 <label className="text-sm font-medium text-gray-600">Fecha de Alta</label>
                 <p className="text-gray-900">
                   {formatearFecha(socio.fecha_alta)}
+                </p>
+              </div>
+              
+              <div>
+                <label className="text-sm font-medium text-gray-600">Cuenta Principal</label>
+                <p className="text-gray-900">
+                  {cuentas.find(c => c.principal)?.numero_cuenta || 'Sin cuenta principal'}
+                </p>
+              </div>
+              
+              <div>
+                <label className="text-sm font-medium text-gray-600">Dirección Principal</label>
+                <p className="text-gray-900">
+                  {cuentas.find(c => c.principal)?.direccion || 'Sin dirección'}
                 </p>
               </div>
               
@@ -299,6 +295,11 @@ export default function SocioDetalle() {
                         <span className="font-semibold text-gray-900">
                           Cuenta #{cuenta.numero_cuenta}
                         </span>
+                        {cuenta.principal && (
+                          <span className="px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800">
+                            Principal
+                          </span>
+                        )}
                         {cuentaSeleccionada === cuenta.cuenta_id && (
                           <span className="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
                             Seleccionada
