@@ -17,6 +17,7 @@ class Usuario {
         s.nombre as socio_nombre,
         s.apellido as socio_apellido,
         s.dni as socio_dni,
+        s.activo as socio_activo,
         e.nombre as empleado_nombre,
         e.apellido as empleado_apellido,
         e.legajo as empleado_legajo
@@ -43,6 +44,7 @@ class Usuario {
         s.nombre as socio_nombre,
         s.apellido as socio_apellido,
         s.dni as socio_dni,
+        s.activo as socio_activo,
         e.nombre as empleado_nombre,
         e.apellido as empleado_apellido,
         e.legajo as empleado_legajo

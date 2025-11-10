@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
@@ -11,22 +11,52 @@ import logoImage from '../assets/brand/logo.jpeg';
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [error, setError] = useState(() => {
+    // Recuperar error de localStorage si existe
+    return localStorage.getItem('loginError') || '';
+  });
   const [cargando, setCargando] = useState(false);
+  const [mostrarError, setMostrarError] = useState(() => {
+    // Recuperar estado de error de localStorage si existe
+    return localStorage.getItem('loginError') ? true : false;
+  });
 
   const { login } = useAuth();
   const navigate = useNavigate();
 
+  // Persistir error en localStorage
+  useEffect(() => {
+    if (error && mostrarError) {
+      localStorage.setItem('loginError', error);
+    } else {
+      localStorage.removeItem('loginError');
+    }
+  }, [error, mostrarError]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // Limpiar error previo
     setError('');
+    setMostrarError(false);
+    localStorage.removeItem('loginError');
     setCargando(true);
 
     try {
       await login(email, password);
+      // Limpiar cualquier error antes de navegar
+      localStorage.removeItem('loginError');
       navigate('/dashboard');
     } catch (err) {
-      setError(err.message || 'Error al iniciar sesión');
+      // Extraer el mensaje de error más específico
+      const mensajeError = err.message || err.details?.mensaje || err.details?.error || 'Error al iniciar sesión';
+      
+      // Guardar en localStorage inmediatamente
+      localStorage.setItem('loginError', mensajeError);
+      setError(mensajeError);
+      setMostrarError(true);
+      
+      // Prevenir cualquier navegación
+      e.stopPropagation();
     } finally {
       setCargando(false);
     }
@@ -64,12 +94,32 @@ export default function Login() {
           </CardDescription>
         </CardHeader>
         <CardContent className="pt-6">
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {error && (
-              <Alert variant="destructive" className="border-red-400">
-                <AlertDescription>{error}</AlertDescription>
+          {mostrarError && error && (
+            <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-[9999] w-full max-w-md px-4">
+              <Alert variant="destructive" className="border-4 border-red-600 bg-red-100 shadow-2xl relative">
+                <button
+                  onClick={() => {
+                    setMostrarError(false);
+                    setError('');
+                    localStorage.removeItem('loginError');
+                  }}
+                  className="absolute top-2 right-2 text-red-900 hover:text-red-700 font-bold text-xl"
+                  type="button"
+                >
+                  ×
+                </button>
+                <AlertDescription className="text-red-900 font-extrabold text-center py-4 pr-8 flex flex-col items-center gap-3">
+                  <span className="text-5xl">⚠️</span>
+                  <span className="text-lg leading-tight">{error}</span>
+                  <span className="text-sm font-normal text-red-700 mt-2">
+                    Click en la X para cerrar este mensaje
+                  </span>
+                </AlertDescription>
               </Alert>
-            )}
+            </div>
+          )}
+          
+          <form onSubmit={handleSubmit} className="space-y-4">
 
             <div className="space-y-2">
               <label htmlFor="email" className="text-sm font-medium text-cooperativa-dark flex items-center gap-2">
