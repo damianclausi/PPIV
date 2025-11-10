@@ -25,24 +25,19 @@ export default function ReclamosListado() {
     if (!recargar) return;
     
     const intervalo = setInterval(() => {
-      console.log('🔄 Auto-recargando reclamos...');
       recargar();
     }, 30000); // 30 segundos
 
-    console.log('✅ Intervalo de auto-recarga configurado (cada 30s)');
     return () => {
-      console.log('🧹 Limpiando intervalo de auto-recarga');
       clearInterval(intervalo);
     };
   }, [recargar]); // Ahora recargar está memoizado, así que es seguro
 
   // Función para recarga manual
   const handleRecargar = async () => {
-    console.log('🔄 Recarga manual iniciada');
     setRecargando(true);
     try {
       await recargar();
-      console.log('✅ Recarga manual completada');
     } catch (error) {
       console.error('❌ Error en recarga manual:', error);
     } finally {
@@ -86,9 +81,6 @@ export default function ReclamosListado() {
     if (estadoFiltro === 'TODOS') return true;
     return reclamo.estado === estadoFiltro;
   }) || [];
-
-  // Debug: log para confirmar montaje y valores
-  console.log('ReclamosListado render - reclamos count:', reclamos?.length, 'filtrados:', reclamosFiltrados.length);
 
   if (cargando) {
     return (

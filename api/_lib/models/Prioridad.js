@@ -16,7 +16,6 @@ class Prioridad {
       const result = await pool.query(query);
       return result.rows;
     } catch (error) {
-      console.error('Error al obtener prioridades:', error);
       throw new Error('Error al obtener prioridades');
     }
   }
@@ -41,7 +40,6 @@ class Prioridad {
       
       return result.rows[0];
     } catch (error) {
-      console.error('Error al obtener prioridad:', error);
       throw error;
     }
   }
@@ -66,7 +64,6 @@ class Prioridad {
       
       return result.rows[0];
     } catch (error) {
-      console.error('Error al obtener prioridad por nombre:', error);
       throw error;
     }
   }

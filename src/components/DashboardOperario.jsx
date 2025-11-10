@@ -30,26 +30,6 @@ export default function DashboardOperario() {
   // Actualizar reclamos cuando cambian los originales
   React.useEffect(() => {
     if (reclamosOriginales) {
-      console.log('📋 Reclamos recibidos:', reclamosOriginales.length);
-      const otsItinerario = reclamosOriginales.filter(r => r.es_itinerario);
-      console.log('🔍 OTs del itinerario:', otsItinerario.length);
-      console.log('📊 Primera OT itinerario:', otsItinerario[0]);
-      
-      // Ver estados únicos de OTs itinerario
-      const estadosOT = [...new Set(otsItinerario.map(r => r.estado_orden))];
-      const estadosReclamo = [...new Set(otsItinerario.map(r => r.estado))];
-      console.log('🎯 Estados de orden_trabajo en itinerarios:', estadosOT);
-      console.log('🎯 Estados de reclamo en itinerarios:', estadosReclamo);
-      
-      // Contar por estado
-      const asignadas = otsItinerario.filter(r => r.estado_orden === 'ASIGNADA').length;
-      const enCurso = otsItinerario.filter(r => r.estado_orden === 'EN CURSO').length;
-      console.log('📊 Distribución itinerarios - ASIGNADA:', asignadas, '| EN CURSO:', enCurso);
-      
-      // Contar reclamos NO itinerario
-      const noItinerario = reclamosOriginales.filter(r => !r.es_itinerario).length;
-      console.log('📋 Reclamos regulares (NO itinerario):', noItinerario);
-      
       setReclamos(reclamosOriginales);
     }
   }, [reclamosOriginales]);
@@ -167,19 +147,13 @@ export default function DashboardOperario() {
   const reclamosPendientesSinFiltro = reclamos.filter(r => {
     // Si es del itinerario, usar el estado de la orden de trabajo
     if (r.es_itinerario) {
-      const isPendiente = r.estado_orden === 'PENDIENTE' || r.estado_orden === 'pendiente' ||
-                          r.estado_orden === 'ASIGNADA' || r.estado_orden === 'asignada';
-      if (isPendiente) {
-        console.log('✅ OT itinerario pendiente:', { ot_id: r.ot_id, estado_orden: r.estado_orden, descripcion: r.descripcion });
-      }
-      return isPendiente;
+      return r.estado_orden === 'PENDIENTE' || r.estado_orden === 'pendiente' ||
+             r.estado_orden === 'ASIGNADA' || r.estado_orden === 'asignada';
     }
     // Si no es del itinerario, usar el estado del reclamo
     return r.estado === 'PENDIENTE' || r.estado === 'pendiente' ||
            r.estado === 'ASIGNADA' || r.estado === 'asignada';
   });
-  
-  console.log('📊 Total pendientes después de filtro:', reclamosPendientesSinFiltro.length);
   
   const reclamosEnCursoSinFiltro = reclamos.filter(r => {
     // Si es del itinerario, usar el estado de la orden de trabajo
@@ -223,14 +197,10 @@ export default function DashboardOperario() {
     
     const onClickLocal = (e) => {
       e.stopPropagation();
-      console.log('Click en tarjeta', { isDragging, ot_id: reclamo.ot_id });
       
       // Solo navegar si no estamos arrastrando
       if (!isDragging && reclamo.ot_id) {
-        console.log('Navegando a:', `/dashboard/operario/ots-tecnicas/${reclamo.ot_id}`);
         navigate(`/dashboard/operario/ots-tecnicas/${reclamo.ot_id}`);
-      } else if (!reclamo.ot_id) {
-        console.warn('No hay ot_id en el reclamo:', reclamo);
       }
     };
     

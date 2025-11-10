@@ -14,7 +14,6 @@ class ItinerarioController {
     try {
       const { ot_id, cuadrilla_id, fecha_programada } = req.body;
 
-      console.log('📋 Asignando OT a cuadrilla:', { ot_id, cuadrilla_id, fecha_programada });
 
       // Convertir cuadrilla_id a número
       const cuadrillaIdNum = parseInt(cuadrilla_id);
@@ -69,7 +68,6 @@ class ItinerarioController {
       const { cuadrillaId } = req.params;
       const { fecha } = req.query;
 
-      console.log('📅 Obteniendo itinerario:', { cuadrillaId, fecha: fecha || 'TODOS' });
 
       let itinerario;
       
@@ -120,7 +118,6 @@ class ItinerarioController {
         });
       }
 
-      console.log('👤 Obteniendo mi itinerario:', { empleado_id, fecha });
 
       // Obtener cuadrilla del operario
       const cuadrilla = await Cuadrilla.obtenerCuadrillaPorOperario(empleado_id);
@@ -166,7 +163,6 @@ class ItinerarioController {
       const { otId } = req.params;
       const empleado_id = req.usuario.empleado_id;
 
-      console.log('👋 Operario tomando OT:', { otId, empleado_id });
 
       // Validar que el operario pertenece a una cuadrilla
       const cuadrilla = await Cuadrilla.obtenerCuadrillaPorOperario(empleado_id);
@@ -234,7 +230,6 @@ class ItinerarioController {
     try {
       const { otId } = req.params;
 
-      console.log('🗑️ Quitando OT del itinerario:', otId);
 
       const resultado = await OrdenTrabajo.quitarDeItinerario(parseInt(otId));
 
@@ -261,7 +256,6 @@ class ItinerarioController {
     try {
       const empleado_id = req.usuario.empleado_id;
 
-      console.log('📅 Obteniendo fechas con itinerarios:', { empleado_id });
 
       // Obtener cuadrilla del operario
       const cuadrilla = await Cuadrilla.obtenerCuadrillaPorOperario(empleado_id);

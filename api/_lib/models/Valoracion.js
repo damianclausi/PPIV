@@ -70,7 +70,6 @@ class Valoracion {
 
     } catch (error) {
       await client.query('ROLLBACK');
-      console.error('Error al crear valoración:', error);
       throw error;
     } finally {
       client.release();
@@ -96,7 +95,6 @@ class Valoracion {
 
       return resultado.rows.length > 0 ? resultado.rows[0] : null;
     } catch (error) {
-      console.error('Error al obtener valoración por reclamo:', error);
       throw error;
     }
   }
@@ -123,7 +121,6 @@ class Valoracion {
 
       return resultado.rows;
     } catch (error) {
-      console.error('Error al obtener valoraciones por socio:', error);
       throw error;
     }
   }
@@ -176,7 +173,6 @@ class Valoracion {
 
     } catch (error) {
       await client.query('ROLLBACK');
-      console.error('Error al actualizar valoración:', error);
       throw error;
     } finally {
       client.release();
@@ -216,7 +212,6 @@ class Valoracion {
 
     } catch (error) {
       await client.query('ROLLBACK');
-      console.error('Error al eliminar valoración:', error);
       throw error;
     } finally {
       client.release();
@@ -244,7 +239,6 @@ class Valoracion {
 
       return resultado.rows[0];
     } catch (error) {
-      console.error('Error al obtener estadísticas de valoraciones:', error);
       throw error;
     }
   }
@@ -274,7 +268,6 @@ class Valoracion {
 
       return resultado.rows;
     } catch (error) {
-      console.error('Error al obtener valoraciones recientes:', error);
       throw error;
     }
   }

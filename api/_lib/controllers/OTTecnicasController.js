@@ -8,10 +8,8 @@ class OTTecnicasController {
    */
   async listar(req, res) {
     try {
-      console.log('🔍 OTTecnicasController.listar - Query params:', req.query);
       const { estado, empleado_id, cuadrilla_id, limite = 50, offset = 0 } = req.query;
 
-      console.log('📞 Llamando a OrdenTrabajo.listarTecnicas con:', {
         estado,
         empleadoId: empleado_id ? parseInt(empleado_id) : null,
         cuadrillaId: cuadrilla_id ? parseInt(cuadrilla_id) : null,
@@ -27,7 +25,6 @@ class OTTecnicasController {
         offset: parseInt(offset)
       });
 
-      console.log('✅ OTs obtenidas:', ots.length);
 
       res.json({
         success: true,

@@ -17,7 +17,6 @@ export function useMateriales() {
       setError(null);
       
       const token = localStorage.getItem('token');
-      console.log('Fetching materiales from:', `${API_URL}/operarios/materiales`);
       
       const response = await fetch(`${API_URL}/operarios/materiales`, {
         headers: { 
@@ -26,7 +25,6 @@ export function useMateriales() {
         }
       });
       
-      console.log('Response status:', response.status);
       
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
@@ -35,7 +33,6 @@ export function useMateriales() {
       }
       
       const data = await response.json();
-      console.log('Materiales recibidos:', data);
       const materiales = data.datos || data.data || [];
       setMateriales(materiales);
       return { success: true, data: materiales };

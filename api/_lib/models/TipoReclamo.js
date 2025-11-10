@@ -14,7 +14,6 @@ class TipoReclamo {
       const result = await pool.query(query);
       return result.rows;
     } catch (error) {
-      console.error('Error al obtener tipos de reclamo:', error);
       throw new Error('Error al obtener tipos de reclamo');
     }
   }
@@ -35,7 +34,6 @@ class TipoReclamo {
       
       return result.rows[0];
     } catch (error) {
-      console.error('Error al obtener tipo de reclamo:', error);
       throw error;
     }
   }
@@ -56,7 +54,6 @@ class TipoReclamo {
       
       return result.rows[0];
     } catch (error) {
-      console.error('Error al obtener tipo de reclamo por nombre:', error);
       throw error;
     }
   }

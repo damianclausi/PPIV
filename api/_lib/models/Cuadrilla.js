@@ -22,7 +22,6 @@ class Cuadrilla {
       `);
       return result.rows;
     } catch (error) {
-      console.error('Error al obtener cuadrillas activas:', error);
       throw error;
     }
   }
@@ -46,7 +45,6 @@ class Cuadrilla {
       
       return result.rows[0] || null;
     } catch (error) {
-      console.error('Error al obtener cuadrilla por ID:', error);
       throw error;
     }
   }
@@ -77,7 +75,6 @@ class Cuadrilla {
       
       return result.rows;
     } catch (error) {
-      console.error('Error al obtener operarios de cuadrilla:', error);
       throw error;
     }
   }
@@ -105,7 +102,6 @@ class Cuadrilla {
       
       return result.rows[0] || null;
     } catch (error) {
-      console.error('Error al obtener cuadrilla del operario:', error);
       throw error;
     }
   }
@@ -139,7 +135,6 @@ class Cuadrilla {
       
       return result.rows;
     } catch (error) {
-      console.error('Error al obtener operarios disponibles:', error);
       throw error;
     }
   }
@@ -167,7 +162,6 @@ class Cuadrilla {
       
       return result.rows[0] || null;
     } catch (error) {
-      console.error('Error al obtener estadísticas de cuadrilla:', error);
       throw error;
     }
   }

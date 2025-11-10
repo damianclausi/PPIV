@@ -74,20 +74,6 @@ const limiterLogin = rateLimit({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Log de peticiones
-app.use((req, res, next) => {
-  console.log(`📨 Express recibió: ${req.method} ${req.path} (URL completa: ${req.url})`);
-  console.log('📋 Headers:', JSON.stringify({
-    'content-type': req.headers['content-type'],
-    'origin': req.headers['origin'],
-    'authorization': req.headers['authorization'] ? 'presente' : 'ausente'
-  }));
-  if (req.body && Object.keys(req.body).length > 0) {
-    console.log('📦 Body keys:', Object.keys(req.body));
-  }
-  next();
-});
-
 // Aplicar rate limiting general a todas las rutas API
 app.use('/api/', limiterGeneral);
 
@@ -196,22 +182,11 @@ if (process.env.NODE_ENV !== 'test' && process.env.NODE_ENV !== 'production') {
 // Vercel necesita un handler que procese req/res
 export default async function handler(req, res) {
   try {
-    console.log('📝 Vercel Function invoked:', {
-      method: req.method,
-      url: req.url,
-      headers: Object.keys(req.headers)
-    });
-    console.log('🔑 Environment:', {
-      NODE_ENV: process.env.NODE_ENV,
-      hasDB: !!process.env.DATABASE_URL,
-      hasJWT: !!process.env.JWT_SECRET
-    });
-    
     // Express ya tiene las rutas definidas con /api/ prefix
     // No necesitamos transformar la URL
     return app(req, res);
   } catch (error) {
-    console.error('❌ Error en Vercel handler:', error);
+    console.error('Error en Vercel handler:', error.message);
     res.status(500).json({
       error: 'Internal Server Error',
       message: error.message,

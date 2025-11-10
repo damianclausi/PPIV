@@ -16,9 +16,7 @@ export const useCuadrillas = () => {
     setError(null);
     try {
       const response = await cuadrillasService.listar();
-      console.log('🔍 Respuesta cuadrillas:', response);
       const cuadrillasData = response.data || [];
-      console.log('👥 Cuadrillas a establecer:', cuadrillasData);
       setCuadrillas(cuadrillasData);
       return response;
     } catch (err) {

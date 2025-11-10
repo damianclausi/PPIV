@@ -136,7 +136,6 @@ class Reclamo {
           `OT creada automáticamente para: ${tipoReclamo.rows[0].detalle}`
         ]);
         
-        console.log(`✅ OT ${tipoReclamo.rows[0].tipo.toLowerCase()} creada automáticamente para reclamo #${reclamo.reclamo_id}`);
       }
       
       await client.query('COMMIT');
@@ -203,9 +202,7 @@ class Reclamo {
         `, [reclamoId]);
 
         if (otActualizada.rowCount > 0) {
-          console.log(`✅ OT #${otActualizada.rows[0].ot_id} sincronizada a EN_PROCESO (desde reclamo #${reclamoId})`);
         } else {
-          console.log(`⚠️ No se encontró OT PENDIENTE/ASIGNADA para reclamo #${reclamoId} (puede ya estar EN_PROCESO o COMPLETADA)`);
         }
       }
 
@@ -213,7 +210,6 @@ class Reclamo {
       return reclamo;
     } catch (error) {
       await client.query('ROLLBACK');
-      console.error('Error al actualizar estado del reclamo:', error);
       throw error;
     } finally {
       client.release();

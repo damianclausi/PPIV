@@ -251,12 +251,10 @@ class OrdenTrabajo {
       
       await client.query('COMMIT');
       
-      console.log(`✅ OT #${otId} y Reclamo #${ot.reclamo_id} marcados como EN_PROCESO`);
       
       return ot;
     } catch (error) {
       await client.query('ROLLBACK');
-      console.error('❌ Error al marcar OT/Reclamo en proceso:', error);
       throw error;
     } finally {
       client.release();
@@ -422,7 +420,6 @@ class OrdenTrabajo {
       return updateOT.rows[0];
     } catch (error) {
       await client.query('ROLLBACK');
-      console.error('Error al asignar operario:', error);
       throw error;
     } finally {
       client.release();
@@ -456,7 +453,6 @@ class OrdenTrabajo {
       return updateOT.rows[0];
     } catch (error) {
       await client.query('ROLLBACK');
-      console.error('Error al iniciar trabajo:', error);
       throw error;
     } finally {
       client.release();
@@ -561,11 +557,9 @@ class OrdenTrabajo {
       `, [ot_id, observaciones]);
 
       await client.query('COMMIT');
-      console.log(`✅ OT #${ot_id} completada por ${ot.nombre_cierre}${ot.operario_asignado !== empleado_id ? ` (originalmente asignada a ${ot.nombre_asignado})` : ''}`);
       return updateOT.rows[0];
     } catch (error) {
       await client.query('ROLLBACK');
-      console.error('Error al completar trabajo:', error);
       throw error;
     } finally {
       client.release();
@@ -659,7 +653,6 @@ class OrdenTrabajo {
       return { success: true, message: 'OT cancelada correctamente' };
     } catch (error) {
       await client.query('ROLLBACK');
-      console.error('Error al cancelar OT:', error);
       throw error;
     } finally {
       client.release();
@@ -939,7 +932,6 @@ class OrdenTrabajo {
    * Listar OTs pendientes sin asignar (para agregar a itinerario)
    */
   static async listarPendientesSinAsignar(tipo_reclamo = 'TECNICO') {
-    console.log('📋 Buscando OTs pendientes sin asignar, tipo:', tipo_reclamo);
     
     const query = `
       SELECT 
@@ -981,10 +973,8 @@ class OrdenTrabajo {
 
     try {
       const resultado = await pool.query(query, [tipo_reclamo]);
-      console.log(`✅ Encontradas ${resultado.rows.length} OTs pendientes`);
       return resultado.rows;
     } catch (error) {
-      console.error('❌ Error en listarPendientesSinAsignar:', error.message);
       throw error;
     }
   }

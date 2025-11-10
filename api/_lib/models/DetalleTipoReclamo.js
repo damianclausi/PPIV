@@ -24,7 +24,6 @@ class DetalleTipoReclamo {
       const resultado = await pool.query(query);
       return resultado.rows;
     } catch (error) {
-      console.error('Error al obtener detalles de tipos de reclamo:', error);
       throw error;
     }
   }
@@ -48,7 +47,6 @@ class DetalleTipoReclamo {
       const resultado = await pool.query(query, [tipoId]);
       return resultado.rows;
     } catch (error) {
-      console.error('Error al obtener detalles por tipo:', error);
       throw error;
     }
   }
@@ -73,7 +71,6 @@ class DetalleTipoReclamo {
       const resultado = await pool.query(query, [detalleId]);
       return resultado.rows[0];
     } catch (error) {
-      console.error('Error al obtener detalle por ID:', error);
       throw error;
     }
   }

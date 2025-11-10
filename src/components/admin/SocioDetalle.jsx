@@ -60,7 +60,6 @@ export default function SocioDetalle() {
         const responseLecturas = await administradorService.obtenerFacturasCuenta(cuentaId);
         setLecturas(responseLecturas.datos || []);
       } catch (error) {
-        console.error('Error al cargar lecturas:', error);
         setLecturas([]);
       }
       
@@ -69,11 +68,10 @@ export default function SocioDetalle() {
         const responseReclamos = await administradorService.obtenerReclamosCuenta(cuentaId);
         setReclamos(responseReclamos.datos || []);
       } catch (error) {
-        console.error('Error al cargar reclamos:', error);
         setReclamos([]);
       }
     } catch (error) {
-      console.error('Error al cargar historial de cuenta:', error);
+      // Error al cargar historial
     }
   };
 
@@ -110,11 +108,9 @@ export default function SocioDetalle() {
           setCuentas([]);
         }
       } else {
-        console.error('No se pudo cargar el socio');
         alert('Error al cargar los datos del socio');
       }
     } catch (error) {
-      console.error('Error al cargar socio:', error);
       alert('Error al cargar los datos del socio: ' + (error.message || 'Error desconocido'));
     } finally {
       setCargando(false);

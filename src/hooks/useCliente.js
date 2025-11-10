@@ -125,10 +125,8 @@ export const useReclamos = (params = {}) => {
 
   const cargarReclamos = useCallback(async () => {
     try {
-      console.log('📥 Cargando reclamos del servidor...');
       setCargando(true);
       const datos = await clienteService.obtenerReclamos(params);
-      console.log('✅ Reclamos cargados:', datos.length);
       setReclamos(datos);
       setError(null);
     } catch (err) {

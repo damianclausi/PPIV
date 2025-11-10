@@ -34,7 +34,7 @@ export default function AlertasStock() {
         setResumenStock(responseResumen.datos);
       }
     } catch (error) {
-      console.error('Error al cargar alertas de stock:', error);
+      // Error al cargar alertas de stock
     } finally {
       setCargando(false);
     }
