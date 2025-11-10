@@ -2,12 +2,16 @@
  * Componente para editar un socio
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Save, X } from 'lucide-react';
+import { ArrowLeft, Save, X, CreditCard, Check, XCircle, Plus } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Skeleton } from '../ui/skeleton';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import { Alert, AlertDescription } from '../ui/alert';
 import CooperativaLayout from '../layout/CooperativaLayout';
 
 export default function SocioEditar() {
@@ -15,6 +19,15 @@ export default function SocioEditar() {
   const { id } = useParams();
   const [cargando, setCargando] = useState(true);
   const [guardando, setGuardando] = useState(false);
+  const [cuentas, setCuentas] = useState([]);
+  const [servicios, setServicios] = useState([]);
+  const [mostrarFormNuevaCuenta, setMostrarFormNuevaCuenta] = useState(false);
+  const [nuevaCuenta, setNuevaCuenta] = useState({
+    direccion: '',
+    servicio_id: '',
+    principal: false,
+    activa: true
+  });
   const [formData, setFormData] = useState({
     nombre: '',
     apellido: '',
@@ -24,11 +37,7 @@ export default function SocioEditar() {
     activo: true
   });
 
-  useEffect(() => {
-    cargarSocio();
-  }, [id]);
-
-  const cargarSocio = async () => {
+  const cargarSocio = useCallback(async () => {
     try {
       setCargando(true);
       console.log('Cargando socio con ID:', id);
@@ -47,6 +56,14 @@ export default function SocioEditar() {
           telefono: socio.telefono || '',
           activo: socio.activo !== undefined ? socio.activo : true
         });
+        
+        // Cargar las cuentas del socio
+        if (socio.cuentas && socio.cuentas.length > 0) {
+          console.log('Cuentas cargadas:', socio.cuentas);
+          setCuentas(socio.cuentas);
+        } else {
+          setCuentas([]);
+        }
       }
     } catch (error) {
       console.error('Error al cargar socio:', error);
@@ -54,6 +71,57 @@ export default function SocioEditar() {
     } finally {
       setCargando(false);
     }
+  }, [id]);
+
+  useEffect(() => {
+    cargarSocio();
+    cargarServicios();
+  }, [cargarSocio]);
+
+  const cargarServicios = async () => {
+    try {
+      const { default: administradorService } = await import('../../services/administradorService.js');
+      const response = await administradorService.listarServicios();
+      
+      if (response.exito && response.datos) {
+        console.log('Servicios cargados:', response.datos);
+        setServicios(response.datos);
+      }
+    } catch (error) {
+      console.error('Error al cargar servicios:', error);
+    }
+  };
+
+  const handleToggleCuentaActiva = (cuentaId, nuevoEstado) => {
+    setCuentas(cuentas.map(cuenta => 
+      cuenta.cuenta_id === cuentaId 
+        ? { ...cuenta, activa: nuevoEstado }
+        : cuenta
+    ));
+  };
+
+  const handleToggleCuentaPrincipal = (cuentaId) => {
+    setCuentas(cuentas.map(cuenta => 
+      cuenta.cuenta_id === cuentaId 
+        ? { ...cuenta, principal: !cuenta.principal }
+        : { ...cuenta, principal: false } // Solo una puede ser principal
+    ));
+  };
+
+  const handleCuentaDireccionChange = (cuentaId, nuevaDireccion) => {
+    setCuentas(cuentas.map(cuenta => 
+      cuenta.cuenta_id === cuentaId 
+        ? { ...cuenta, direccion: nuevaDireccion }
+        : cuenta
+    ));
+  };
+
+  const handleCuentaServicioChange = (cuentaId, nuevoServicioId) => {
+    setCuentas(cuentas.map(cuenta => 
+      cuenta.cuenta_id === cuentaId 
+        ? { ...cuenta, servicio_id: parseInt(nuevoServicioId) }
+        : cuenta
+    ));
   };
 
   const handleChange = (e) => {
@@ -72,17 +140,107 @@ export default function SocioEditar() {
       
       // Importar el servicio
       const { default: administradorService } = await import('../../services/administradorService.js');
+      
+      // Actualizar datos del socio
       const response = await administradorService.actualizarSocio(id, formData);
       
-      if (response.exito) {
-        alert('Socio actualizado correctamente');
-        navigate(`/dashboard/admin/socios/${id}`);
-      } else {
+      if (!response.exito) {
         alert(response.mensaje || 'Error al actualizar el socio');
+        return;
       }
+      
+      alert('Socio actualizado correctamente');
+      navigate(`/dashboard/admin/socios/${id}`);
     } catch (error) {
       console.error('Error al actualizar socio:', error);
       alert('Error al actualizar el socio: ' + (error.message || 'Error desconocido'));
+    } finally {
+      setGuardando(false);
+    }
+  };
+
+  const handleAgregarCuenta = async () => {
+    try {
+      if (!nuevaCuenta.direccion || !nuevaCuenta.servicio_id) {
+        alert('Por favor completa todos los campos obligatorios');
+        return;
+      }
+
+      setGuardando(true);
+      
+      const { default: administradorService } = await import('../../services/administradorService.js');
+      
+      // Si la nueva cuenta es principal, desactivar la cuenta principal existente
+      if (nuevaCuenta.principal) {
+        const cuentaPrincipalActual = cuentas.find(c => c.principal === true);
+        if (cuentaPrincipalActual) {
+          await administradorService.actualizarCuenta(cuentaPrincipalActual.cuenta_id, {
+            direccion: cuentaPrincipalActual.direccion,
+            servicio_id: cuentaPrincipalActual.servicio_id,
+            principal: false,
+            activa: cuentaPrincipalActual.activa
+          });
+        }
+      }
+      
+      const response = await administradorService.crearCuenta({
+        socio_id: parseInt(id),
+        direccion: nuevaCuenta.direccion,
+        servicio_id: parseInt(nuevaCuenta.servicio_id),
+        principal: nuevaCuenta.principal,
+        activa: nuevaCuenta.activa
+      });
+      
+      if (response.exito) {
+        alert('Cuenta agregada correctamente');
+        // Recargar datos del socio
+        await cargarSocio();
+        // Resetear formulario
+        setNuevaCuenta({
+          direccion: '',
+          servicio_id: '',
+          principal: false,
+          activa: true
+        });
+        setMostrarFormNuevaCuenta(false);
+      } else {
+        alert(response.mensaje || 'Error al agregar cuenta');
+      }
+    } catch (error) {
+      console.error('Error al agregar cuenta:', error);
+      alert('Error al agregar cuenta: ' + (error.message || 'Error desconocido'));
+    } finally {
+      setGuardando(false);
+    }
+  };
+
+  const handleGuardarCuentas = async () => {
+    try {
+      setGuardando(true);
+      
+      // Importar el servicio
+      const { default: administradorService } = await import('../../services/administradorService.js');
+
+      // Actualizar cada cuenta modificada
+      for (const cuenta of cuentas) {
+        try {
+          await administradorService.actualizarCuenta(cuenta.cuenta_id, {
+            direccion: cuenta.direccion,
+            servicio_id: cuenta.servicio_id,
+            principal: cuenta.principal || false,
+            activa: cuenta.activa || false
+          });
+        } catch (error) {
+          console.error(`Error al actualizar cuenta ${cuenta.cuenta_id}:`, error);
+          throw error;
+        }
+      }
+      
+      alert('Cuentas actualizadas correctamente');
+      cargarSocio(); // Recargar datos
+    } catch (error) {
+      console.error('Error al actualizar cuentas:', error);
+      alert('Error al actualizar las cuentas: ' + (error.message || 'Error desconocido'));
     } finally {
       setGuardando(false);
     }
@@ -251,6 +409,247 @@ export default function SocioEditar() {
             </CardContent>
           </Card>
         </form>
+
+        {/* Cuentas Asociadas */}
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle className="flex items-center gap-2">
+                <CreditCard className="h-5 w-5 text-blue-600" />
+                Cuentas Asociadas
+              </CardTitle>
+              <Button
+                type="button"
+                onClick={() => setMostrarFormNuevaCuenta(!mostrarFormNuevaCuenta)}
+                variant="outline"
+                size="sm"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Agregar Cuenta
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            {/* Formulario para agregar nueva cuenta */}
+            {mostrarFormNuevaCuenta && (
+              <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg space-y-4">
+                <h3 className="font-semibold text-gray-900 mb-3">Nueva Cuenta</h3>
+                
+                <Alert>
+                  <AlertDescription>
+                    El número de cuenta y el número de medidor se generarán automáticamente.
+                  </AlertDescription>
+                </Alert>
+
+                <div>
+                  <Label htmlFor="nueva-direccion">Dirección *</Label>
+                  <Input
+                    id="nueva-direccion"
+                    value={nuevaCuenta.direccion}
+                    onChange={(e) => setNuevaCuenta({ ...nuevaCuenta, direccion: e.target.value })}
+                    className="mt-1 !bg-white"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="nueva-servicio">Tipo de Servicio *</Label>
+                  <Select
+                    value={nuevaCuenta.servicio_id?.toString()}
+                    onValueChange={(value) => setNuevaCuenta({ ...nuevaCuenta, servicio_id: value })}
+                  >
+                    <SelectTrigger id="nueva-servicio" className="mt-1">
+                      <SelectValue placeholder="Seleccionar servicio" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {servicios.map((servicio) => (
+                        <SelectItem key={servicio.servicio_id} value={servicio.servicio_id.toString()}>
+                          {servicio.nombre}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      id="nueva-principal"
+                      checked={nuevaCuenta.principal}
+                      onChange={(e) => setNuevaCuenta({ ...nuevaCuenta, principal: e.target.checked })}
+                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    />
+                    <label htmlFor="nueva-principal" className="text-sm font-medium text-gray-700">
+                      Cuenta Principal
+                    </label>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      id="nueva-activa"
+                      checked={nuevaCuenta.activa}
+                      onChange={(e) => setNuevaCuenta({ ...nuevaCuenta, activa: e.target.checked })}
+                      className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
+                    />
+                    <label htmlFor="nueva-activa" className="text-sm font-medium text-gray-700">
+                      Cuenta Activa
+                    </label>
+                  </div>
+                </div>
+
+                <div className="flex gap-3 pt-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => {
+                      setMostrarFormNuevaCuenta(false);
+                      setNuevaCuenta({
+                        direccion: '',
+                        servicio_id: '',
+                        principal: false,
+                        activa: true
+                      });
+                    }}
+                    className="flex-1"
+                  >
+                    Cancelar
+                  </Button>
+                  <Button
+                    type="button"
+                    onClick={handleAgregarCuenta}
+                    disabled={guardando}
+                    className="flex-1"
+                  >
+                    {guardando ? 'Agregando...' : 'Agregar Cuenta'}
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {/* Lista de cuentas existentes */}
+            {cuentas.length > 0 && (
+              <div className="space-y-4">
+                {cuentas.map((cuenta) => (
+                  <div
+                    key={cuenta.cuenta_id}
+                    className="border border-gray-200 rounded-lg p-4 space-y-3"
+                  >
+                    <div className="flex items-center gap-2 mb-3">
+                      <h3 className="font-semibold text-lg">Cuenta #{cuenta.numero_cuenta}</h3>
+                      {cuenta.principal && (
+                        <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                          Principal
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Dirección */}
+                    <div>
+                      <Label htmlFor={`direccion-${cuenta.cuenta_id}`}>Dirección</Label>
+                      <Input
+                        id={`direccion-${cuenta.cuenta_id}`}
+                        value={cuenta.direccion}
+                        onChange={(e) => handleCuentaDireccionChange(cuenta.cuenta_id, e.target.value)}
+                        className="mt-1"
+                      />
+                    </div>
+
+                    {/* Servicio */}
+                    <div>
+                      <Label htmlFor={`servicio-${cuenta.cuenta_id}`}>Tipo de Servicio</Label>
+                      <Select
+                        value={cuenta.servicio_id?.toString()}
+                        onValueChange={(value) => handleCuentaServicioChange(cuenta.cuenta_id, value)}
+                      >
+                        <SelectTrigger id={`servicio-${cuenta.cuenta_id}`} className="mt-1">
+                          <SelectValue placeholder="Seleccionar servicio" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {servicios.map((servicio) => (
+                            <SelectItem key={servicio.servicio_id} value={servicio.servicio_id.toString()}>
+                              {servicio.nombre}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="flex items-center gap-4 pt-3 border-t">
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          id={`principal-${cuenta.cuenta_id}`}
+                          checked={cuenta.principal || false}
+                          onChange={() => handleToggleCuentaPrincipal(cuenta.cuenta_id)}
+                          className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                        />
+                        <label 
+                          htmlFor={`principal-${cuenta.cuenta_id}`}
+                          className="text-sm font-medium text-gray-700 cursor-pointer"
+                        >
+                          Cuenta Principal
+                        </label>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          id={`activa-${cuenta.cuenta_id}`}
+                          checked={cuenta.activa || false}
+                          onChange={(e) => handleToggleCuentaActiva(cuenta.cuenta_id, e.target.checked)}
+                          className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
+                        />
+                        <label 
+                          htmlFor={`activa-${cuenta.cuenta_id}`}
+                          className="text-sm font-medium text-gray-700 cursor-pointer"
+                        >
+                          Cuenta Activa
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+              
+            {/* Botones para guardar o cancelar cambios de cuentas */}
+            {cuentas.length > 0 && (
+              <div className="mt-6 pt-4 border-t">
+                <div className="flex gap-3">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => navigate('/dashboard/admin/socios')}
+                    disabled={guardando}
+                    className="flex-1"
+                  >
+                    <X className="h-4 w-4 mr-2" />
+                    Cancelar Cambios
+                  </Button>
+                  <Button
+                    type="button"
+                    onClick={handleGuardarCuentas}
+                    disabled={guardando}
+                    className="flex-1"
+                  >
+                    {guardando ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                        Guardando...
+                      </>
+                    ) : (
+                      <>
+                        <Save className="h-4 w-4 mr-2" />
+                        Guardar Cambios
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
         </div>
       </div>
     </CooperativaLayout>

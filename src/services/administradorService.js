@@ -152,6 +152,27 @@ class AdministradorService {
   async obtenerReclamosCuenta(cuentaId) {
     return apiClient.get(`/api/administradores/cuentas/${cuentaId}/reclamos`);
   }
+
+  /**
+   * Crear nueva cuenta para un socio
+   */
+  async crearCuenta(datos) {
+    return apiClient.post('/api/administradores/cuentas', datos);
+  }
+
+  /**
+   * Actualizar cuenta
+   */
+  async actualizarCuenta(id, datos) {
+    return apiClient.put(`/api/administradores/cuentas/${id}`, datos);
+  }
+
+  /**
+   * Listar todos los servicios disponibles
+   */
+  async listarServicios() {
+    return apiClient.get('/api/administradores/servicios');
+  }
 }
 
 const administradorServiceInstance = new AdministradorService();

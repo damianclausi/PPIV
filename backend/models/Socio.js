@@ -31,6 +31,7 @@ class Socio {
         c.numero_cuenta,
         c.direccion,
         c.localidad,
+        c.servicio_id,
         c.principal,
         c.activa,
         s.nombre as servicio_nombre,
@@ -131,7 +132,7 @@ class Socio {
         s.activo,
         s.fecha_alta,
         COUNT(c.cuenta_id) as cantidad_cuentas,
-        STRING_AGG(DISTINCT c.direccion, ', ') as direcciones
+        MAX(CASE WHEN c.principal = true THEN c.direccion ELSE NULL END) as direcciones
       FROM socio s
       LEFT JOIN cuenta c ON s.socio_id = c.socio_id
       WHERE 1=1

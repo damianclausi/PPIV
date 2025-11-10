@@ -17,6 +17,7 @@ export default function SocioDetalle() {
   const { id } = useParams();
   const [socio, setSocio] = useState(null);
   const [cuentas, setCuentas] = useState([]);
+  const [cuentaSeleccionada, setCuentaSeleccionada] = useState(null);
   const [lecturas, setLecturas] = useState([]);
   const [reclamos, setReclamos] = useState([]);
   const [cargando, setCargando] = useState(true);
@@ -50,6 +51,37 @@ export default function SocioDetalle() {
     }
   };
 
+  const cargarHistorialCuenta = async (cuentaId) => {
+    try {
+      const { default: administradorService } = await import('../../services/administradorService.js');
+      
+      // Cargar historial de consumo (lecturas/facturas)
+      try {
+        const responseLecturas = await administradorService.obtenerFacturasCuenta(cuentaId);
+        setLecturas(responseLecturas.datos || []);
+      } catch (error) {
+        console.error('Error al cargar lecturas:', error);
+        setLecturas([]);
+      }
+      
+      // Cargar reclamos
+      try {
+        const responseReclamos = await administradorService.obtenerReclamosCuenta(cuentaId);
+        setReclamos(responseReclamos.datos || []);
+      } catch (error) {
+        console.error('Error al cargar reclamos:', error);
+        setReclamos([]);
+      }
+    } catch (error) {
+      console.error('Error al cargar historial de cuenta:', error);
+    }
+  };
+
+  const handleSeleccionarCuenta = (cuenta) => {
+    setCuentaSeleccionada(cuenta.cuenta_id);
+    cargarHistorialCuenta(cuenta.cuenta_id);
+  };
+
   const cargarSocio = async () => {
     try {
       setCargando(true);
@@ -70,24 +102,8 @@ export default function SocioDetalle() {
           // Cargar lecturas y reclamos de la primera cuenta
           if (response.datos.cuentas.length > 0) {
             const cuentaId = response.datos.cuentas[0].cuenta_id;
-            
-            // Cargar historial de consumo (lecturas)
-            try {
-              const responseLecturas = await administradorService.obtenerFacturasCuenta(cuentaId);
-              setLecturas(responseLecturas.datos || []);
-            } catch (error) {
-              console.error('Error al cargar lecturas:', error);
-              setLecturas([]);
-            }
-            
-            // Cargar reclamos
-            try {
-              const responseReclamos = await administradorService.obtenerReclamosCuenta(cuentaId);
-              setReclamos(responseReclamos.datos || []);
-            } catch (error) {
-              console.error('Error al cargar reclamos:', error);
-              setReclamos([]);
-            }
+            setCuentaSeleccionada(cuentaId);
+            await cargarHistorialCuenta(cuentaId);
           }
         } else {
           // Si no, inicializar como array vacío (se pueden cargar después si hay endpoint separado)
@@ -271,13 +287,23 @@ export default function SocioDetalle() {
                 {cuentas.map((cuenta) => (
                   <div
                     key={cuenta.cuenta_id}
-                    className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50"
+                    onClick={() => handleSeleccionarCuenta(cuenta)}
+                    className={`flex items-center justify-between p-4 border-2 rounded-lg cursor-pointer transition-all ${
+                      cuentaSeleccionada === cuenta.cuenta_id
+                        ? 'border-blue-500 bg-blue-50 shadow-md'
+                        : 'border-gray-200 hover:bg-gray-50 hover:border-gray-300'
+                    }`}
                   >
                     <div className="flex-1">
                       <div className="flex items-center gap-3">
                         <span className="font-semibold text-gray-900">
                           Cuenta #{cuenta.numero_cuenta}
                         </span>
+                        {cuentaSeleccionada === cuenta.cuenta_id && (
+                          <span className="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                            Seleccionada
+                          </span>
+                        )}
                         <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
                           cuenta.activa 
                             ? 'bg-green-100 text-green-800' 
