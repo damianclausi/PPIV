@@ -19,7 +19,7 @@ echo ""
 
 # 2. Detener Backend
 echo -e "${BLUE}[2/3]${NC} Deteniendo Backend..."
-pkill -f "node server.js"
+pkill -f "node index.js"
 echo -e "${GREEN}✓${NC} Backend detenido"
 echo ""
 

@@ -40,9 +40,9 @@ echo ""
 
 # 4. Iniciar Backend
 echo -e "${BLUE}[4/5]${NC} Iniciando Backend API..."
-cd backend
-pkill -f "node server.js" 2>/dev/null
-node server.js > server.log 2>&1 &
+cd api
+pkill -f "node index.js" 2>/dev/null
+node index.js > server.log 2>&1 &
 BACKEND_PID=$!
 sleep 2
 
@@ -85,7 +85,7 @@ echo -e "   Email:    mariaelena.gonzalez@hotmail.com"
 echo -e "   Password: password123"
 echo ""
 echo -e "📝 ${BLUE}Logs:${NC}"
-echo -e "   Backend:  tail -f backend/server.log"
+echo -e "   Backend:  tail -f api/server.log"
 echo -e "   Frontend: tail -f frontend.log"
 echo ""
 echo -e "🛑 ${BLUE}Para detener:${NC}"
