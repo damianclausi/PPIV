@@ -5,7 +5,7 @@ class Reclamo {
   /**
    * Obtener reclamos por socio
    */
-  static async obtenerPorSocio(socioId, { estado = null, limite = 20, offset = 0 }) {
+  static async obtenerPorSocio(socioId, { estado = null, limite = 20, offset = 0, cuenta_id = null }) {
     let query = `
       SELECT 
         r.reclamo_id,
@@ -36,6 +36,11 @@ class Reclamo {
     `;
 
     const params = [socioId];
+
+    if (cuenta_id) {
+      query += ` AND r.cuenta_id = $${params.length + 1}`;
+      params.push(cuenta_id);
+    }
 
     if (estado) {
       query += ` AND r.estado = $${params.length + 1}`;
