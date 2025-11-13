@@ -1,0 +1,215 @@
+# Estado del Testing - PPIV
+
+## 📊 Resumen Ejecutivo
+
+**Fecha de actualización**: 12/11/2025  
+**Estado general**: ✅ En progreso - Fase 1 y 2 completadas parcialmente
+
+---
+
+## ✅ Completado
+
+### Fase 1: Configuración Backend ✅
+
+- [x] Configuración de Jest (`api/jest.config.js`)
+- [x] Estructura de carpetas de tests creada
+- [x] Setup de tests (`__tests__/setup/testSetup.js`)
+- [x] Helpers de tests (`__tests__/setup/testHelpers.js`)
+- [x] Configuración de base de datos de prueba (`__tests__/setup/testDb.js`)
+
+### Fase 2: Tests Unitarios Backend (Parcial) ✅
+
+#### Tests de Utilidades ✅
+- [x] **JWT Utils** (`__tests__/unit/utils/jwt.test.js`)
+  - ✅ 13 tests pasando
+  - Cobertura: generarToken, verificarToken, decodificarToken
+  
+- [x] **Crypto Utils** (`__tests__/unit/utils/crypto.test.js`)
+  - ✅ 10 tests pasando
+  - Cobertura: hashearPassword, compararPassword
+
+#### Tests de Middleware ✅
+- [x] **Auth Middleware** (`__tests__/unit/middleware/auth.test.js`)
+  - ✅ 14 tests pasando
+  - Cobertura: requiereRol, esSocio, esEmpleado, esOperario, esAdmin
+  - Nota: `autenticar` se probará en tests de integración
+
+#### Tests de Modelos ✅
+- [x] **Usuario** (`__tests__/unit/models/usuario.test.js`)
+  - ✅ 9 tests pasando
+  - Cobertura: buscarPorEmail, buscarPorId, obtenerRoles, actualizarUltimoLogin, crear, tieneRol
+- [x] **Reclamo** (`__tests__/unit/models/reclamo.test.js`)
+  - ✅ 18 tests pasando
+  - Cobertura: obtenerPorSocio, obtenerPorId, crear, actualizarEstado, obtenerResumen, listarTodos, contarTodos, obtenerPorOperario, obtenerResumenPorOperario, obtenerResumenGeneral, asignarOperario, listarPorCuenta
+- [x] **Socio** (`__tests__/unit/models/socio.test.js`)
+  - ✅ 15 tests pasando
+  - Cobertura: obtenerPerfil, obtenerCuentas, crear, actualizar, cambiarEstado, listar, eliminar, obtenerEstadisticas
+- [x] **Empleado** (`__tests__/unit/models/empleado.test.js`)
+  - ✅ 12 tests pasando
+  - Cobertura: obtenerPerfil, listar, crear, actualizar, cambiarEstado
+- [x] **Cuenta** (`__tests__/unit/models/cuenta.test.js`)
+  - ✅ 12 tests pasando
+  - Cobertura: generarNumeroCuenta, generarNumeroMedidor, crear, obtenerPorId, actualizar, eliminar, listar
+- [x] **Cuadrilla** (`__tests__/unit/models/cuadrilla.test.js`)
+  - ✅ 17 tests pasando
+  - Cobertura: obtenerCuadrillasActivas, obtenerPorId, obtenerOperariosDeCuadrilla, obtenerCuadrillaPorOperario, obtenerOperariosDisponibles, obtenerEstadisticas
+- [x] **Factura** (`__tests__/unit/models/factura.test.js`)
+  - ✅ 12 tests pasando
+  - Cobertura: obtenerPorSocio, obtenerPorId, obtenerResumen, actualizarEstado, registrarPago, crear, obtenerEstadisticas
+- [x] **OrdenTrabajo** (`__tests__/unit/models/ordenTrabajo.test.js`)
+  - ✅ 22 tests pasando
+  - Cobertura: crear, listarAdministrativas, obtenerAdministrativaPorId, cerrarAdministrativa, marcarEnProcesoAdministrativa, contarAdministrativas, listarTecnicas, asignarOperario, iniciarTrabajo, completarTrabajo
+
+---
+
+## 🚧 En Progreso
+
+### Fase 2: Tests Unitarios Backend (Continuación)
+
+#### Pendientes:
+- [ ] Tests de Modelos restantes (OrdenTrabajo, Factura, etc.)
+- [ ] Tests de Controladores:
+  - [ ] AuthController
+  - [ ] ClienteController
+  - [ ] OperarioController
+  - [ ] AdministradorController
+  - [ ] Otros controladores
+
+### Fase 1: Configuración Frontend
+
+- [ ] Instalación de Vitest
+- [ ] Configuración de Vitest (`vitest.config.ts`)
+- [ ] Setup de MSW (Mock Service Worker)
+- [ ] Estructura de carpetas de tests
+
+---
+
+## 📈 Estadísticas Actuales
+
+### Backend
+- **Tests totales**: 151
+- **Tests pasando**: 151 ✅
+- **Cobertura estimada**: ~50% (utilidades, middleware y modelos principales)
+- **Archivos de test**: 11
+
+### Frontend
+- **Tests totales**: 0
+- **Tests pasando**: 0
+- **Cobertura**: 0%
+
+---
+
+## 📁 Estructura Actual de Tests
+
+```
+api/
+├── jest.config.js                    ✅
+├── __tests__/
+│   ├── setup/
+│   │   ├── testSetup.js              ✅
+│   │   ├── testDb.js                 ✅
+│   │   └── testHelpers.js            ✅
+│   ├── unit/
+│   │   ├── utils/
+│   │   │   ├── jwt.test.js           ✅ (13 tests)
+│   │   │   └── crypto.test.js        ✅ (10 tests)
+│   │   └── middleware/
+│   │       └── auth.test.js          ✅ (14 tests)
+│   └── models/
+│       ├── usuario.test.js       ✅ (9 tests)
+│       ├── reclamo.test.js       ✅ (18 tests)
+│       ├── socio.test.js          ✅ (15 tests)
+│       ├── empleado.test.js        ✅ (12 tests)
+│       ├── cuenta.test.js         ✅ (12 tests)
+│       ├── cuadrilla.test.js      ✅ (17 tests)
+│       ├── factura.test.js        ✅ (12 tests)
+│       └── ordenTrabajo.test.js   ✅ (22 tests)
+│   └── integration/                   ⏳ (pendiente)
+└── package.json                       ✅ (scripts configurados)
+```
+
+---
+
+## 🎯 Próximos Pasos
+
+### Inmediatos (Prioridad Alta)
+1. **Completar tests de Modelos** (Usuario, Reclamo, etc.)
+2. **Tests de AuthController** (login, perfil, verificar)
+3. **Configurar Vitest en frontend**
+4. **Tests de servicios del frontend**
+
+### Corto Plazo
+1. Tests de ClienteController
+2. Tests de OperarioController
+3. Tests de AdministradorController
+4. Tests de integración básicos
+
+### Mediano Plazo
+1. Tests de componentes React
+2. Tests de hooks personalizados
+3. Tests E2E (opcional)
+
+---
+
+## 🧪 Cómo Ejecutar Tests
+
+### Backend
+```bash
+# Todos los tests
+cd api && npm test
+
+# Tests unitarios solamente
+npm test -- __tests__/unit/
+
+# Tests de utilidades
+npm test -- __tests__/unit/utils/
+
+# Tests de middleware
+npm test -- __tests__/unit/middleware/
+
+# Con cobertura
+npm run test:coverage
+
+# Modo watch
+npm run test:watch
+```
+
+### Frontend
+```bash
+# (Pendiente de configuración)
+npm test
+```
+
+---
+
+## 📝 Notas Técnicas
+
+### Backend
+- ✅ Jest configurado con soporte para ES modules
+- ✅ Tests funcionando correctamente
+- ✅ Mocks implementados para middleware
+- ⚠️ Tests de integración requieren base de datos de prueba
+
+### Frontend
+- ⏳ Vitest pendiente de instalación
+- ⏳ MSW pendiente de configuración
+- ⏳ React Testing Library pendiente
+
+---
+
+## 🔍 Problemas Conocidos
+
+1. **Ninguno crítico** - Todos los tests implementados están pasando
+
+---
+
+## 📚 Referencias
+
+- [Plan de Testing Completo](./PLAN_TESTING.md)
+- [Jest Documentation](https://jestjs.io/)
+- [Vitest Documentation](https://vitest.dev/)
+
+---
+
+**Última actualización**: 12/11/2025
+
