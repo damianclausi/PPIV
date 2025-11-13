@@ -71,6 +71,18 @@
 - [x] **Valoracion** (`__tests__/unit/models/valoracion.test.js`)
   - ✅ 24 tests pasando
   - Cobertura: crear, obtenerPorReclamo, obtenerPorSocio, actualizar, eliminar, obtenerEstadisticas, obtenerRecientes
+- [x] **Material** (`__tests__/unit/models/material.test.js`)
+  - ✅ 9 tests pasando
+  - Cobertura: obtenerStockBajo, listarTodos, obtenerResumenStock, obtenerPorId, actualizarStock
+- [x] **Servicio** (`__tests__/unit/models/servicio.test.js`)
+  - ✅ 5 tests pasando
+  - Cobertura: listar, obtenerPorId
+- [x] **Lectura** (`__tests__/unit/models/lectura.test.js`)
+  - ✅ 7 tests pasando
+  - Cobertura: listarPorCuenta, obtenerPorId, crear, obtenerEstadisticasPorCuenta
+- [x] **UsoMaterial** (`__tests__/unit/models/usoMaterial.test.js`)
+  - ✅ 9 tests pasando
+  - Cobertura: registrarMateriales, obtenerPorOT, obtenerPorReclamo, listarMateriales, eliminar
 
 ---
 
@@ -79,7 +91,7 @@
 ### Fase 2: Tests Unitarios Backend (Continuación)
 
 #### Pendientes:
-- [ ] Tests de Modelos restantes (Material, Servicio, Lectura, UsoMaterial, etc.)
+- [ ] Tests de Modelos restantes (si los hay)
 - [ ] Tests de Controladores:
   - [ ] AuthController
   - [ ] ClienteController
@@ -99,10 +111,10 @@
 ## 📈 Estadísticas Actuales
 
 ### Backend
-- **Tests totales**: 204 (167 modelos + 37 utils/middleware)
-- **Tests pasando**: 204 ✅
-- **Cobertura estimada**: ~65% (utilidades, middleware y modelos principales)
-- **Archivos de test**: 15
+- **Tests totales**: 234 (197 modelos + 37 utils/middleware)
+- **Tests pasando**: 234 ✅
+- **Cobertura estimada**: ~70% (utilidades, middleware y modelos principales)
+- **Archivos de test**: 19
 
 ### Frontend
 - **Tests totales**: 0
@@ -139,7 +151,11 @@ api/
 │       ├── tipoReclamo.test.js    ✅ (9 tests)
 │       ├── prioridad.test.js      ✅ (9 tests)
 │       ├── detalleTipoReclamo.test.js ✅ (8 tests)
-│       └── valoracion.test.js     ✅ (24 tests)
+│       ├── valoracion.test.js     ✅ (24 tests)
+│       ├── material.test.js       ✅ (9 tests)
+│       ├── servicio.test.js       ✅ (5 tests)
+│       ├── lectura.test.js        ✅ (7 tests)
+│       └── usoMaterial.test.js    ✅ (9 tests)
 │   └── integration/                   ⏳ (pendiente)
 └── package.json                       ✅ (scripts configurados)
 ```
