@@ -90,14 +90,22 @@
 
 ### Fase 2: Tests Unitarios Backend (Continuación)
 
+#### Tests de Controladores ✅
+- [x] **AuthController** (`__tests__/unit/controllers/authController.test.js`)
+  - ✅ 14 tests pasando
+  - Cobertura: login, obtenerPerfil, verificarToken
+- [x] **ClienteController** (`__tests__/unit/controllers/clienteController.test.js`)
+  - ✅ 22 tests pasando
+  - Cobertura: obtenerPerfil, obtenerCuentas, obtenerFacturas, obtenerFactura, obtenerReclamos, obtenerReclamo, crearReclamo, pagarFactura, obtenerDashboard
+- [x] **OperarioController** (`__tests__/unit/controllers/operarioController.test.js`)
+  - ✅ 23 tests pasando
+  - Cobertura: verificarPermisosReclamo, obtenerPerfil, obtenerDashboard, obtenerReclamos, obtenerReclamo, actualizarEstadoReclamo, listarMateriales, registrarMateriales, obtenerMaterialesOT, obtenerMaterialesReclamo, eliminarUsoMaterial
+- [x] **AdministradorController** (`__tests__/unit/controllers/administradorController.test.js`)
+  - ✅ 27 tests pasando
+  - Cobertura: obtenerPerfil, obtenerDashboard, listarSocios, obtenerSocio, crearSocio, actualizarSocio, cambiarEstadoSocio, eliminarSocio, listarReclamos, obtenerReclamo, asignarOperarioReclamo, listarEmpleados, crearCuenta, listarServicios, listarCuentas, obtenerStockBajo, listarMateriales
+
 #### Pendientes:
-- [ ] Tests de Modelos restantes (si los hay)
-- [ ] Tests de Controladores:
-  - [ ] AuthController
-  - [ ] ClienteController
-  - [ ] OperarioController
-  - [ ] AdministradorController
-  - [ ] Otros controladores
+- [ ] Otros controladores (si los hay)
 
 ### Fase 1: Configuración Frontend
 
@@ -111,10 +119,10 @@
 ## 📈 Estadísticas Actuales
 
 ### Backend
-- **Tests totales**: 234 (197 modelos + 37 utils/middleware)
-- **Tests pasando**: 234 ✅
-- **Cobertura estimada**: ~70% (utilidades, middleware y modelos principales)
-- **Archivos de test**: 19
+- **Tests totales**: 320 (197 modelos + 37 utils/middleware + 86 controladores)
+- **Tests pasando**: 320 ✅
+- **Cobertura estimada**: ~75% (utilidades, middleware, modelos principales y controladores)
+- **Archivos de test**: 23
 
 ### Frontend
 - **Tests totales**: 0
@@ -139,6 +147,11 @@ api/
 │   │   │   └── crypto.test.js        ✅ (10 tests)
 │   │   └── middleware/
 │   │       └── auth.test.js          ✅ (14 tests)
+│   ├── controllers/
+│   │   ├── authController.test.js   ✅ (14 tests)
+│   │   ├── clienteController.test.js ✅ (22 tests)
+│   │   ├── operarioController.test.js ✅ (23 tests)
+│   │   └── administradorController.test.js ✅ (27 tests)
 │   └── models/
 │       ├── usuario.test.js       ✅ (9 tests)
 │       ├── reclamo.test.js       ✅ (18 tests)
@@ -165,16 +178,14 @@ api/
 ## 🎯 Próximos Pasos
 
 ### Inmediatos (Prioridad Alta)
-1. **Completar tests de Modelos** (Usuario, Reclamo, etc.)
-2. **Tests de AuthController** (login, perfil, verificar)
-3. **Configurar Vitest en frontend**
-4. **Tests de servicios del frontend**
+1. **Tests de integración básicos del backend**
+2. **Configurar Vitest en frontend**
+3. **Tests de servicios del frontend**
 
 ### Corto Plazo
-1. Tests de ClienteController
-2. Tests de OperarioController
-3. Tests de AdministradorController
-4. Tests de integración básicos
+1. Tests de otros controladores (si los hay)
+2. Tests de integración completos
+3. Tests de componentes React
 
 ### Mediano Plazo
 1. Tests de componentes React
