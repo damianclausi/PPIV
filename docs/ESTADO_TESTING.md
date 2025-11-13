@@ -59,6 +59,18 @@
 - [x] **OrdenTrabajo** (`__tests__/unit/models/ordenTrabajo.test.js`)
   - ✅ 22 tests pasando
   - Cobertura: crear, listarAdministrativas, obtenerAdministrativaPorId, cerrarAdministrativa, marcarEnProcesoAdministrativa, contarAdministrativas, listarTecnicas, asignarOperario, iniciarTrabajo, completarTrabajo
+- [x] **TipoReclamo** (`__tests__/unit/models/tipoReclamo.test.js`)
+  - ✅ 9 tests pasando
+  - Cobertura: obtenerTodos, obtenerPorId, obtenerPorNombre
+- [x] **Prioridad** (`__tests__/unit/models/prioridad.test.js`)
+  - ✅ 9 tests pasando
+  - Cobertura: obtenerTodas, obtenerPorId, obtenerPorNombre
+- [x] **DetalleTipoReclamo** (`__tests__/unit/models/detalleTipoReclamo.test.js`)
+  - ✅ 8 tests pasando
+  - Cobertura: obtenerTodos, obtenerPorTipo, obtenerPorId
+- [x] **Valoracion** (`__tests__/unit/models/valoracion.test.js`)
+  - ✅ 24 tests pasando
+  - Cobertura: crear, obtenerPorReclamo, obtenerPorSocio, actualizar, eliminar, obtenerEstadisticas, obtenerRecientes
 
 ---
 
@@ -67,7 +79,7 @@
 ### Fase 2: Tests Unitarios Backend (Continuación)
 
 #### Pendientes:
-- [ ] Tests de Modelos restantes (OrdenTrabajo, Factura, etc.)
+- [ ] Tests de Modelos restantes (Material, Servicio, Lectura, UsoMaterial, etc.)
 - [ ] Tests de Controladores:
   - [ ] AuthController
   - [ ] ClienteController
@@ -87,10 +99,10 @@
 ## 📈 Estadísticas Actuales
 
 ### Backend
-- **Tests totales**: 151
-- **Tests pasando**: 151 ✅
-- **Cobertura estimada**: ~50% (utilidades, middleware y modelos principales)
-- **Archivos de test**: 11
+- **Tests totales**: 204 (167 modelos + 37 utils/middleware)
+- **Tests pasando**: 204 ✅
+- **Cobertura estimada**: ~65% (utilidades, middleware y modelos principales)
+- **Archivos de test**: 15
 
 ### Frontend
 - **Tests totales**: 0
@@ -123,7 +135,11 @@ api/
 │       ├── cuenta.test.js         ✅ (12 tests)
 │       ├── cuadrilla.test.js      ✅ (17 tests)
 │       ├── factura.test.js        ✅ (12 tests)
-│       └── ordenTrabajo.test.js   ✅ (22 tests)
+│       ├── ordenTrabajo.test.js   ✅ (22 tests)
+│       ├── tipoReclamo.test.js    ✅ (9 tests)
+│       ├── prioridad.test.js      ✅ (9 tests)
+│       ├── detalleTipoReclamo.test.js ✅ (8 tests)
+│       └── valoracion.test.js     ✅ (24 tests)
 │   └── integration/                   ⏳ (pendiente)
 └── package.json                       ✅ (scripts configurados)
 ```
