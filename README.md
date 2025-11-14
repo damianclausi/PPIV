@@ -5,6 +5,39 @@
 
 Sistema de gestión para la Cooperativa Eléctrica "Gobernador Ugarte" desarrollado como proyecto final de la tecnicatura. Este sistema cuenta con tres perfiles de usuario: Cliente, Operario y Administrativo, cada uno con funcionalidades específicas para la gestión de servicios eléctricos, facturación, reclamos y operaciones técnicas.
 
+## 🧪 Testing
+
+El proyecto cuenta con una suite completa de tests implementada:
+
+- **Backend**: ~357 tests (unitarios + integración) con Jest
+- **Frontend**: 56 tests (servicios, hooks, componentes) con Vitest
+- **Total**: ~413 tests pasando ✅
+
+### Ejecutar Tests
+Pasarse a la rama testing
+Configurar variable ambiente a NODE_ENV=test
+```bash
+# Todos los tests
+npm run test:all
+./scripts/test-all.sh
+
+# Por separado
+npm run test:backend
+npm run test:frontend
+
+# Backend específico
+cd api && npm run test:unit
+cd api && npm run test:integration
+
+# Frontend específico
+npm test              # Watch mode
+npm run test:run      # Una vez
+npm run test:ui       # UI visual
+npm run test:coverage # Con cobertura
+```
+
+Para más información, consulta la [documentación completa de testing](./docs/TESTING.md).
+
 El proyecto está basado en prototipos de Figma que incluyen:
 - **Cliente**: Login, dashboard, gestión de facturas, reclamos y pagos
 - **Operario**: Gestión de órdenes asignadas, seguimiento de reclamos y carga de insumos
