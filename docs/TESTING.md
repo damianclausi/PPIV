@@ -243,4 +243,3 @@ cd api && npm test
 ---
 
 **Última actualización**: 14/11/2025
-
