@@ -23,14 +23,20 @@ class UsoMaterial {
     try {
       await client.query('BEGIN');
       
-      // Verificar que la OT existe y está asignada al empleado
+      // Verificar que la OT existe
       const otCheck = await client.query(
-        'SELECT ot_id, reclamo_id FROM orden_trabajo WHERE ot_id = $1 AND empleado_id = $2',
-        [otId, empleadoId]
+        'SELECT ot_id, reclamo_id, empleado_id FROM orden_trabajo WHERE ot_id = $1',
+        [otId]
       );
       
       if (otCheck.rows.length === 0) {
-        throw new Error('Orden de trabajo no encontrada o no asignada al empleado');
+        throw new Error('Orden de trabajo no encontrada');
+      }
+      
+      // Permitir solo si la OT está asignada al empleado o si no tiene empleado asignado
+      const otEmpleadoId = otCheck.rows[0].empleado_id;
+      if (otEmpleadoId && otEmpleadoId !== empleadoId) {
+        throw new Error(`Orden de trabajo asignada a otro empleado (OT empleado: ${otEmpleadoId}, Usuario: ${empleadoId})`);
       }
       
       const reclamoId = otCheck.rows[0].reclamo_id;
