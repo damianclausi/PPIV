@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+// En producción, usar el mismo dominio (API en /api/). En desarrollo, usar localhost
+const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '/api' : 'http://localhost:3001/api');
 
 export function useMateriales() {
   const [materiales, setMateriales] = useState([]);
