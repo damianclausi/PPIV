@@ -15,6 +15,9 @@ import { Skeleton } from '../ui/skeleton';
 import { Alert, AlertDescription } from '../ui/alert';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
 
+// En producción, usar el mismo dominio (API en /api/). En desarrollo, usar localhost
+const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '/api' : 'http://localhost:3001/api');
+
 /**
  * Componente para armar itinerarios de cuadrillas (Admin)
  */
@@ -73,7 +76,7 @@ export default function ItinerarioCuadrillas() {
   const cargarTodasLasOTs = async () => {
     setLoadingTodas(true);
     try {
-      const response = await fetch('http://localhost:3001/api/ot-tecnicas', {
+      const response = await fetch(`${API_URL}/ot-tecnicas`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -100,7 +103,7 @@ export default function ItinerarioCuadrillas() {
     try {
       // Cargar TODOS los itinerarios de la cuadrilla (sin filtro de fecha)
       const response = await fetch(
-        `http://localhost:3001/api/itinerario/cuadrilla/${cuadrillaSeleccionada}`,
+        `${API_URL}/itinerario/cuadrilla/${cuadrillaSeleccionada}`,
         {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`

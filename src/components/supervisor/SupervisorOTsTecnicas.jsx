@@ -16,6 +16,9 @@ import { Loader2, UserPlus, MapPin, User, RefreshCw, FileText } from 'lucide-rea
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
+// En producción, usar el mismo dominio (API en /api/). En desarrollo, usar localhost
+const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '/api' : 'http://localhost:3001/api');
+
 const ESTADOS_CONFIG = {
   PENDIENTE: {
     label: 'Pendiente',
@@ -106,7 +109,7 @@ const SupervisorOTsTecnicas = () => {
       console.log('🔍 Cargando OTs administrativas con filtros:', { filtroEstado });
       
       const response = await fetch(
-        `http://localhost:3001/api/administradores/ots/administrativas?${params.toString()}`,
+        `${API_URL}/administradores/ots/administrativas?${params.toString()}`,
         {
           headers: {
             'Authorization': `Bearer ${token}`
