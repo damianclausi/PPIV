@@ -129,18 +129,19 @@ export default function CargarInsumos() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-2xl mx-auto space-y-8">
+    <div className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
+      <div className="max-w-3xl mx-auto space-y-6 sm:space-y-8">
         {/* Header */}
-        <div className="flex items-start justify-between">
+        <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Cargar Materiales</h1>
-            <p className="text-gray-600 mt-1">Registro de materiales utilizados en la orden de trabajo</p>
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Cargar Materiales</h1>
+            <p className="text-sm sm:text-base text-gray-600 mt-1">Registro de materiales utilizados en la orden de trabajo</p>
           </div>
           <Button 
             variant="outline"
             size="sm"
             onClick={() => navigate(-1)}
+            className="w-full sm:w-auto"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Volver
@@ -172,7 +173,7 @@ export default function CargarInsumos() {
           <CardContent className="space-y-8">
             {/* Agregar Material */}
             <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="material">Material *</Label>
                   <Select value={materialSeleccionado} onValueChange={setMaterialSeleccionado} disabled={loading}>
@@ -182,7 +183,7 @@ export default function CargarInsumos() {
                     <SelectContent>
                       {materiales.map((mat) => (
                         <SelectItem key={mat.material_id} value={mat.material_id.toString()}>
-                          {mat.nombre} {mat.codigo ? `(${mat.codigo})` : ''} - Stock: {mat.stock_actual || 0} {mat.unidad_medida || ''}
+                          {mat.nombre} {mat.codigo ? `(${mat.codigo})` : ''}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -205,7 +206,8 @@ export default function CargarInsumos() {
                   <Input
                     id="cantidad"
                     type="number"
-                    step="0.01"
+                    step="1"
+                    min="1"
                     placeholder="Ej: 10"
                     value={cantidad}
                     onChange={(e) => setCantidad(e.target.value)}
@@ -301,9 +303,9 @@ export default function CargarInsumos() {
             */}
 
             {/* Botones de Acción */}
-            <div className="flex gap-4 pt-4">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-4">
               <Button 
-                className="flex-1"
+                className="flex-1 w-full"
                 onClick={handleConfirmar}
                 disabled={materialesAgregados.length === 0 || guardando || !otId}
               >
@@ -314,6 +316,7 @@ export default function CargarInsumos() {
                 variant="outline"
                 onClick={() => navigate(-1)}
                 disabled={guardando}
+                className="w-full sm:w-auto"
               >
                 Cancelar
               </Button>
