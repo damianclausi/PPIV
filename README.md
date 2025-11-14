@@ -16,16 +16,23 @@ El proyecto cuenta con una suite completa de tests implementada:
 ### Ejecutar Tests
 
 ```bash
-# Todos los tests (frontend + backend)
+# Todos los tests
 npm run test:all
+./scripts/test-all.sh
 
-# Solo backend
+# Por separado
 npm run test:backend
-cd api && npm test
-
-# Solo frontend
 npm run test:frontend
-npm test
+
+# Backend específico
+cd api && npm run test:unit
+cd api && npm run test:integration
+
+# Frontend específico
+npm test              # Watch mode
+npm run test:run      # Una vez
+npm run test:ui       # UI visual
+npm run test:coverage # Con cobertura
 ```
 
 Para más información, consulta la [documentación completa de testing](./docs/TESTING.md).
