@@ -84,6 +84,9 @@
             "test": "vitest",
             "test:ui": "vitest --ui",
             "test:coverage": "vitest --coverage",
-            "test:run": "vitest run"
+            "test:run": "vitest run",
+            "test:all": "npm run test:run && cd api && npm test",
+            "test:backend": "cd api && npm test",
+            "test:frontend": "npm run test:run"
       }
 }
