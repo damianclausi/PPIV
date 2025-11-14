@@ -88,6 +88,40 @@
 
 ## 🚧 En Progreso
 
+### Fase 3: Tests de Integración Backend (Configuración Completa) ✅
+
+#### Configuración ✅
+- [x] **Setup de Base de Datos** (`__tests__/integration/setup/dbSetup.js`)
+  - ✅ Pool de conexiones para tests
+  - ✅ Helpers para limpiar tablas
+  - ✅ Verificación de conexión
+- [x] **Helpers de Tests** (`__tests__/integration/setup/testHelpers.js`)
+  - ✅ createRequest (Supertest)
+  - ✅ crearUsuarioPrueba, crearSocioPrueba, crearEmpleadoPrueba
+  - ✅ loginYobtenerToken
+  - ✅ limpiarDatosPrueba
+- [x] **Setup Global** (`__tests__/integration/setup/integrationSetup.js`)
+  - ✅ Configuración de entorno
+  - ✅ Setup/teardown de base de datos
+  - ✅ Timeout configurado (30s)
+- [x] **Configuración Jest** (`jest.config.js`)
+  - ✅ Proyectos múltiples (unit/integration)
+  - ✅ Scripts en package.json
+  - ✅ Separación de configuraciones
+
+#### Tests de Integración Implementados
+- [x] **Auth Integration** (`__tests__/integration/auth.integration.test.js`)
+  - ✅ Login exitoso
+  - ✅ Login con credenciales inválidas
+  - ✅ Obtener perfil autenticado
+  - ✅ Verificar token
+
+#### Pendientes:
+- [ ] Tests de integración para ClienteController
+- [ ] Tests de integración para OperarioController
+- [ ] Tests de integración para AdministradorController
+- [ ] Tests de integración para endpoints complejos
+
 ### Fase 2: Tests Unitarios Backend (Continuación)
 
 #### Tests de Controladores ✅
@@ -119,10 +153,11 @@
 ## 📈 Estadísticas Actuales
 
 ### Backend
-- **Tests totales**: 320 (197 modelos + 37 utils/middleware + 86 controladores)
-- **Tests pasando**: 320 ✅
-- **Cobertura estimada**: ~75% (utilidades, middleware, modelos principales y controladores)
-- **Archivos de test**: 23
+- **Tests unitarios**: 320 (197 modelos + 37 utils/middleware + 86 controladores) ✅
+- **Tests de integración**: 4 (configuración completa, más tests pendientes)
+- **Tests totales**: 324 ✅
+- **Cobertura estimada**: ~75% (utilidades, middleware, modelos, controladores)
+- **Archivos de test**: 27 (23 unitarios + 4 integración)
 
 ### Frontend
 - **Tests totales**: 0
@@ -169,7 +204,13 @@ api/
 │       ├── servicio.test.js       ✅ (5 tests)
 │       ├── lectura.test.js        ✅ (7 tests)
 │       └── usoMaterial.test.js    ✅ (9 tests)
-│   └── integration/                   ⏳ (pendiente)
+│   └── integration/                   ✅ (configurado)
+│       ├── setup/
+│       │   ├── dbSetup.js              ✅
+│       │   ├── testHelpers.js          ✅
+│       │   └── integrationSetup.js     ✅
+│       ├── auth.integration.test.js    ✅ (4 tests)
+│       └── README.md                   ✅
 └── package.json                       ✅ (scripts configurados)
 ```
 
@@ -178,7 +219,7 @@ api/
 ## 🎯 Próximos Pasos
 
 ### Inmediatos (Prioridad Alta)
-1. **Tests de integración básicos del backend**
+1. **Completar tests de integración del backend** (ClienteController, OperarioController, AdministradorController)
 2. **Configurar Vitest en frontend**
 3. **Tests de servicios del frontend**
 
@@ -202,7 +243,10 @@ api/
 cd api && npm test
 
 # Tests unitarios solamente
-npm test -- __tests__/unit/
+npm run test:unit
+
+# Tests de integración solamente
+npm run test:integration
 
 # Tests de utilidades
 npm test -- __tests__/unit/utils/

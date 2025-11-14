@@ -128,27 +128,21 @@ export async function crearEmpleadoPrueba(datos = {}) {
   const empleadoDefault = {
     nombre: 'Test',
     apellido: 'Empleado',
-    dni: `${Date.now()}${Math.floor(Math.random() * 1000)}`, // DNI único
-    telefono: '1234567890',
-    direccion: 'Calle Test 123',
+    legajo: `LEG${Date.now()}`,
     fecha_ingreso: new Date(),
-    cargo: 'Operario',
     activo: true,
     ...datos
   };
 
   const result = await queryTestDb(
-    `INSERT INTO empleado (nombre, apellido, dni, telefono, direccion, fecha_ingreso, cargo, activo)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-     RETURNING empleado_id, nombre, apellido, dni, cargo, activo`,
+    `INSERT INTO empleado (nombre, apellido, legajo, fecha_ingreso, activo)
+     VALUES ($1, $2, $3, $4, $5)
+     RETURNING empleado_id, nombre, apellido, activo`,
     [
       empleadoDefault.nombre,
       empleadoDefault.apellido,
-      empleadoDefault.dni,
-      empleadoDefault.telefono,
-      empleadoDefault.direccion,
+      empleadoDefault.legajo,
       empleadoDefault.fecha_ingreso,
-      empleadoDefault.cargo,
       empleadoDefault.activo
     ]
   );
