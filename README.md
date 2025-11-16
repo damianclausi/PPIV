@@ -14,8 +14,7 @@ El proyecto cuenta con una suite completa de tests implementada:
 - **Total**: ~413 tests pasando ✅
 
 ### Ejecutar Tests
-Pasarse a la rama testing
-Configurar variable ambiente a NODE_ENV=test
+
 ```bash
 # Todos los tests
 npm run test:all

@@ -85,7 +85,8 @@ mkdir -p logs
 # Paso 3: Iniciar Backend
 echo -e "${BLUE}📋 Paso 3: Iniciando Backend (Puerto 3001)...${NC}"
 cd api
-npm start > ../logs/backend.log 2>&1 &
+# Establecer NODE_ENV=development para que el servidor se inicie
+NODE_ENV=development npm start > ../logs/backend.log 2>&1 &
 BACKEND_PID=$!
 cd ..
 
