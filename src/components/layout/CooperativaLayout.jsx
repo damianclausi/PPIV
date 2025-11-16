@@ -145,7 +145,7 @@ export default function CooperativaLayout({ children, titulo }) {
           <div className="px-4 py-4 border-t border-white/10">
             <div className="text-white/60 text-xs text-center">
               <p>Sistema de Gestión</p>
-              <p className="mt-1">v1.0.0</p>
+              <p className="mt-1">v2.0.0</p>
             </div>
           </div>
         </aside>
