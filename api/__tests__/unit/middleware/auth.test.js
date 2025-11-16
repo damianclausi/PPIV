@@ -8,15 +8,11 @@ import {
 } from '../../../_lib/middleware/auth.js';
 import { generarToken, verificarToken } from '../../../_lib/utils/jwt.js';
 import { createMockRequest, createMockResponse } from '../../setup/testHelpers.js';
-import Usuario from '../../../_lib/models/Usuario.js';
 
-// Mock del modelo Usuario
-jest.mock('../../../_lib/models/Usuario.js', () => ({
-  __esModule: true,
-  default: {
-    buscarPorId: jest.fn()
-  }
-}));
+// Mock manual del modelo Usuario (sin jest.mock en ESM)
+const Usuario = {
+  buscarPorId: jest.fn()
+};
 
 describe('Auth Middleware', () => {
   let req, res, next;
