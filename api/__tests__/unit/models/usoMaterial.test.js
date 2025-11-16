@@ -70,7 +70,7 @@ describe('Modelo UsoMaterial', () => {
         .mockResolvedValueOnce({}) // BEGIN
         .mockResolvedValueOnce({ rows: [] }); // OT no encontrada
 
-      await expect(UsoMaterial.registrarMateriales(1, 5, [{ material_id: 1, cantidad: 5 }])).rejects.toThrow('Orden de trabajo no encontrada o no asignada al empleado');
+      await expect(UsoMaterial.registrarMateriales(1, 5, [{ material_id: 1, cantidad: 5 }])).rejects.toThrow('Orden de trabajo no encontrada o no asignada a este operario');
       expect(mockClientQuery).toHaveBeenCalledWith('ROLLBACK');
     });
 

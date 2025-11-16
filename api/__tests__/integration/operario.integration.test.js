@@ -39,7 +39,7 @@ describe('OperarioController - Tests de Integración', () => {
 
     const { hashearPassword } = await import('../../_lib/utils/crypto.js');
     const hashPass = await hashearPassword('password123');
-    const emailOperario = `operario_${Date.now()}@test.com`;
+    const emailOperario = `operario_${Date.now()}_${Math.random().toString(36).substr(2, 9)}@test.com`;
 
     const usuarioResult = await queryTestDb(
       `INSERT INTO usuario (email, hash_pass, activo, empleado_id)
@@ -61,7 +61,7 @@ describe('OperarioController - Tests de Integración', () => {
 
     // Crear datos adicionales para los tests
     // Crear socio y cuenta
-    const emailSocio = `socio_${Date.now()}@test.com`;
+    const emailSocio = `socio_${Date.now()}_${Math.random().toString(36).substr(2, 9)}@test.com`;
     socioPrueba = await crearSocioPrueba({ email: emailSocio });
 
     const servicioResult = await queryTestDb(
@@ -74,8 +74,9 @@ describe('OperarioController - Tests de Integración', () => {
     const cuentaResult = await queryTestDb(
       `INSERT INTO cuenta (socio_id, servicio_id, numero_cuenta, direccion, localidad, activa)
        VALUES ($1, $2, $3, $4, $5, $6)
+       ON CONFLICT (numero_cuenta) DO UPDATE SET numero_cuenta = EXCLUDED.numero_cuenta
        RETURNING cuenta_id, numero_cuenta`,
-      [socioPrueba.socio_id, servicioId, `001-${Date.now()}`, 'Calle Test 123', 'Ugarte', true]
+      [socioPrueba.socio_id, servicioId, `001-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, 'Calle Test 123', 'Ugarte', true]
     );
     cuentaPrueba = cuentaResult.rows[0];
 
@@ -226,7 +227,7 @@ describe('OperarioController - Tests de Integración', () => {
       const otroOperario = await crearEmpleadoPrueba({});
       const { hashearPassword } = await import('../../_lib/utils/crypto.js');
       const hashPass = await hashearPassword('password123');
-      const emailOtro = `otro_operario_${Date.now()}@test.com`;
+      const emailOtro = `otro_operario_${Date.now()}_${Math.random().toString(36).substr(2, 9)}@test.com`;
 
       await queryTestDb(
         `INSERT INTO usuario (email, hash_pass, activo, empleado_id) VALUES ($1, $2, $3, $4) RETURNING usuario_id`,
