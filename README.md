@@ -5,13 +5,13 @@
 
 Sistema de gestión para la Cooperativa Eléctrica "Gobernador Ugarte" desarrollado como proyecto final de la tecnicatura. Este sistema cuenta con tres perfiles de usuario: Cliente, Operario y Administrativo, cada uno con funcionalidades específicas para la gestión de servicios eléctricos, facturación, reclamos y operaciones técnicas.
 
-## 🧪 Testing
+## Testing
 
 El proyecto cuenta con una suite completa de tests implementada:
 
 - **Backend**: ~357 tests (unitarios + integración) con Jest
 - **Frontend**: 56 tests (servicios, hooks, componentes) con Vitest
-- **Total**: ~413 tests pasando ✅
+- **Total**: ~413 tests pasando 
 
 ### Ejecutar Tests
 
