@@ -483,5 +483,3 @@ npm run preview
 - [API Documentation](docs/API.md) - Documentación completa de endpoints
 - [Database Schema](docs/DATABASE.md) - Esquema completo de la base de datos
 - [Testing Guide](docs/TESTING.md) - Guía completa de testing
-- [Guidelines](src/guidelines/Guidelines.md) - Guías de desarrollo
-
