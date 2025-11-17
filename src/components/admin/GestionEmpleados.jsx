@@ -7,65 +7,48 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, UserCog, Search, Briefcase, Mail, Phone } from 'lucide-react';
 import { Button } from '../ui/button';
 import CooperativaLayout from '../layout/CooperativaLayout';
+import { useEmpleados } from '../../hooks/useAdministrador';
 
 export default function GestionEmpleados() {
   const navigate = useNavigate();
-  const [empleados, setEmpleados] = useState([]);
-  const [cargando, setCargando] = useState(true);
+  const [filtroActivo, setFiltroActivo] = useState('todos');
+  const [filtroCargo, setFiltroCargo] = useState('todos');
+  const [busqueda, setBusqueda] = useState('');
+  
+  // Usar el hook real para cargar empleados
+  const { empleados, total, cargando, error } = useEmpleados({
+    activo: filtroActivo === 'todos' ? undefined : filtroActivo === 'activos',
+    pagina: 1,
+    limite: 50
+  });
 
-  // Simular carga de empleados (reemplazar con hook real)
-  React.useEffect(() => {
-    // TODO: Implementar hook useEmpleados
-    setTimeout(() => {
-      setEmpleados([
-        {
-          empleado_id: 1,
-          nombre: 'Pedro Ramón',
-          apellido: 'García',
-          email: 'pedro.garcia@cooperativa-ugarte.com.ar',
-          telefono: '3804-111111',
-          cargo: 'Operario Senior',
-          activo: true,
-          reclamos_asignados: 1,
-          reclamos_completados: 45
-        },
-        {
-          empleado_id: 2,
-          nombre: 'Ana María',
-          apellido: 'Fernández',
-          email: 'ana.supervisora@cooperativa-ugarte.com.ar',
-          telefono: '3804-222222',
-          cargo: 'Supervisora',
-          activo: true,
-          reclamos_asignados: 3,
-          reclamos_completados: 78
-        },
-        {
-          empleado_id: 3,
-          nombre: 'Luis Alberto',
-          apellido: 'Martínez',
-          email: 'luis.operario@cooperativa-ugarte.com.ar',
-          telefono: '3804-333333',
-          cargo: 'Operario',
-          activo: true,
-          reclamos_asignados: 2,
-          reclamos_completados: 32
-        },
-        {
-          empleado_id: 4,
-          nombre: 'Carmen Alicia',
-          apellido: 'López',
-          email: 'carmen.operaria@cooperativa-ugarte.com.ar',
-          telefono: '3804-444444',
-          cargo: 'Operaria',
-          activo: true,
-          reclamos_asignados: 1,
-          reclamos_completados: 28
-        }
-      ]);
-      setCargando(false);
-    }, 500);
-  }, []);
+  // Filtrar empleados por cargo y búsqueda
+  const empleadosFiltrados = empleados?.filter(empleado => {
+    // Filtro por cargo
+    const estaEnCuadrilla = empleado.cuadrilla_asignada !== null && empleado.cuadrilla_asignada !== undefined;
+    
+    let cumpleFiltroCargoVal = true;
+    if (filtroCargo === 'operario') {
+      cumpleFiltroCargoVal = estaEnCuadrilla;
+    } else if (filtroCargo === 'administrativo') {
+      cumpleFiltroCargoVal = !estaEnCuadrilla;
+    }
+    
+    // Filtro por búsqueda
+    let cumpleBusqueda = true;
+    if (busqueda.trim()) {
+      const textoBusqueda = busqueda.toLowerCase();
+      const nombreCompleto = `${empleado.nombre} ${empleado.apellido}`.toLowerCase();
+      const email = empleado.email?.toLowerCase() || '';
+      const legajo = empleado.legajo?.toLowerCase() || '';
+      
+      cumpleBusqueda = nombreCompleto.includes(textoBusqueda) || 
+                       email.includes(textoBusqueda) || 
+                       legajo.includes(textoBusqueda);
+    }
+    
+    return cumpleFiltroCargoVal && cumpleBusqueda;
+  }) || [];
 
   return (
     <CooperativaLayout titulo="Gestión de Empleados">
@@ -102,14 +85,19 @@ export default function GestionEmpleados() {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
               <input
                 type="text"
-                placeholder="Buscar empleado..."
+                placeholder="Buscar por nombre, email o legajo..."
+                value={busqueda}
+                onChange={(e) => setBusqueda(e.target.value)}
                 className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
               />
             </div>
-            <select className="px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+            <select 
+              className="px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+              value={filtroCargo}
+              onChange={(e) => setFiltroCargo(e.target.value)}
+            >
               <option value="todos">Todos los cargos</option>
               <option value="operario">Operarios</option>
-              <option value="supervisor">Supervisores</option>
               <option value="administrativo">Administrativos</option>
             </select>
           </div>
@@ -121,9 +109,9 @@ export default function GestionEmpleados() {
             <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mb-4"></div>
             <p className="text-gray-600">Cargando empleados...</p>
           </div>
-        ) : empleados && empleados.length > 0 ? (
+        ) : empleadosFiltrados && empleadosFiltrados.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {empleados.map((empleado) => (
+            {empleadosFiltrados.map((empleado) => (
               <div
                 key={empleado.empleado_id}
                 className="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-all"
@@ -148,11 +136,13 @@ export default function GestionEmpleados() {
                   <div className="space-y-2">
                     <div className="flex items-center gap-2 text-sm text-gray-600">
                       <Mail className="w-4 h-4 text-gray-400" />
-                      <span className="truncate">{empleado.email}</span>
+                      <span className="truncate">
+                        {empleado.email || `${empleado.nombre?.toLowerCase()}.${empleado.apellido?.toLowerCase()}@cooperativa-ugarte.com.ar`}
+                      </span>
                     </div>
                     <div className="flex items-center gap-2 text-sm text-gray-600">
                       <Phone className="w-4 h-4 text-gray-400" />
-                      <span>{empleado.telefono}</span>
+                      <span>{empleado.telefono || '3804-000000'}</span>
                     </div>
                   </div>
                 </div>
@@ -161,16 +151,16 @@ export default function GestionEmpleados() {
                 <div className="p-6">
                   <div className="grid grid-cols-2 gap-4 mb-4">
                     <div className="text-center">
-                      <p className="text-2xl font-bold text-blue-600">{empleado.reclamos_asignados}</p>
+                      <p className="text-2xl font-bold text-blue-600">{empleado.reclamos_asignados || 0}</p>
                       <p className="text-xs text-gray-600 mt-1">Asignados</p>
                     </div>
                     <div className="text-center">
-                      <p className="text-2xl font-bold text-green-600">{empleado.reclamos_completados}</p>
+                      <p className="text-2xl font-bold text-green-600">{empleado.reclamos_completados || 0}</p>
                       <p className="text-xs text-gray-600 mt-1">Completados</p>
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                  <div className="flex items-center justify-center pt-4 border-t border-gray-100">
                     <span className={`px-3 py-1 text-xs font-semibold rounded-full ${
                       empleado.activo 
                         ? 'bg-green-100 text-green-800' 
@@ -178,12 +168,6 @@ export default function GestionEmpleados() {
                     }`}>
                       {empleado.activo ? 'Activo' : 'Inactivo'}
                     </span>
-                    <button
-                      onClick={() => navigate(`/dashboard/admin/empleados/${empleado.empleado_id}`)}
-                      className="text-sm font-medium text-purple-600 hover:text-purple-700"
-                    >
-                      Ver detalle →
-                    </button>
                   </div>
                 </div>
               </div>

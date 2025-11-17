@@ -3,6 +3,7 @@
  * Maneja la lógica de negocio para administradores del sistema
  */
 
+import pool from '../db.js';
 import Empleado from '../models/Empleado.js';
 import Socio from '../models/Socio.js';
 import Reclamo from '../models/Reclamo.js';
@@ -311,7 +312,7 @@ export default class AdministradorController {
   }
 
   /**
-   * Listar todos los empleados
+   * Listar todos los empleados (mantiene compatibilidad con tests)
    */
   static async listarEmpleados(req, res) {
     try {
@@ -327,6 +328,84 @@ export default class AdministradorController {
     } catch (error) {
       console.error('Error al listar empleados:', error);
       return respuestaError(res, 'Error al listar empleados');
+    }
+  }
+
+  /**
+   * Listar empleados con información detallada (cuadrillas, OTs, etc)
+   */
+  static async listarEmpleadosDetallado(req, res) {
+    try {
+      const { activo, pagina = 1, limite = 10 } = req.query;
+      
+      const paginaNum = parseInt(pagina);
+      const limiteNum = parseInt(limite);
+      const offset = (paginaNum - 1) * limiteNum;
+      
+      // Primero obtenemos el total sin límites
+      let countQuery = `
+        SELECT COUNT(DISTINCT e.empleado_id) as total
+        FROM empleado e
+        LEFT JOIN usuario u ON e.empleado_id = u.empleado_id
+        LEFT JOIN empleado_cuadrilla ec ON e.empleado_id = ec.empleado_id
+        WHERE 1=1
+      `;
+      
+      const countParams = [];
+      let countParamCount = 1;
+      
+      if (activo !== undefined) {
+        countQuery += ` AND e.activo = $${countParamCount}`;
+        countParams.push(activo === 'true');
+      }
+      
+      const countResult = await pool.query(countQuery, countParams);
+      const total = parseInt(countResult.rows[0].total);
+      
+      // Ahora obtenemos los empleados con paginación
+      let query = `
+        SELECT DISTINCT ON (e.empleado_id)
+          e.*,
+          u.email,
+          u.ultimo_login,
+          u.activo as usuario_activo,
+          ec.cuadrilla_id as cuadrilla_asignada,
+          COUNT(DISTINCT CASE WHEN ot.estado IN ('ASIGNADA', 'EN_CURSO') THEN ot.ot_id END) as reclamos_asignados,
+          COUNT(DISTINCT CASE WHEN ot.estado = 'COMPLETADA' THEN ot.ot_id END) as reclamos_completados
+        FROM empleado e
+        LEFT JOIN usuario u ON e.empleado_id = u.empleado_id
+        LEFT JOIN empleado_cuadrilla ec ON e.empleado_id = ec.empleado_id
+        LEFT JOIN orden_trabajo ot ON e.empleado_id = ot.empleado_id
+        WHERE 1=1
+      `;
+      
+      const params = [];
+      let paramCount = 1;
+      
+      if (activo !== undefined) {
+        query += ` AND e.activo = $${paramCount}`;
+        params.push(activo === 'true');
+        paramCount++;
+      }
+      
+      query += ` GROUP BY e.empleado_id, u.email, u.ultimo_login, u.activo, ec.cuadrilla_id`;
+      query += ` ORDER BY e.empleado_id DESC LIMIT $${paramCount} OFFSET $${paramCount + 1}`;
+      params.push(limiteNum, offset);
+      
+      const result = await pool.query(query, params);
+      
+      const resultado = {
+        empleados: result.rows,
+        total,
+        pagina: paginaNum,
+        limite: limiteNum
+      };
+      
+      return respuestaExitosa(res, resultado, 'Empleados detallados obtenidos exitosamente');
+    } catch (error) {
+      console.error('❌ Error al listar empleados detallado:', error.message);
+      console.error('❌ Stack:', error.stack);
+      return respuestaError(res, 'Error al listar empleados detallado', 500, error.message);
     }
   }
 

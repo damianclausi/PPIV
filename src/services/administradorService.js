@@ -122,7 +122,7 @@ class AdministradorService {
     if (filtros.limite) params.append('limite', filtros.limite);
     
     const query = params.toString() ? `?${params.toString()}` : '';
-    return apiClient.get(`/api/administradores/empleados${query}`);
+    return apiClient.get(`/api/administradores/empleados-detallado${query}`);
   }
 
   /**

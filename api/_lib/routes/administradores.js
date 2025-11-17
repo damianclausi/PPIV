@@ -41,6 +41,7 @@ router.patch('/reclamos/:id/asignar', AdministradorController.asignarOperarioRec
 
 // Gestión de empleados
 router.get('/empleados', AdministradorController.listarEmpleados);
+router.get('/empleados-detallado', AdministradorController.listarEmpleadosDetallado);
 
 // Historial de cuentas
 router.get('/cuentas/:id/facturas', AdministradorController.obtenerFacturasCuenta);
