@@ -9,14 +9,14 @@ class AdministradorService {
    * Obtener perfil del administrador autenticado
    */
   async obtenerPerfil() {
-    return apiClient.get('/api/administradores/perfil');
+    return apiClient.get('/administradores/perfil');
   }
 
   /**
    * Obtener dashboard con estadísticas generales
    */
   async obtenerDashboard() {
-    return apiClient.get('/api/administradores/dashboard');
+    return apiClient.get('/administradores/dashboard');
   }
 
   /**
@@ -47,7 +47,7 @@ class AdministradorService {
    * Crear un nuevo socio
    */
   async crearSocio(datos) {
-    return apiClient.post('/api/administradores/socios', datos);
+    return apiClient.post('/administradores/socios', datos);
   }
 
   /**
@@ -136,7 +136,7 @@ class AdministradorService {
    * Obtener estado de operarios con OTs asignadas
    */
   async obtenerEstadoOperarios() {
-    return apiClient.get('/api/administradores/operarios-estado');
+    return apiClient.get('/administradores/operarios-estado');
   }
 
   /**
@@ -185,7 +185,7 @@ class AdministradorService {
    * Crear nueva cuenta para un socio
    */
   async crearCuenta(datos) {
-    return apiClient.post('/api/administradores/cuentas', datos);
+    return apiClient.post('/administradores/cuentas', datos);
   }
 
   /**
@@ -199,28 +199,28 @@ class AdministradorService {
    * Listar todos los servicios disponibles
    */
   async listarServicios() {
-    return apiClient.get('/api/administradores/servicios');
+    return apiClient.get('/administradores/servicios');
   }
 
   /**
    * Obtener materiales con stock bajo
    */
   async obtenerStockBajo() {
-    return apiClient.get('/api/administradores/materiales/stock-bajo');
+    return apiClient.get('/administradores/materiales/stock-bajo');
   }
 
   /**
    * Obtener resumen de stock de materiales
    */
   async obtenerResumenStock() {
-    return apiClient.get('/api/administradores/materiales/resumen-stock');
+    return apiClient.get('/administradores/materiales/resumen-stock');
   }
 
   /**
    * Listar todos los materiales
    */
   async listarMateriales() {
-    return apiClient.get('/api/administradores/materiales');
+    return apiClient.get('/administradores/materiales');
   }
 }
 

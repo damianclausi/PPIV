@@ -8,7 +8,7 @@ const clienteService = {
    * Obtener perfil del cliente
    */
   async obtenerPerfil() {
-    const response = await apiClient.get('/api/clientes/perfil');
+    const response = await apiClient.get('/clientes/perfil');
     return response.datos;
   },
 
@@ -16,7 +16,7 @@ const clienteService = {
    * Obtener cuentas del cliente
    */
   async obtenerCuentas() {
-    const response = await apiClient.get('/api/clientes/cuentas');
+    const response = await apiClient.get('/clientes/cuentas');
     return response.datos;
   },
 
@@ -24,7 +24,7 @@ const clienteService = {
    * Obtener dashboard con resumen
    */
   async obtenerDashboard() {
-    const response = await apiClient.get('/api/clientes/dashboard');
+    const response = await apiClient.get('/clientes/dashboard');
     return response.datos;
   },
 
@@ -32,7 +32,7 @@ const clienteService = {
    * Obtener facturas del cliente
    */
   async obtenerFacturas(params = {}) {
-    const response = await apiClient.get('/api/clientes/facturas', params);
+    const response = await apiClient.get('/clientes/facturas', params);
     return response.datos;
   },
 
@@ -56,7 +56,7 @@ const clienteService = {
    * Obtener reclamos del cliente
    */
   async obtenerReclamos(params = {}) {
-    const response = await apiClient.get('/api/clientes/reclamos', params);
+    const response = await apiClient.get('/clientes/reclamos', params);
     return response.datos;
   },
 
@@ -72,7 +72,7 @@ const clienteService = {
    * Crear nuevo reclamo
    */
   async crearReclamo(datos) {
-    const response = await apiClient.post('/api/clientes/reclamos', datos);
+    const response = await apiClient.post('/clientes/reclamos', datos);
     return response.datos;
   },
 };

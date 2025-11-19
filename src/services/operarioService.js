@@ -9,14 +9,14 @@ class OperarioService {
    * Obtener perfil del operario autenticado
    */
   async obtenerPerfil() {
-    return apiClient.get('/api/operarios/perfil');
+    return apiClient.get('/operarios/perfil');
   }
 
   /**
    * Obtener dashboard con estadísticas
    */
   async obtenerDashboard() {
-    return apiClient.get('/api/operarios/dashboard');
+    return apiClient.get('/operarios/dashboard');
   }
 
   /**

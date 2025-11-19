@@ -9,7 +9,7 @@ const itinerarioService = {
    */
   async asignarOTaCuadrilla(ot_id, cuadrilla_id, fecha_programada) {
     try {
-      const response = await api.post('/api/itinerario/asignar-cuadrilla', {
+      const response = await api.post('/itinerario/asignar-cuadrilla', {
         ot_id,
         cuadrilla_id,
         fecha_programada
@@ -52,7 +52,7 @@ const itinerarioService = {
    */
   async obtenerFechasDisponibles() {
     try {
-      const response = await api.get('/api/itinerario/fechas-disponibles');
+      const response = await api.get('/itinerario/fechas-disponibles');
       return response;
     } catch (error) {
       console.error('Error al obtener fechas disponibles:', error);

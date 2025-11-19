@@ -9,7 +9,7 @@ const tipoReclamoService = {
    * @returns {Promise<Array>} Lista de tipos de reclamo con tipo_id y nombre
    */
   async obtenerTodos() {
-    const response = await apiClient.get('/api/tipos-reclamo');
+    const response = await apiClient.get('/tipos-reclamo');
     return response;
   },
 

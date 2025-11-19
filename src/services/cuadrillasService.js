@@ -6,7 +6,7 @@ const cuadrillasService = {
    */
   async listar() {
     try {
-      const response = await api.get('/api/cuadrillas');
+      const response = await api.get('/cuadrillas');
       return response;
     } catch (error) {
       console.error('Error al listar cuadrillas:', error);
@@ -58,7 +58,7 @@ const cuadrillasService = {
    */
   async obtenerOperariosDisponibles() {
     try {
-      const response = await api.get('/api/cuadrillas/operarios/disponibles');
+      const response = await api.get('/cuadrillas/operarios/disponibles');
       return response;
     } catch (error) {
       console.error('Error al obtener operarios disponibles:', error);
