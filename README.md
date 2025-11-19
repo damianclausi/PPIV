@@ -1,6 +1,7 @@
 
 # PPIV - El Quinto Elemento
 
+[![CI/CD Pipeline](https://github.com/damianclausi2/proyecto-integrador-devops/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/damianclausi2/proyecto-integrador-devops/actions/workflows/ci-cd.yml)
 [![Docker](https://img.shields.io/badge/Docker-Available-blue?logo=docker)](https://hub.docker.com/u/damian2k)
 [![Frontend](https://img.shields.io/badge/Frontend-React%2018-61dafb?logo=react)](https://hub.docker.com/r/damian2k/cooperativa-ugarte-frontend)
 [![Backend](https://img.shields.io/badge/Backend-Express-green?logo=node.js)](https://hub.docker.com/r/damian2k/cooperativa-ugarte-backend)
@@ -65,6 +66,19 @@ docker exec -it cooperativa-postgres psql -U coop_user -d cooperativa_ugarte_db
 - [Database](https://hub.docker.com/r/damian2k/cooperativa-ugarte-db)
 
 **Documentación completa:** [Guía de Docker](./docs/DOCKER.md) | [Registro de pruebas](./docs/PRUEBAS_DOCKERIZACION.md)
+
+### CI/CD Pipeline
+
+El proyecto cuenta con un pipeline automatizado de CI/CD usando **GitHub Actions**:
+
+- ✅ **Tests automáticos** en cada push/PR (Backend + Frontend)
+- 🐳 **Build automático** de imágenes Docker en push a main
+- 📦 **Push automático** a Docker Hub con tags versionados
+- 🚀 **Deploy automático** a entorno de staging
+
+**Ver pipeline:** [CI/CD Documentation](./docs/CI-CD.md)
+
+**Estado actual:** El pipeline se ejecuta automáticamente en cada push a `main` o `develop`, ejecutando ~413 tests antes de cualquier deploy.
 
 ## Testing
 
