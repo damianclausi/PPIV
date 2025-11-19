@@ -1,9 +1,70 @@
 
 # PPIV - El Quinto Elemento
 
+[![Docker](https://img.shields.io/badge/Docker-Available-blue?logo=docker)](https://hub.docker.com/u/damian2k)
+[![Frontend](https://img.shields.io/badge/Frontend-React%2018-61dafb?logo=react)](https://hub.docker.com/r/damian2k/cooperativa-ugarte-frontend)
+[![Backend](https://img.shields.io/badge/Backend-Express-green?logo=node.js)](https://hub.docker.com/r/damian2k/cooperativa-ugarte-backend)
+[![Database](https://img.shields.io/badge/Database-PostgreSQL-blue?logo=postgresql)](https://hub.docker.com/r/damian2k/cooperativa-ugarte-db)
+
 ## Descripción del Proyecto
 
 Sistema de gestión para la Cooperativa Eléctrica "Gobernador Ugarte" desarrollado como proyecto final de la tecnicatura. Este sistema cuenta con tres perfiles de usuario: Cliente, Operario y Administrativo, cada uno con funcionalidades específicas para la gestión de servicios eléctricos, facturación, reclamos y operaciones técnicas.
+
+### Despliegue con Docker
+
+La aplicación está completamente dockerizada y disponible en Docker Hub.
+
+#### Comandos Principales
+
+```bash
+# Iniciar la aplicación
+docker-compose up -d
+
+# Ver estado de los servicios
+docker-compose ps
+
+# Ver logs en tiempo real
+docker-compose logs -f
+
+# Ver logs de un servicio específico
+docker-compose logs -f api
+docker-compose logs -f frontend
+docker-compose logs -f postgres
+
+# Detener la aplicación
+docker-compose down
+
+# Detener y eliminar volúmenes (reinicio completo)
+docker-compose down -v
+
+# Actualizar imágenes y reiniciar
+docker-compose pull && docker-compose up -d
+
+# Reconstruir y subir imágenes a Docker Hub
+./docker-build-push.sh damian2k
+```
+
+#### Verificación
+
+```bash
+# Verificar salud de la API
+curl http://localhost:3001/api/salud
+
+# Acceder a la base de datos
+docker exec -it cooperativa-postgres psql -U coop_user -d cooperativa_ugarte_db
+```
+
+**URLs de acceso:**
+- Frontend: http://localhost:8080
+- Backend API: http://localhost:3001
+- PostgreSQL: localhost:5433
+
+**Imágenes Docker Hub:**
+- [Frontend](https://hub.docker.com/r/damian2k/cooperativa-ugarte-frontend)
+- [Backend](https://hub.docker.com/r/damian2k/cooperativa-ugarte-backend)
+- [Database](https://hub.docker.com/r/damian2k/cooperativa-ugarte-db)
+
+**Documentación completa:** [Guía de Docker](./docs/DOCKER.md) | [Registro de pruebas](./docs/PRUEBAS_DOCKERIZACION.md)
 
 ## Testing
 
