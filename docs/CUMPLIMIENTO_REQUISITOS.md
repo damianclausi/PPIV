@@ -227,12 +227,71 @@ Para verificar que el pipeline funciona:
    - https://hub.docker.com/u/damian2k
    - Imágenes actualizadas con cada push
 
-4. **Verificar deploy:**
-   - Si Render está configurado: URL del servicio
-   - Si no: Imágenes disponibles para deploy manual
+4. **Verificar deploy en Render:**
+   - **Frontend:** https://cooperativa-ugarte-frontend.onrender.com
+   - **Backend API:** https://cooperativa-ugarte-backend.onrender.com
+   - **Estado:** Live y funcionando
+   - **Despliegue automático:** Detecta cambios en GitHub y redespliega
+
+---
+
+## Despliegue en Render (Entorno de Prueba)
+
+### Servicios Desplegados
+
+**1. Frontend (Web Service)**
+- **URL:** https://cooperativa-ugarte-frontend.onrender.com
+- **Runtime:** Docker
+- **Dockerfile:** `/Dockerfile` (raíz del proyecto)
+- **Auto-deploy:** Activado desde rama `main`
+
+**2. Backend (Web Service)**
+- **URL:** https://cooperativa-ugarte-backend.onrender.com
+- **Runtime:** Docker
+- **Dockerfile:** `/api/Dockerfile`
+- **Auto-deploy:** Activado desde rama `main`
+
+**3. Base de Datos (PostgreSQL)**
+- **Servicio:** PostgreSQL 15
+- **Plan:** Free
+- **Conexión:** Internal URL (segura)
+
+### Configuración de Variables de Entorno
+
+**Backend:**
+```
+DATABASE_URL = <Internal Database URL de Render>
+JWT_SECRET = <secret configurado>
+PORT = 10000
+NODE_ENV = production
+FRONTEND_URL = https://cooperativa-ugarte-frontend.onrender.com
+```
+
+**Frontend:**
+```
+VITE_API_URL = https://cooperativa-ugarte-backend.onrender.com/api
+```
+
+### Evidencia de Funcionamiento
+
+1. **Login exitoso:** Usuario de prueba puede acceder al sistema
+2. **API respondiendo:** Endpoints funcionando correctamente
+3. **CORS configurado:** Frontend puede comunicarse con backend
+4. **Base de datos poblada:** Datos de prueba cargados exitosamente
+
+### Flujo de Despliegue Automático
+
+```
+Push a main → GitHub Actions → Tests → Build Docker → Push to Docker Hub → Render detecta cambio → Auto-deploy
+```
 
 ---
 
 **Trabajo Práctico:** CI/CD con GitHub Actions  
 **Fecha de implementación:** 19 de Noviembre de 2025  
-**Estado:** COMPLETO - Cumple todos los requisitos
+**Estado:** COMPLETO - Cumple TODOS los requisitos
+- ✅ Pipeline con GitHub Actions
+- ✅ Build de la app
+- ✅ Tests automáticos (413 tests)
+- ✅ Build y push de Docker images a Docker Hub
+- ✅ Despliegue automático en Render (entorno de prueba)
