@@ -40,7 +40,7 @@ const clienteService = {
    * Obtener detalle de una factura
    */
   async obtenerFactura(id) {
-    const response = await apiClient.get(`/api/clientes/facturas/${id}`);
+    const response = await apiClient.get(`/clientes/facturas/${id}`);
     return response.datos;
   },
 
@@ -48,7 +48,7 @@ const clienteService = {
    * Registrar pago de una factura
    */
   async pagarFactura(id, datosPago) {
-    const response = await apiClient.post(`/api/clientes/facturas/${id}/pagar`, datosPago);
+    const response = await apiClient.post(`/clientes/facturas/${id}/pagar`, datosPago);
     return response.datos;
   },
 
@@ -64,7 +64,7 @@ const clienteService = {
    * Obtener detalle de un reclamo
    */
   async obtenerReclamo(id) {
-    const response = await apiClient.get(`/api/clientes/reclamos/${id}`);
+    const response = await apiClient.get(`/clientes/reclamos/${id}`);
     return response.datos;
   },
 

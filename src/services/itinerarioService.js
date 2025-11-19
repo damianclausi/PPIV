@@ -26,7 +26,7 @@ const itinerarioService = {
    */
   async obtenerItinerarioCuadrilla(cuadrillaId, fecha) {
     try {
-      const response = await api.get(`/api/itinerario/cuadrilla/${cuadrillaId}?fecha=${fecha}`);
+      const response = await api.get(`/itinerario/cuadrilla/${cuadrillaId}?fecha=${fecha}`);
       return response;
     } catch (error) {
       console.error('Error al obtener itinerario de cuadrilla:', error);
@@ -39,7 +39,7 @@ const itinerarioService = {
    */
   async obtenerMiItinerario(fecha) {
     try {
-      const response = await api.get(`/api/itinerario/mi-itinerario?fecha=${fecha}`);
+      const response = await api.get(`/itinerario/mi-itinerario?fecha=${fecha}`);
       return response;
     } catch (error) {
       console.error('Error al obtener mi itinerario:', error);
@@ -65,7 +65,7 @@ const itinerarioService = {
    */
   async tomarOT(otId) {
     try {
-      const response = await api.put(`/api/itinerario/tomar/${otId}`);
+      const response = await api.put(`/itinerario/tomar/${otId}`);
       return response;
     } catch (error) {
       console.error('Error al tomar OT:', error);
@@ -78,7 +78,7 @@ const itinerarioService = {
    */
   async obtenerOTsPendientes(tipo_reclamo = 'TECNICO') {
     try {
-      const response = await api.get(`/api/itinerario/ots-pendientes?tipo_reclamo=${tipo_reclamo}`);
+      const response = await api.get(`/itinerario/ots-pendientes?tipo_reclamo=${tipo_reclamo}`);
       return response;
     } catch (error) {
       console.error('Error al obtener OTs pendientes:', error);
@@ -91,7 +91,7 @@ const itinerarioService = {
    */
   async quitarDelItinerario(otId) {
     try {
-      const response = await api.delete(`/api/itinerario/quitar/${otId}`);
+      const response = await api.delete(`/itinerario/quitar/${otId}`);
       return response;
     } catch (error) {
       console.error('Error al quitar OT del itinerario:', error);

@@ -33,14 +33,14 @@ class AdministradorService {
     if (filtros.direccion) params.append('direccion', filtros.direccion);
     
     const query = params.toString() ? `?${params.toString()}` : '';
-    return apiClient.get(`/api/administradores/socios${query}`);
+    return apiClient.get(`/administradores/socios${query}`);
   }
 
   /**
    * Obtener un socio específico
    */
   async obtenerSocio(id) {
-    return apiClient.get(`/api/administradores/socios/${id}`);
+    return apiClient.get(`/administradores/socios/${id}`);
   }
 
   /**
@@ -54,21 +54,21 @@ class AdministradorService {
    * Actualizar datos de un socio
    */
   async actualizarSocio(id, datos) {
-    return apiClient.put(`/api/administradores/socios/${id}`, datos);
+    return apiClient.put(`/administradores/socios/${id}`, datos);
   }
 
   /**
    * Eliminar un socio (DELETE físico)
    */
   async eliminarSocio(id) {
-    return apiClient.delete(`/api/administradores/socios/${id}`);
+    return apiClient.delete(`/administradores/socios/${id}`);
   }
 
   /**
    * Desactivar/Activar un socio (cambiar estado activo)
    */
   async cambiarEstadoSocio(id, activo) {
-    return apiClient.patch(`/api/administradores/socios/${id}/estado`, { activo });
+    return apiClient.patch(`/administradores/socios/${id}/estado`, { activo });
   }
 
   /**
@@ -94,21 +94,21 @@ class AdministradorService {
     if (filtros.limite) params.append('limite', filtros.limite);
     
     const query = params.toString() ? `?${params.toString()}` : '';
-    return apiClient.get(`/api/administradores/reclamos${query}`);
+    return apiClient.get(`/administradores/reclamos${query}`);
   }
 
   /**
    * Obtener un reclamo específico
    */
   async obtenerReclamo(id) {
-    return apiClient.get(`/api/administradores/reclamos/${id}`);
+    return apiClient.get(`/administradores/reclamos/${id}`);
   }
 
   /**
    * Asignar operario a un reclamo
    */
   async asignarOperarioReclamo(reclamoId, operarioId) {
-    return apiClient.patch(`/api/administradores/reclamos/${reclamoId}/asignar`, { operario_id: operarioId });
+    return apiClient.patch(`/administradores/reclamos/${reclamoId}/asignar`, { operario_id: operarioId });
   }
 
   /**
@@ -122,14 +122,14 @@ class AdministradorService {
     if (filtros.limite) params.append('limite', filtros.limite);
     
     const query = params.toString() ? `?${params.toString()}` : '';
-    return apiClient.get(`/api/administradores/empleados-detallado${query}`);
+    return apiClient.get(`/administradores/empleados-detallado${query}`);
   }
 
   /**
    * Obtener métricas avanzadas del sistema
    */
   async obtenerMetricasAvanzadas(periodo = 'mes_actual') {
-    return apiClient.get(`/api/administradores/metricas-avanzadas?periodo=${periodo}`);
+    return apiClient.get(`/administradores/metricas-avanzadas?periodo=${periodo}`);
   }
 
   /**
@@ -164,21 +164,21 @@ class AdministradorService {
       params.append('direccion', filtros.direccion);
     }
     
-    return apiClient.get(`/api/administradores/cuentas?${params.toString()}`);
+    return apiClient.get(`/administradores/cuentas?${params.toString()}`);
   }
 
   /**
    * Obtener facturas de una cuenta específica
    */
   async obtenerFacturasCuenta(cuentaId) {
-    return apiClient.get(`/api/administradores/cuentas/${cuentaId}/facturas`);
+    return apiClient.get(`/administradores/cuentas/${cuentaId}/facturas`);
   }
 
   /**
    * Obtener reclamos de una cuenta específica
    */
   async obtenerReclamosCuenta(cuentaId) {
-    return apiClient.get(`/api/administradores/cuentas/${cuentaId}/reclamos`);
+    return apiClient.get(`/administradores/cuentas/${cuentaId}/reclamos`);
   }
 
   /**
@@ -192,7 +192,7 @@ class AdministradorService {
    * Actualizar cuenta
    */
   async actualizarCuenta(id, datos) {
-    return apiClient.put(`/api/administradores/cuentas/${id}`, datos);
+    return apiClient.put(`/administradores/cuentas/${id}`, datos);
   }
 
   /**

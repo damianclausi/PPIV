@@ -30,14 +30,14 @@ class OperarioService {
     if (filtros.limite) params.append('limite', filtros.limite);
     
     const query = params.toString() ? `?${params.toString()}` : '';
-    return apiClient.get(`/api/operarios/reclamos${query}`);
+    return apiClient.get(`/operarios/reclamos${query}`);
   }
 
   /**
    * Obtener un reclamo específico
    */
   async obtenerReclamo(id) {
-    return apiClient.get(`/api/operarios/reclamos/${id}`);
+    return apiClient.get(`/operarios/reclamos/${id}`);
   }
 
   /**
@@ -50,7 +50,7 @@ class OperarioService {
       ? 'EN_PROCESO' 
       : estado.toUpperCase();
     
-    return apiClient.patch(`/api/operarios/reclamos/${id}/estado`, { 
+    return apiClient.patch(`/operarios/reclamos/${id}/estado`, { 
       estado: estadoNormalizado, 
       observaciones 
     });

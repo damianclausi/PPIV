@@ -19,7 +19,7 @@ const cuadrillasService = {
    */
   async obtenerDetalle(cuadrillaId) {
     try {
-      const response = await api.get(`/api/cuadrillas/${cuadrillaId}`);
+      const response = await api.get(`/cuadrillas/${cuadrillaId}`);
       return response;
     } catch (error) {
       console.error('Error al obtener detalle de cuadrilla:', error);
@@ -32,7 +32,7 @@ const cuadrillasService = {
    */
   async obtenerOperarios(cuadrillaId) {
     try {
-      const response = await api.get(`/api/cuadrillas/${cuadrillaId}/operarios`);
+      const response = await api.get(`/cuadrillas/${cuadrillaId}/operarios`);
       return response;
     } catch (error) {
       console.error('Error al obtener operarios de cuadrilla:', error);
@@ -45,7 +45,7 @@ const cuadrillasService = {
    */
   async obtenerEstadisticas(cuadrillaId) {
     try {
-      const response = await api.get(`/api/cuadrillas/${cuadrillaId}/estadisticas`);
+      const response = await api.get(`/cuadrillas/${cuadrillaId}/estadisticas`);
       return response;
     } catch (error) {
       console.error('Error al obtener estadísticas:', error);
@@ -71,7 +71,7 @@ const cuadrillasService = {
    */
   async obtenerCuadrillaDeOperario(empleadoId) {
     try {
-      const response = await api.get(`/api/cuadrillas/operario/${empleadoId}/cuadrilla`);
+      const response = await api.get(`/cuadrillas/operario/${empleadoId}/cuadrilla`);
       return response;
     } catch (error) {
       console.error('Error al obtener cuadrilla del operario:', error);

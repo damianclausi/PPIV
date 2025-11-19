@@ -14,7 +14,7 @@ const otTecnicasService = {
       if (filtros.limite) params.append('limite', filtros.limite);
       if (filtros.offset) params.append('offset', filtros.offset);
 
-      const response = await api.get(`/api/ot-tecnicas?${params.toString()}`);
+      const response = await api.get(`/ot-tecnicas?${params.toString()}`);
       return response; // Devolver el objeto completo { success, data, total }
     } catch (error) {
       console.error('Error al listar OTs técnicas:', error);
@@ -27,7 +27,7 @@ const otTecnicasService = {
    */
   async obtenerDetalle(otId) {
     try {
-      const response = await api.get(`/api/ot-tecnicas/${otId}`);
+      const response = await api.get(`/ot-tecnicas/${otId}`);
       return response;
     } catch (error) {
       console.error('Error al obtener detalle de OT:', error);
@@ -41,7 +41,7 @@ const otTecnicasService = {
   async obtenerMisOTs(estado = null) {
     try {
       const params = estado ? `?estado=${estado}` : '';
-      const response = await api.get(`/api/ot-tecnicas/mis-ots${params}`);
+      const response = await api.get(`/ot-tecnicas/mis-ots${params}`);
       return response;
     } catch (error) {
       console.error('Error al obtener mis OTs:', error);
@@ -55,7 +55,7 @@ const otTecnicasService = {
   async obtenerPorOperario(empleadoId, estado = null) {
     try {
       const params = estado ? `?estado=${estado}` : '';
-      const response = await api.get(`/api/ot-tecnicas/operario/${empleadoId}${params}`);
+      const response = await api.get(`/ot-tecnicas/operario/${empleadoId}${params}`);
       return response;
     } catch (error) {
       console.error('Error al obtener OTs del operario:', error);
@@ -68,7 +68,7 @@ const otTecnicasService = {
    */
   async asignarOperario(otId, empleadoId) {
     try {
-      const response = await api.put(`/api/ot-tecnicas/${otId}/asignar`, {
+      const response = await api.put(`/ot-tecnicas/${otId}/asignar`, {
         empleado_id: empleadoId
       });
       return response;
@@ -83,7 +83,7 @@ const otTecnicasService = {
    */
   async iniciarTrabajo(otId) {
     try {
-      const response = await api.put(`/api/ot-tecnicas/${otId}/iniciar`);
+      const response = await api.put(`/ot-tecnicas/${otId}/iniciar`);
       return response;
     } catch (error) {
       console.error('Error al iniciar trabajo:', error);
@@ -96,7 +96,7 @@ const otTecnicasService = {
    */
   async completarTrabajo(otId, observaciones) {
     try {
-      const response = await api.put(`/api/ot-tecnicas/${otId}/completar`, {
+      const response = await api.put(`/ot-tecnicas/${otId}/completar`, {
         observaciones
       });
       return response;
@@ -111,7 +111,7 @@ const otTecnicasService = {
    */
   async cancelar(otId, motivo) {
     try {
-      const response = await api.put(`/api/ot-tecnicas/${otId}/cancelar`, {
+      const response = await api.put(`/ot-tecnicas/${otId}/cancelar`, {
         motivo
       });
       return response;

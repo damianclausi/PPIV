@@ -19,7 +19,7 @@ const tipoReclamoService = {
    * @returns {Promise<Object>} Tipo de reclamo
    */
   async obtenerPorId(id) {
-    const response = await apiClient.get(`/api/tipos-reclamo/${id}`);
+    const response = await apiClient.get(`/tipos-reclamo/${id}`);
     return response;
   }
 };
