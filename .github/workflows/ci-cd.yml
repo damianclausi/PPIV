@@ -49,42 +49,7 @@ jobs:
       
       - name: Inicializar esquema de base de datos para tests
         run: |
-          PGPASSWORD=cooperativa2024 psql -h localhost -U coop_user -d cooperativa_ugarte_db_test << 'EOF'
-          CREATE TABLE IF NOT EXISTS socio (
-            id_socio SERIAL PRIMARY KEY,
-            nombre VARCHAR(100) NOT NULL,
-            apellido VARCHAR(100) NOT NULL,
-            dni VARCHAR(20) UNIQUE NOT NULL,
-            email VARCHAR(255) UNIQUE,
-            telefono VARCHAR(50),
-            direccion TEXT,
-            fecha_alta DATE DEFAULT CURRENT_DATE,
-            activo BOOLEAN DEFAULT true
-          );
-
-          CREATE TABLE IF NOT EXISTS empleado (
-            id_empleado SERIAL PRIMARY KEY,
-            nombre VARCHAR(100) NOT NULL,
-            apellido VARCHAR(100) NOT NULL,
-            dni VARCHAR(20) UNIQUE NOT NULL,
-            email VARCHAR(255) UNIQUE NOT NULL,
-            telefono VARCHAR(50),
-            puesto VARCHAR(100),
-            fecha_ingreso DATE DEFAULT CURRENT_DATE,
-            activo BOOLEAN DEFAULT true
-          );
-
-          CREATE TABLE IF NOT EXISTS usuario (
-            id_usuario SERIAL PRIMARY KEY,
-            email VARCHAR(255) UNIQUE NOT NULL,
-            password_hash VARCHAR(255) NOT NULL,
-            rol VARCHAR(50) NOT NULL,
-            id_socio INTEGER REFERENCES socio(id_socio),
-            id_empleado INTEGER REFERENCES empleado(id_empleado),
-            activo BOOLEAN DEFAULT true,
-            fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-          );
-          EOF
+          PGPASSWORD=cooperativa2024 psql -h localhost -U coop_user -d cooperativa_ugarte_db_test -f api/__tests__/setup/schema.sql
       
       - name: Crear archivo .env para tests
         working-directory: ./api
