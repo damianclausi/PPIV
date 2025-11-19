@@ -184,8 +184,11 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Iniciar servidor solo si no estamos en testing o producción (Vercel)
-if (process.env.NODE_ENV !== 'test' && process.env.NODE_ENV !== 'production') {
+// Iniciar servidor solo si no estamos en testing
+// Para Render: usa NODE_ENV=production pero NECESITA el servidor
+// Para Vercel: detectamos con VERCEL=1 o ausencia de DATABASE_URL en runtime
+const esVercel = process.env.VERCEL === '1' || process.env.VERCEL_ENV;
+if (process.env.NODE_ENV !== 'test' && !esVercel) {
   app.listen(PUERTO, () => {
     console.log(`🚀 Servidor corriendo en http://localhost:${PUERTO}`);
     console.log(`📊 Verificación de salud: http://localhost:${PUERTO}/api/salud`);
