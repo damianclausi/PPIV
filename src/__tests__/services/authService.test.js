@@ -39,7 +39,7 @@ describe('authService', () => {
       const result = await authService.login('test@test.com', 'password123');
 
       expect(apiClient.post).toHaveBeenCalledWith(
-        '/api/auth/login',
+        '/auth/login',
         { email: 'test@test.com', password: 'password123' },
         { auth: false }
       );
@@ -85,7 +85,7 @@ describe('authService', () => {
 
       const result = await authService.obtenerPerfil();
 
-      expect(apiClient.get).toHaveBeenCalledWith('/api/auth/perfil');
+      expect(apiClient.get).toHaveBeenCalledWith('/auth/perfil');
       expect(result).toEqual(mockResponse.datos);
     });
   });
@@ -101,7 +101,7 @@ describe('authService', () => {
 
       const result = await authService.verificarToken();
 
-      expect(apiClient.post).toHaveBeenCalledWith('/api/auth/verificar');
+      expect(apiClient.post).toHaveBeenCalledWith('/auth/verificar');
       expect(result).toEqual(mockResponse.datos);
     });
 

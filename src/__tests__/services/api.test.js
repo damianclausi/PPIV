@@ -81,11 +81,11 @@ describe('ApiClient', () => {
         json: async () => mockResponse,
       });
 
-      const result = await apiClient.request('/api/test');
+      const result = await apiClient.request('/test');
 
       expect(mockFetch).toHaveBeenCalled();
       const callArgs = mockFetch.mock.calls[0];
-      expect(callArgs[0]).toContain('/api/test');
+      expect(callArgs[0]).toContain('/test');
       expect(callArgs[1]).toMatchObject({
         headers: expect.objectContaining({
           'Content-Type': 'application/json',
@@ -101,7 +101,7 @@ describe('ApiClient', () => {
         json: async () => ({ exito: true }),
       });
 
-      await apiClient.request('/api/test');
+      await apiClient.request('/test');
 
       expect(mockFetch).toHaveBeenCalledWith(
         expect.any(String),
@@ -123,7 +123,7 @@ describe('ApiClient', () => {
         }),
       });
 
-      await expect(apiClient.request('/api/test')).rejects.toMatchObject({
+      await expect(apiClient.request('/test')).rejects.toMatchObject({
         status: 404,
         message: 'No encontrado',
       });
@@ -144,7 +144,7 @@ describe('ApiClient', () => {
         }),
       });
 
-      await expect(apiClient.request('/api/test')).rejects.toMatchObject({
+      await expect(apiClient.request('/test')).rejects.toMatchObject({
         status: 401,
       });
 
@@ -165,26 +165,26 @@ describe('ApiClient', () => {
     });
 
     it('debería realizar petición GET', async () => {
-      await apiClient.get('/api/test');
+      await apiClient.get('/test');
       expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringContaining('/api/test'),
+        expect.stringContaining('/test'),
         expect.objectContaining({ method: 'GET' })
       );
     });
 
     it('debería incluir query params en GET', async () => {
-      await apiClient.get('/api/test', { page: 1, limit: 10 });
+      await apiClient.get('/test', { page: 1, limit: 10 });
       expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringContaining('/api/test?page=1&limit=10'),
+        expect.stringContaining('/test?page=1&limit=10'),
         expect.any(Object)
       );
     });
 
     it('debería realizar petición POST con datos', async () => {
       const data = { nombre: 'Test' };
-      await apiClient.post('/api/test', data);
+      await apiClient.post('/test', data);
       expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringContaining('/api/test'),
+        expect.stringContaining('/test'),
         expect.objectContaining({
           method: 'POST',
           body: JSON.stringify(data),
@@ -194,9 +194,9 @@ describe('ApiClient', () => {
 
     it('debería realizar petición PUT con datos', async () => {
       const data = { nombre: 'Test' };
-      await apiClient.put('/api/test', data);
+      await apiClient.put('/test', data);
       expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringContaining('/api/test'),
+        expect.stringContaining('/test'),
         expect.objectContaining({
           method: 'PUT',
           body: JSON.stringify(data),
@@ -206,9 +206,9 @@ describe('ApiClient', () => {
 
     it('debería realizar petición PATCH con datos', async () => {
       const data = { nombre: 'Test' };
-      await apiClient.patch('/api/test', data);
+      await apiClient.patch('/test', data);
       expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringContaining('/api/test'),
+        expect.stringContaining('/test'),
         expect.objectContaining({
           method: 'PATCH',
           body: JSON.stringify(data),
@@ -217,9 +217,9 @@ describe('ApiClient', () => {
     });
 
     it('debería realizar petición DELETE', async () => {
-      await apiClient.delete('/api/test');
+      await apiClient.delete('/test');
       expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringContaining('/api/test'),
+        expect.stringContaining('/test'),
         expect.objectContaining({ method: 'DELETE' })
       );
     });
