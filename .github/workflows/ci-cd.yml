@@ -68,7 +68,7 @@ jobs:
       
       - name: Ejecutar tests de integración Backend
         working-directory: ./api
-        run: npx jest --selectProjects integration
+        run: npx jest --selectProjects integration --forceExit --detectOpenHandles
         env:
           NODE_OPTIONS: --experimental-vm-modules
           DATABASE_URL: postgresql://coop_user:cooperativa2024@localhost:5432/cooperativa_ugarte_db_test
