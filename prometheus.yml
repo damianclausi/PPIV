@@ -1,0 +1,37 @@
+global:
+  scrape_interval: 15s # Intervalo de recolección de métricas
+  evaluation_interval: 15s # Intervalo de evaluación de reglas
+  external_labels:
+    monitor: 'cooperativa-ugarte-monitor'
+    environment: 'development'
+
+# Configuración de alertas (opcional, para uso futuro)
+# alerting:
+#   alertmanagers:
+#     - static_configs:
+#         - targets: []
+
+# Reglas de alertas (opcional, para uso futuro)
+# rule_files:
+#   - "alert_rules.yml"
+
+# Configuración de scraping (recolección de métricas)
+scrape_configs:
+  # Métricas de la API
+  - job_name: 'cooperativa-api'
+    scrape_interval: 10s
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['api:3000']
+        labels:
+          service: 'api'
+          environment: 'development'
+
+  # Métricas de Prometheus mismo (auto-monitoreo)
+  - job_name: 'prometheus'
+    scrape_interval: 15s
+    static_configs:
+      - targets: ['localhost:9090']
+        labels:
+          service: 'prometheus'
+

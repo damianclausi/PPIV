@@ -59,6 +59,8 @@ docker-compose logs -f
 docker-compose logs -f api
 docker-compose logs -f frontend
 docker-compose logs -f postgres
+docker-compose logs -f prometheus
+docker-compose logs -f grafana
 
 # Detener la aplicación
 docker-compose down
@@ -87,13 +89,15 @@ docker exec -it cooperativa-postgres psql -U coop_user -d cooperativa_ugarte_db
 - Frontend: http://localhost:8080
 - Backend API: http://localhost:3001
 - PostgreSQL: localhost:5433
+- **Prometheus**: http://localhost:9090
+- **Grafana**: http://localhost:3000 (usuario: `admin`, contraseña: `admin123`)
 
 **Imágenes Docker Hub:**
 - [Frontend](https://hub.docker.com/r/damian2k/cooperativa-ugarte-frontend)
 - [Backend](https://hub.docker.com/r/damian2k/cooperativa-ugarte-backend)
 - [Database](https://hub.docker.com/r/damian2k/cooperativa-ugarte-db)
 
-**Documentación completa:** [Guía de Docker](./docs/DOCKER.md) | [Registro de pruebas](./docs/PRUEBAS_DOCKERIZACION.md)
+**Documentación completa:** [Guía de Docker](./docs/DOCKER.md) | [Registro de pruebas](./docs/PRUEBAS_DOCKERIZACION.md) | [Monitoreo con Prometheus y Grafana](./docs/MONITOREO.md)
 
 ### CI/CD Pipeline
 
