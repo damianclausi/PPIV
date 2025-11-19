@@ -24,7 +24,12 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 const app = express();
-const PUERTO = process.env.PORT || 3001;
+
+// Detectar si estamos en Docker o ejecutando localmente
+// En Docker, PORT viene de la variable de entorno (3000)
+// Localmente, usamos 3002 para evitar conflicto con Docker (3001)
+const esDocker = process.env.DOCKER === '1' || process.env.PORT === '3000' || process.env.DATABASE_URL?.includes('postgres:5432');
+const PUERTO = process.env.PORT || (esDocker ? 3000 : 3002);
 
 // ============================================
 // Configuración de Prometheus Metrics
@@ -259,9 +264,13 @@ app.use((err, req, res, next) => {
 // Para Vercel: detectamos con VERCEL=1 o ausencia de DATABASE_URL en runtime
 const esVercel = process.env.VERCEL === '1' || process.env.VERCEL_ENV;
 if (process.env.NODE_ENV !== 'test' && !esVercel) {
-  app.listen(PUERTO, () => {
+  app.listen(PUERTO, '0.0.0.0', () => {
     console.log(`🚀 Servidor corriendo en http://localhost:${PUERTO}`);
     console.log(`📊 Verificación de salud: http://localhost:${PUERTO}/api/salud`);
+    console.log(`📈 Métricas Prometheus: http://localhost:${PUERTO}/metrics`);
+    if (!esDocker) {
+      console.log(`ℹ️  Ejecutando en modo local (puerto ${PUERTO}) - Docker usa puerto 3001`);
+    }
   });
 }
 
