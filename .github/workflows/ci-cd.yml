@@ -57,11 +57,15 @@ jobs:
       
       - name: Ejecutar tests unitarios Backend
         working-directory: ./api
-        run: npm run test:unit
+        run: npx jest --selectProjects unit
+        env:
+          NODE_OPTIONS: --experimental-vm-modules
       
       - name: Ejecutar tests de integración Backend
         working-directory: ./api
-        run: npm run test:integration
+        run: npx jest --selectProjects integration
+        env:
+          NODE_OPTIONS: --experimental-vm-modules
         env:
           DATABASE_URL: postgresql://coop_user:cooperativa2024@localhost:5432/cooperativa_ugarte_db_test
           JWT_SECRET: test_secret_key_123
@@ -85,7 +89,7 @@ jobs:
         run: npm ci
       
       - name: Ejecutar tests Frontend
-        run: npm run test:coverage
+        run: npx vitest run --reporter=verbose
         env:
           VITE_API_URL: http://localhost:3001
       
