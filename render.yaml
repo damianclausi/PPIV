@@ -1,0 +1,45 @@
+# Render configuration for Frontend
+# https://render.com
+
+services:
+  - type: web
+    name: cooperativa-ugarte-frontend
+    env: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    region: oregon
+    plan: free
+    branch: main
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
+    
+  - type: web
+    name: cooperativa-ugarte-backend
+    env: docker
+    dockerfilePath: ./api/Dockerfile
+    dockerContext: ./api
+    region: oregon
+    plan: free
+    branch: main
+    healthCheckPath: /api/salud
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: cooperativa-postgres
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: PORT
+        value: 3000
+      - key: NODE_ENV
+        value: production
+    
+  - type: postgres
+    name: cooperativa-postgres
+    databaseName: cooperativa_ugarte_db
+    user: coop_user
+    region: oregon
+    plan: free
+    ipAllowList: []

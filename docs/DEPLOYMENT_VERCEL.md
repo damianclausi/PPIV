@@ -813,7 +813,7 @@ vercel rollback [deployment-url]
 
 **Fecha de deployment v1.0.0:** 12 de Octubre, 2025
 
-**Repositorio:** https://github.com/damianclausi/PPIV
+**Repositorio:** https://github.com/damianclausi2/proyecto-integrador-devops
 
 ---
 

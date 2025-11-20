@@ -79,8 +79,8 @@ Para ejecutar el proyecto:
 
 1. **Clonar el repositorio:**
    ```bash
-   git clone https://github.com/damianclausi/PPIV.git
-   cd PPIV
+   git clone https://github.com/damianclausi2/proyecto-integrador-devops.git
+   cd proyecto-integrador-devops
    git checkout integracion-base-datos
    ```
 
@@ -167,7 +167,7 @@ PPIV/
 
 ## Enlaces Útiles
 
-- **Repositorio:** https://github.com/damianclausi/PPIV
+- **Repositorio:** https://github.com/damianclausi2/proyecto-integrador-devops
 - **Branch principal:** `integracion-base-datos`
 - **Prototipos Figma:** (incluidos en el proyecto)
 

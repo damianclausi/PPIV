@@ -1,38 +1,92 @@
-version: '3.8'
-
 services:
   # Base de datos PostgreSQL
   postgres:
     image: damian2k/cooperativa-ugarte-db:latest
-    container_name: cooperativa-db
+    container_name: cooperativa-postgres
     environment:
       POSTGRES_DB: cooperativa_ugarte_db
       POSTGRES_USER: coop_user
       POSTGRES_PASSWORD: cooperativa2024
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - cooperativa_network
 
-  # Aplicación React (opcional para desarrollo)
-  app:
-    build: .
-    container_name: cooperativa-app
+  # Backend API
+  api:
+    image: damian2k/cooperativa-ugarte-backend:latest  # Cambia por tu usuario
+    container_name: cooperativa-api
     ports:
-      - "5173:5173"
-    volumes:
-      - .:/app
-      - /app/node_modules
+      - "3001:3000"
+    environment:
+      DATABASE_URL: postgresql://coop_user:cooperativa2024@postgres:5432/cooperativa_ugarte_db
+      PORT: 3000
+      JWT_SECRET: cooperativa_secret_key_2024
     depends_on:
       - postgres
     networks:
       - cooperativa_network
-    command: npm run dev
+
+  # Frontend (React + Nginx)
+  frontend:
+    image: damian2k/cooperativa-ugarte-frontend:latest  # Cambia por tu usuario
+    container_name: cooperativa-frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
+    networks:
+      - cooperativa_network
+
+  # Prometheus - Recolección de métricas
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: cooperativa-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    depends_on:
+      - api
+    networks:
+      - cooperativa_network
+    restart: unless-stopped
+
+  # Grafana - Visualización de métricas
+  grafana:
+    image: grafana/grafana:latest
+    container_name: cooperativa-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin123
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_SERVER_ROOT_URL=http://localhost:3000
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+    depends_on:
+      - prometheus
+    networks:
+      - cooperativa_network
+    restart: unless-stopped
 
 volumes:
   postgres_data:
+  prometheus_data:
+  grafana_data:
 
 networks:
   cooperativa_network:

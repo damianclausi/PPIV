@@ -9,7 +9,7 @@ const prioridadService = {
    * @returns {Promise<Array>} Lista de prioridades con id, nombre, orden, color
    */
   async obtenerTodas() {
-    const response = await apiClient.get('/api/prioridades');
+    const response = await apiClient.get('/prioridades');
     return response;
   },
 
@@ -19,7 +19,7 @@ const prioridadService = {
    * @returns {Promise<Object>} Prioridad
    */
   async obtenerPorId(id) {
-    const response = await apiClient.get(`/api/prioridades/${id}`);
+    const response = await apiClient.get(`/prioridades/${id}`);
     return response;
   },
 
@@ -29,7 +29,7 @@ const prioridadService = {
    * @returns {Promise<Object>} Prioridad
    */
   async obtenerPorNombre(nombre) {
-    const response = await apiClient.get(`/api/prioridades/nombre/${nombre}`);
+    const response = await apiClient.get(`/prioridades/nombre/${nombre}`);
     return response;
   }
 };

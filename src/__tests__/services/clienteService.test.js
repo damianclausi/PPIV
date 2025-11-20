@@ -33,7 +33,7 @@ describe('clienteService', () => {
 
       const result = await clienteService.obtenerPerfil();
 
-      expect(apiClient.get).toHaveBeenCalledWith('/api/clientes/perfil');
+      expect(apiClient.get).toHaveBeenCalledWith('/clientes/perfil');
       expect(result).toEqual(mockResponse.datos);
     });
   });
@@ -55,7 +55,7 @@ describe('clienteService', () => {
 
       const result = await clienteService.obtenerCuentas();
 
-      expect(apiClient.get).toHaveBeenCalledWith('/api/clientes/cuentas');
+      expect(apiClient.get).toHaveBeenCalledWith('/clientes/cuentas');
       expect(result).toEqual(mockResponse.datos);
     });
   });
@@ -74,7 +74,7 @@ describe('clienteService', () => {
 
       const result = await clienteService.obtenerDashboard();
 
-      expect(apiClient.get).toHaveBeenCalledWith('/api/clientes/dashboard');
+      expect(apiClient.get).toHaveBeenCalledWith('/clientes/dashboard');
       expect(result).toEqual(mockResponse.datos);
     });
   });
@@ -96,7 +96,7 @@ describe('clienteService', () => {
 
       const result = await clienteService.obtenerFacturas();
 
-      expect(apiClient.get).toHaveBeenCalledWith('/api/clientes/facturas', {});
+      expect(apiClient.get).toHaveBeenCalledWith('/clientes/facturas', {});
       expect(result).toEqual(mockResponse.datos);
     });
 
@@ -111,7 +111,7 @@ describe('clienteService', () => {
 
       await clienteService.obtenerFacturas(params);
 
-      expect(apiClient.get).toHaveBeenCalledWith('/api/clientes/facturas', params);
+      expect(apiClient.get).toHaveBeenCalledWith('/clientes/facturas', params);
     });
   });
 
@@ -129,7 +129,7 @@ describe('clienteService', () => {
 
       const result = await clienteService.obtenerFactura(1);
 
-      expect(apiClient.get).toHaveBeenCalledWith('/api/clientes/facturas/1');
+      expect(apiClient.get).toHaveBeenCalledWith('/clientes/facturas/1');
       expect(result).toEqual(mockResponse.datos);
     });
   });
@@ -153,7 +153,7 @@ describe('clienteService', () => {
       const result = await clienteService.pagarFactura(1, datosPago);
 
       expect(apiClient.post).toHaveBeenCalledWith(
-        '/api/clientes/facturas/1/pagar',
+        '/clientes/facturas/1/pagar',
         datosPago
       );
       expect(result).toEqual(mockResponse.datos);
@@ -177,7 +177,7 @@ describe('clienteService', () => {
 
       const result = await clienteService.obtenerReclamos();
 
-      expect(apiClient.get).toHaveBeenCalledWith('/api/clientes/reclamos', {});
+      expect(apiClient.get).toHaveBeenCalledWith('/clientes/reclamos', {});
       expect(result).toEqual(mockResponse.datos);
     });
 
@@ -192,7 +192,7 @@ describe('clienteService', () => {
 
       await clienteService.obtenerReclamos(params);
 
-      expect(apiClient.get).toHaveBeenCalledWith('/api/clientes/reclamos', params);
+      expect(apiClient.get).toHaveBeenCalledWith('/clientes/reclamos', params);
     });
   });
 
@@ -210,7 +210,7 @@ describe('clienteService', () => {
 
       const result = await clienteService.obtenerReclamo(1);
 
-      expect(apiClient.get).toHaveBeenCalledWith('/api/clientes/reclamos/1');
+      expect(apiClient.get).toHaveBeenCalledWith('/clientes/reclamos/1');
       expect(result).toEqual(mockResponse.datos);
     });
   });
@@ -236,7 +236,7 @@ describe('clienteService', () => {
       const result = await clienteService.crearReclamo(datosReclamo);
 
       expect(apiClient.post).toHaveBeenCalledWith(
-        '/api/clientes/reclamos',
+        '/clientes/reclamos',
         datosReclamo
       );
       expect(result).toEqual(mockResponse.datos);

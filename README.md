@@ -1,9 +1,116 @@
 
-# PPIV - El Quinto Elemento
+# Seminario de Actualización DevOps - El Quinto Elemento
+
+[![CI/CD Pipeline](https://github.com/damianclausi2/proyecto-integrador-devops/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/damianclausi2/proyecto-integrador-devops/actions/workflows/ci-cd.yml)
+[![Docker](https://img.shields.io/badge/Docker-Available-blue?logo=docker)](https://hub.docker.com/u/damian2k)
+[![Frontend](https://img.shields.io/badge/Frontend-React%2018-61dafb?logo=react)](https://hub.docker.com/r/damian2k/cooperativa-ugarte-frontend)
+[![Backend](https://img.shields.io/badge/Backend-Express-green?logo=node.js)](https://hub.docker.com/r/damian2k/cooperativa-ugarte-backend)
+[![Database](https://img.shields.io/badge/Database-PostgreSQL-blue?logo=postgresql)](https://hub.docker.com/r/damian2k/cooperativa-ugarte-db)
+
+> **Trabajo Práctico Integrador**  
+> Seminario de Actualización DevOps  
+> Tecnicatura  en Desarrollo de Software a Distancia 
+> IFTS 29
+> Alumnos: Clausi, Damián Andrés - Descosido, Cristian - Gill, Antonio César
+> Profesor: Javier Blanco
+> Fecha de entrega: 23/11/2025
 
 ## Descripción del Proyecto
 
-Sistema de gestión para la Cooperativa Eléctrica "Gobernador Ugarte" desarrollado como proyecto final de la tecnicatura. Este sistema cuenta con tres perfiles de usuario: Cliente, Operario y Administrativo, cada uno con funcionalidades específicas para la gestión de servicios eléctricos, facturación, reclamos y operaciones técnicas.
+Sistema de gestión para la Cooperativa Eléctrica "Gobernador Ugarte" desarrollado como proyecto final de la tecnicatura y en este caso integrando CD/CI para la materia Seminario de actualización Devops. Este sistema cuenta con tres perfiles de usuario: Cliente, Operario y Administrativo, cada uno con funcionalidades específicas para la gestión de servicios eléctricos, facturación, reclamos y operaciones técnicas.
+
+### Objetivos del Trabajo Práctico
+
+Este proyecto implementa una **pipeline completa de CI/CD** que cumple con los siguientes requisitos:
+
+1.  **Pipeline automatizada** con GitHub Actions
+2.  **Build automático** de la aplicación
+3.  **Tests automáticos** (413 tests: 357 backend + 56 frontend)
+4.  **Build y push** de imágenes Docker a Docker Hub
+5.  **Despliegue automático** a entorno de prueba (Render)
+
+**Despliegue en producción:**
+- **Frontend:** https://cooperativa-ugarte-frontend.onrender.com
+- **Backend API:** https://cooperativa-ugarte-backend.onrender.com
+- **Estado:**  Live y funcionando. **Nota**: El despliegue utiliza el plan gratuito de Render. Si la aplicación lleva tiempo inactiva, puede experimentar una demora de hasta 50 segundos en la primera solicitud (Cold Start)
+
+**Documentación completa del TP:**
+- [Cumplimiento de Requisitos](./docs/CUMPLIMIENTO_REQUISITOS.md)
+- [Documentación CI/CD](./docs/CI-CD.md)
+- [Configuración de Secrets](./docs/CONFIGURAR_SECRETS.md)
+
+### Despliegue con Docker
+
+La aplicación está completamente dockerizada y disponible en Docker Hub.
+
+#### Comandos Principales
+
+```bash
+# Iniciar la aplicación
+docker-compose up -d
+
+# Ver estado de los servicios
+docker-compose ps
+
+# Ver logs en tiempo real
+docker-compose logs -f
+
+# Ver logs de un servicio específico
+docker-compose logs -f api
+docker-compose logs -f frontend
+docker-compose logs -f postgres
+docker-compose logs -f prometheus
+docker-compose logs -f grafana
+
+# Detener la aplicación
+docker-compose down
+
+# Detener y eliminar volúmenes (reinicio completo)
+docker-compose down -v
+
+# Actualizar imágenes y reiniciar
+docker-compose pull && docker-compose up -d
+
+# Reconstruir y subir imágenes a Docker Hub
+./docker-build-push.sh damian2k
+```
+
+#### Verificación
+
+```bash
+# Verificar salud de la API
+curl http://localhost:3001/api/salud
+
+# Acceder a la base de datos
+docker exec -it cooperativa-postgres psql -U coop_user -d cooperativa_ugarte_db
+```
+
+**URLs de acceso:**
+- Frontend: http://localhost:8080
+- Backend API: http://localhost:3001
+- PostgreSQL: localhost:5433
+- **Prometheus**: http://localhost:9090
+- **Grafana**: http://localhost:3000 (usuario: `admin`, contraseña: `admin123`)
+
+**Imágenes Docker Hub:**
+- [Frontend](https://hub.docker.com/r/damian2k/cooperativa-ugarte-frontend)
+- [Backend](https://hub.docker.com/r/damian2k/cooperativa-ugarte-backend)
+- [Database](https://hub.docker.com/r/damian2k/cooperativa-ugarte-db)
+
+**Documentación completa:** [Guía de Docker](./docs/DOCKER.md) | [Registro de pruebas](./docs/PRUEBAS_DOCKERIZACION.md) | [Monitoreo con Prometheus y Grafana](./docs/MONITOREO.md)
+
+### CI/CD Pipeline
+
+El proyecto cuenta con un pipeline automatizado de CI/CD usando **GitHub Actions**:
+
+-  **Tests automáticos** en cada push/PR (Backend + Frontend)
+-  **Build automático** de imágenes Docker en push a main
+-  **Push automático** a Docker Hub con tags versionados
+-  **Deploy automático** a entorno de staging
+
+**Ver pipeline:** [CI/CD Documentation](./docs/CI-CD.md)
+
+**Estado actual:** El pipeline se ejecuta automáticamente en cada push a `main` o `develop`, ejecutando ~413 tests antes de cualquier deploy.
 
 ## Testing
 
@@ -109,9 +216,8 @@ El proyecto está basado en prototipos de Figma que incluyen:
 
 #### 1. Clonar el Repositorio
 ```bash
-git clone https://github.com/damianclausi/PPIV.git
-cd PPIV
-git checkout integracion-base-datos
+git clone https://github.com/damianclausi2/proyecto-integrador-devops.git
+cd proyecto-integrador-devops
 ```
 
 #### 2. Instalar Dependencias
@@ -222,6 +328,7 @@ Sistema: completamente operativo
 | `./status.sh` | Muestra estado del sistema |
 | `./logs.sh` | Ver logs (backend\|frontend\|all\|errors) |
 | `./update-docker.sh` | Actualiza imagen Docker desde Docker Hub |
+| `./docker-build-push.sh` | Build y push de imágenes Docker a Docker Hub |
 
 Ver **README_SCRIPTS.md** para documentación completa de scripts.
 
@@ -446,27 +553,39 @@ docker ps | grep cooperativa-db
 
 ## Deployment
 
-### Vercel (Producción)
+### Render (Producción)
 
-El sistema está desplegado en Vercel con:
-- **Frontend**: Desplegado automáticamente desde la rama `main`
-- **Backend**: Funciones serverless en `/api` (sin duplicación de código)
-- **Base de Datos**: PostgreSQL externa (configurada vía variables de entorno)
+El sistema está desplegado en Render con despliegue automático desde GitHub:
 
-**Arquitectura Unificada:**
-- Un solo directorio `/api` funciona tanto para desarrollo local como producción
-- MVC preservado: models, controllers, routes en `api/_lib/`
-- Sin necesidad de sincronización manual entre carpetas
+**Servicios Desplegados:**
+- **Frontend**: https://cooperativa-ugarte-frontend.onrender.com
+  - Runtime: Docker
+  - Auto-deploy desde rama `main`
+  
+- **Backend API**: https://cooperativa-ugarte-backend.onrender.com
+  - Runtime: Docker
+  - Auto-deploy desde rama `main`
+  
+- **Base de Datos**: PostgreSQL 15
+  - Plan: Free
+  - Conexión interna segura
 
-### Variables de Entorno en Vercel
+**Flujo de Despliegue:**
+```
+Push a main → GitHub Actions → Tests → Build Docker → Push Docker Hub → Render Auto-Deploy
+```
 
-Backend (Serverless Functions):
-- `DATABASE_URL`
+### Variables de Entorno en Render
+
+**Backend:**
+- `DATABASE_URL` (Internal Database URL)
 - `JWT_SECRET`
+- `PORT=10000`
 - `NODE_ENV=production`
+- `FRONTEND_URL` (URL del frontend para CORS)
 
-Frontend:
-- `VITE_API_URL` (URL de tu API en Vercel)
+**Frontend:**
+- `VITE_API_URL` (URL del backend API)
 
 ### Frontend
 

@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import pool from './_lib/db.js';
+import { register, Counter, Histogram, Gauge } from 'prom-client';
 
 // Importar rutas
 import rutasAuth from './_lib/routes/auth.js';
@@ -23,7 +24,66 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 const app = express();
-const PUERTO = process.env.PORT || 3001;
+
+// Detectar si estamos en Docker o ejecutando localmente
+// En Docker, PORT viene de la variable de entorno (3000)
+// Localmente, usamos 3002 para evitar conflicto con Docker (3001)
+const esDocker = process.env.DOCKER === '1' || process.env.PORT === '3000' || process.env.DATABASE_URL?.includes('postgres:5432');
+const PUERTO = process.env.PORT || (esDocker ? 3000 : 3002);
+
+// ============================================
+// Configuración de Prometheus Metrics
+// ============================================
+
+// Crear métricas personalizadas
+const httpRequestDuration = new Histogram({
+  name: 'http_request_duration_seconds',
+  help: 'Duración de las peticiones HTTP en segundos',
+  labelNames: ['method', 'route', 'status_code'],
+  buckets: [0.1, 0.5, 1, 2, 5, 10]
+});
+
+const httpRequestTotal = new Counter({
+  name: 'http_requests_total',
+  help: 'Total de peticiones HTTP',
+  labelNames: ['method', 'route', 'status_code']
+});
+
+const httpRequestInProgress = new Gauge({
+  name: 'http_requests_in_progress',
+  help: 'Peticiones HTTP en progreso',
+  labelNames: ['method', 'route']
+});
+
+const databaseConnections = new Gauge({
+  name: 'database_connections_active',
+  help: 'Conexiones activas a la base de datos'
+});
+
+// Middleware para capturar métricas de las peticiones HTTP
+app.use((req, res, next) => {
+  const start = Date.now();
+  const route = req.route ? req.route.path : req.path;
+  
+  // Incrementar peticiones en progreso
+  httpRequestInProgress.inc({ method: req.method, route });
+  
+  // Capturar el evento de finalización
+  res.on('finish', () => {
+    const duration = (Date.now() - start) / 1000;
+    const statusCode = res.statusCode;
+    
+    // Registrar métricas
+    httpRequestDuration.observe(
+      { method: req.method, route, status_code: statusCode },
+      duration
+    );
+    httpRequestTotal.inc({ method: req.method, route, status_code: statusCode });
+    httpRequestInProgress.dec({ method: req.method, route });
+  });
+  
+  next();
+});
 
 // IMPORTANTE: Confiar en proxies (necesario para Vercel)
 // Vercel actúa como proxy reverso y envía headers X-Forwarded-*
@@ -86,6 +146,21 @@ app.use((req, res, next) => {
     console.log('📦 Body keys:', Object.keys(req.body));
   }
   next();
+});
+
+// Endpoint de métricas de Prometheus (antes del rate limiting)
+app.get('/metrics', async (req, res) => {
+  try {
+    // Actualizar métrica de conexiones de base de datos
+    const dbStats = await pool.query('SELECT count(*) as total FROM pg_stat_activity WHERE datname = current_database()');
+    databaseConnections.set(parseInt(dbStats.rows[0].total));
+    
+    res.set('Content-Type', register.contentType);
+    res.end(await register.metrics());
+  } catch (error) {
+    console.error('Error al obtener métricas:', error);
+    res.status(500).end('Error al obtener métricas');
+  }
 });
 
 // Aplicar rate limiting general a todas las rutas API
@@ -184,11 +259,18 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Iniciar servidor solo si no estamos en testing o producción (Vercel)
-if (process.env.NODE_ENV !== 'test' && process.env.NODE_ENV !== 'production') {
-  app.listen(PUERTO, () => {
+// Iniciar servidor solo si no estamos en testing
+// Para Render: usa NODE_ENV=production pero NECESITA el servidor
+// Para Vercel: detectamos con VERCEL=1 o ausencia de DATABASE_URL en runtime
+const esVercel = process.env.VERCEL === '1' || process.env.VERCEL_ENV;
+if (process.env.NODE_ENV !== 'test' && !esVercel) {
+  app.listen(PUERTO, '0.0.0.0', () => {
     console.log(`🚀 Servidor corriendo en http://localhost:${PUERTO}`);
     console.log(`📊 Verificación de salud: http://localhost:${PUERTO}/api/salud`);
+    console.log(`📈 Métricas Prometheus: http://localhost:${PUERTO}/metrics`);
+    if (!esDocker) {
+      console.log(`ℹ️  Ejecutando en modo local (puerto ${PUERTO}) - Docker usa puerto 3001`);
+    }
   });
 }
 

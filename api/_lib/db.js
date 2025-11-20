@@ -8,15 +8,15 @@ if (process.env.NODE_ENV !== 'production') {
 
 const { Pool } = pg;
 
-// Validar que DATABASE_URL esté presente
-if (!process.env.DATABASE_URL) {
-  console.error('❌ ERROR CRÍTICO: DATABASE_URL no está definida');
+// Validar que DATABASE_URL esté presente (excepto en tests unitarios)
+if (!process.env.DATABASE_URL && process.env.NODE_ENV !== 'test') {
+  console.error('ERROR CRITICO: DATABASE_URL no esta definida');
   console.error('Environment variables disponibles:', Object.keys(process.env).filter(k => k.includes('DB') || k.includes('DATABASE')));
-  throw new Error('DATABASE_URL no está configurada en las variables de entorno');
+  throw new Error('DATABASE_URL no esta configurada en las variables de entorno');
 }
 
 // Limpiar la URL (remover espacios, saltos de línea, etc)
-const databaseUrl = process.env.DATABASE_URL.trim();
+const databaseUrl = process.env.DATABASE_URL ? process.env.DATABASE_URL.trim() : 'postgresql://localhost:5432/test';
 
 console.log('🔍 DATABASE_URL detectada:', {
   length: databaseUrl.length,

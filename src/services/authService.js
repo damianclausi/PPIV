@@ -8,7 +8,7 @@ const authService = {
    * Iniciar sesión
    */
   async login(email, password) {
-    const response = await apiClient.post('/api/auth/login', { email, password }, { auth: false });
+    const response = await apiClient.post('/auth/login', { email, password }, { auth: false });
     
     if (response.datos && response.datos.token) {
       apiClient.setToken(response.datos.token);
@@ -28,7 +28,7 @@ const authService = {
    * Obtener perfil del usuario autenticado
    */
   async obtenerPerfil() {
-    const response = await apiClient.get('/api/auth/perfil');
+    const response = await apiClient.get('/auth/perfil');
     return response.datos;
   },
 
@@ -37,7 +37,7 @@ const authService = {
    */
   async verificarToken() {
     try {
-      const response = await apiClient.post('/api/auth/verificar');
+      const response = await apiClient.post('/auth/verificar');
       return response.datos;
     } catch (error) {
       return null;
