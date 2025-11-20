@@ -1,5 +1,5 @@
 
-# PPIV - El Quinto Elemento
+# Seminario de Actualización DevOps - El Quinto Elemento
 
 [![CI/CD Pipeline](https://github.com/damianclausi2/proyecto-integrador-devops/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/damianclausi2/proyecto-integrador-devops/actions/workflows/ci-cd.yml)
 [![Docker](https://img.shields.io/badge/Docker-Available-blue?logo=docker)](https://hub.docker.com/u/damian2k)
@@ -8,22 +8,12 @@
 [![Database](https://img.shields.io/badge/Database-PostgreSQL-blue?logo=postgresql)](https://hub.docker.com/r/damian2k/cooperativa-ugarte-db)
 
 > **Trabajo Práctico Integrador**  
-> Seminario de Actualización: DevOps  
+> Seminario de Actualización DevOps  
 > Tecnicatura  en Desarrollo de Software a Distancia 
 > IFTS 29
 > Alumnos: Clausi, Damián Andrés - Descosido, Cristian - Gill, Antonio César
 > Profesor: Javier Blanco
 > Fecha de entrega: 23/11/2025
-
-**Alumnos:**
-
-- Clausi, Damián Andrés
-- Descosido, Cristian
-- Gill, Antonio César
-
-**Profesor:** Javier Blanco
-
-**Fecha de entrega:** 23/11/2025
 
 ## Descripción del Proyecto
 
@@ -42,7 +32,7 @@ Este proyecto implementa una **pipeline completa de CI/CD** que cumple con los s
 **Despliegue en producción:**
 - **Frontend:** https://cooperativa-ugarte-frontend.onrender.com
 - **Backend API:** https://cooperativa-ugarte-backend.onrender.com
-- **Estado:**  Live y funcionando
+- **Estado:**  Live y funcionando. **Nota**: El despliegue utiliza el plan gratuito de Render. Si la aplicación lleva tiempo inactiva, puede experimentar una demora de hasta 50 segundos en la primera solicitud (Cold Start)
 
 **Documentación completa del TP:**
 - [Cumplimiento de Requisitos](./docs/CUMPLIMIENTO_REQUISITOS.md)
